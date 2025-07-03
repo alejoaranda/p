@@ -28,11 +28,19 @@ async function appendToSheet(email, token, fingerprint) {
       throw new Error('No se encontró la hoja de cálculo "Prueba".');
     }
 
-    const timestampISO = new Date().toISOString();
+    // --- NUEVO: Calcular fecha de solicitud y expiración ---
+    const requestDate = new Date();
+    const expirationDate = new Date(requestDate);
+    expirationDate.setDate(requestDate.getDate() + 3); // Añadir 3 días
+
+    const requestTimestampISO = requestDate.toISOString();
+    const expirationTimestampISO = expirationDate.toISOString();
     
+    // Añadir la nueva fila con la fecha de expiración
     await sheet.addRow({ 
       'Email': email, 
-      'Fecha de Solicitud': timestampISO,
+      'Fecha de Solicitud': requestTimestampISO,
+      'Fecha de expiración': expirationTimestampISO, // <-- NUEVO CAMPO
       'Fingerprint': fingerprint,
       'TokenUnico': token, 
     });
@@ -53,8 +61,6 @@ exports.handler = async (event) => {
   try {
     const data = JSON.parse(event.body);
     
-    // --- CORRECCIÓN CLAVE ---
-    // El nombre correcto de la función es createTransport (sin la 'er' al final).
     const transporter = nodemailer.createTransport({
       host: 'smtp.hostinger.com',
       port: 465,
