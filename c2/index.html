@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CostePro - Gestión Profesional de Cocina y Escandallos</title>
+    <title>CostePro - Software de Gestión Profesional de Cocina</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -473,7 +473,7 @@
         .pricing-card.featured .pricing-title { color: white; }
         .pricing-description {
             opacity: 0.8;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             min-height: 40px;
         }
         .pricing-price {
@@ -485,6 +485,16 @@
             font-size: 1rem;
             font-weight: 500;
             opacity: 0.7;
+        }
+        .savings-badge {
+            background-color: var(--accent);
+            color: var(--primary-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 1rem;
         }
         .pricing-features {
             list-style: none;
@@ -532,7 +542,7 @@
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
-        .lifetime-plan { display: none; }
+        .annual-plan { display: none; }
 
         /* * =================================
          * FAQ Section
@@ -897,7 +907,7 @@
         <section class="hero" id="home">
             <div class="hero-content">
                 <h1>COSTEPRO</h1>
-                <p>Calcula costes, crea escandallos y diseña menús con nuestra potente hoja de cálculo en Excel.</p>
+                <p>Calcula costes, crea escandallos y diseña menús con nuestro potente software.</p>
                 <button class="hero-button" id="hero-trial-btn">
                     <i class="fas fa-play-circle"></i>
                     Prueba Gratis por 3 Días
@@ -969,11 +979,11 @@
         <section id="pricing" class="section">
             <div class="container">
                 <h2 class="section-title animate-on-scroll fade-up">Elige tu Plan Perfecto</h2>
-                <p class="section-subtitle animate-on-scroll fade-up">Ofrecemos flexibilidad total. Elige una suscripción mensual o realiza un pago único para acceso vitalicio.</p>
+                <p class="section-subtitle animate-on-scroll fade-up">Ofrecemos flexibilidad total. Elige una suscripción mensual o anual y ahorra.</p>
                 
                 <div class="toggle-container animate-on-scroll fade-up">
-                    <button class="toggle-button active" data-plan-type="monthly">Pago Mensual</button>
-                    <button class="toggle-button" data-plan-type="lifetime">Pago Único</button>
+                    <button class="toggle-button active" data-plan-type="monthly">Suscripción Mensual</button>
+                    <button class="toggle-button" data-plan-type="annual">Suscripción Anual</button>
                 </div>
 
                 <div class="pricing-grid">
@@ -1005,11 +1015,12 @@
                         <a href="https://buy.stripe.com/eVq4gy5YOawN0gj9c9cjS01" target="_blank" class="pricing-button">Suscribirse</a>
                     </div>
 
-                    <!-- Lifetime Plans -->
-                    <div class="pricing-card lifetime-plan animate-on-scroll fade-right">
-                        <h3 class="pricing-title">CostePro Vitalicio</h3>
-                        <p class="pricing-description">Acceso para siempre a la solución esencial de control de costes.</p>
-                        <div class="pricing-price">98,99€ <span>/pago único</span></div>
+                    <!-- Annual Plans -->
+                    <div class="pricing-card annual-plan animate-on-scroll fade-right">
+                        <h3 class="pricing-title">CostePro Anual</h3>
+                        <p class="pricing-description">Un año completo de acceso a la solución esencial.</p>
+                        <div class="savings-badge">¡Ahorra un 17%!</div>
+                        <div class="pricing-price">89,99€ <span>/año</span></div>
                         <ul class="pricing-features">
                             <li><i class="fas fa-check-circle"></i>Escandallos automáticos</li>
                             <li><i class="fas fa-check-circle"></i>Creador de menús</li>
@@ -1017,20 +1028,23 @@
                             <li><i class="fas fa-check-circle"></i>Registros de cocina</li>
                             <li><i class="fas fa-check-circle"></i>Soporte por Email</li>
                         </ul>
-                        <a href="https://buy.stripe.com/28EaEWcncgVb3sv9c9cjS04" target="_blank" class="pricing-button">Comprar Ahora</a>
+                        <!-- ATENCIÓN: Reemplaza este enlace con el de tu producto anual de Stripe -->
+                        <a href="https://buy.stripe.com/28EaEWcncgVb3sv9c9cjS04" target="_blank" class="pricing-button">Suscribirse</a>
                     </div>
                     
-                    <div class="pricing-card featured lifetime-plan animate-on-scroll scale-in">
-                        <h3 class="pricing-title">CostePro Premium Vitalicio</h3>
-                        <p class="pricing-description">El paquete definitivo con acceso de por vida a todas las herramientas.</p>
-                        <div class="pricing-price">178,99€ <span>/pago único</span></div>
+                    <div class="pricing-card featured annual-plan animate-on-scroll scale-in">
+                        <h3 class="pricing-title">CostePro Premium Anual</h3>
+                        <p class="pricing-description">El paquete definitivo con un año de acceso a todas las herramientas.</p>
+                        <div class="savings-badge">¡Ahorra un 17%!</div>
+                        <div class="pricing-price">159,99€ <span>/año</span></div>
                         <ul class="pricing-features">
                             <li><i class="fas fa-check-circle"></i>Todo lo del plan CostePro</li>
                             <li><i class="fas fa-check-circle"></i><strong>Biblioteca de 600+ recetas</strong></li>
                             <li><i class="fas fa-check-circle"></i>Soporte prioritario por WhatsApp</li>
                             <li><i class="fas fa-check-circle"></i>Acceso a futuras actualizaciones</li>
                         </ul>
-                        <a href="https://buy.stripe.com/cNi14m4UK7kBe79dspcjS05" target="_blank" class="pricing-button">Comprar Ahora</a>
+                        <!-- ATENCIÓN: Reemplaza este enlace con el de tu producto anual de Stripe -->
+                        <a href="https://buy.stripe.com/cNi14m4UK7kBe79dspcjS05" target="_blank" class="pricing-button">Suscribirse</a>
                     </div>
                 </div>
             </div>
@@ -1045,16 +1059,16 @@
                 <div class="faq-accordion">
                     <div class="faq-item animate-on-scroll fade-up">
                         <button class="faq-question">
-                            <span>¿CostePro es un software o una plantilla de Excel?</span>
+                            <span>¿Qué es CostePro?</span>
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
-                            <p>CostePro es una plantilla de Excel avanzada, pero diseñada y pensada con la simplicidad y la experiencia visual de una aplicación. No requiere instalación, solo Microsoft Excel, ofreciendo una interfaz intuitiva y potente.</p>
+                            <p>CostePro es un software avanzado, diseñado con la simplicidad y la experiencia visual de una aplicación. No requiere instalación, solo Microsoft Excel, ofreciendo una interfaz intuitiva y potente.</p>
                         </div>
                     </div>
                     <div class="faq-item animate-on-scroll fade-up">
                         <button class="faq-question">
-                            <span>¿Necesito conocimientos avanzados de Excel para usarla?</span>
+                            <span>¿Necesito conocimientos avanzados de Excel para usarlo?</span>
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
@@ -1063,11 +1077,11 @@
                     </div>
                     <div class="faq-item animate-on-scroll fade-up">
                         <button class="faq-question">
-                            <span>¿Qué diferencia hay entre el pago mensual y el pago único?</span>
+                            <span>¿Qué diferencia hay entre la suscripción mensual y la anual?</span>
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
-                            <p>El pago mensual te da acceso a la plantilla y a todas las actualizaciones mientras tu suscripción esté activa. El pago único (Vitalicio) te da acceso para siempre a la versión actual de la plantilla y a todas las futuras actualizaciones sin coste adicional. ¡Es un solo pago para toda la vida!</p>
+                            <p>Ambas suscripciones te dan acceso completo al software y a todas las actualizaciones mientras tu suscripción esté activa. La suscripción anual te ofrece un descuento significativo en comparación con el pago mensual, dándote el mejor precio por un año completo de servicio.</p>
                         </div>
                     </div>
                     <div class="faq-item animate-on-scroll fade-up">
@@ -1076,7 +1090,7 @@
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
-                            <p>CostePro es totalmente compatible con todas las versiones de Excel para Windows, desde 2011 hasta la versión más reciente de Microsoft 365. En cuanto a Mac, debido a las limitaciones de su sistema operativo, muchas funciones avanzadas no son compatibles actualmente. Estamos explorando la posibilidad de ofrecer soporte completo para Mac en el futuro.</p>
+                            <p>CostePro es totalmente compatible con todas las versiones de Excel para Windows, desde 2011 hasta la versión más reciente de Microsoft 365. Actualmente para Mac no es compatible el software.</p>
                         </div>
                     </div>
                 </div>
@@ -1171,15 +1185,15 @@
             <h2 class="section-title">Términos de Servicio</h2>
             <div class="legal-content animate-on-scroll fade-up">
                 <h3>1. Aceptación de los Términos</h3>
-                <p>Al comprar o utilizar nuestra plantilla de CostePro ("Servicio"), aceptas cumplir con estos Términos de Servicio.</p>
+                <p>Al comprar o utilizar nuestro software CostePro ("Servicio"), aceptas cumplir con estos Términos de Servicio.</p>
                 <h3>2. Licencia de Uso</h3>
-                <p>Te otorgamos una licencia limitada, no exclusiva e intransferible para usar la plantilla de CostePro para fines comerciales internos. No puedes revender, redistribuir o compartir la plantilla.</p>
+                <p>Te otorgamos una licencia limitada, no exclusiva e intransferible para usar el software CostePro para fines comerciales internos. No puedes revender, redistribuir o compartir el software.</p>
                 <h3>3. Pagos y Suscripciones</h3>
                 <p>Los planes de suscripción se renuevan automáticamente a menos que se cancelen. Los pagos únicos otorgan una licencia vitalicia para la versión adquirida y sus futuras actualizaciones.</p>
                 <h3>4. Propiedad Intelectual</h3>
-                <p>La plantilla, su diseño y contenido son propiedad exclusiva de CostePro.</p>
+                <p>El software, su diseño y contenido son propiedad exclusiva de CostePro.</p>
                 <h3>5. Limitación de Responsabilidad</h3>
-                <p>CostePro se proporciona "tal cual". No somos responsables de ninguna pérdida de datos o daños comerciales derivados del uso de nuestra plantilla.</p>
+                <p>CostePro se proporciona "tal cual". No somos responsables de ninguna pérdida de datos o daños comerciales derivados del uso de nuestro software.</p>
             </div>
         </div>
     </section>
@@ -1364,12 +1378,12 @@
         // --- Pricing Toggle Logic ---
         const toggleButtons = document.querySelectorAll(".toggle-button");
         const monthlyPlans = document.querySelectorAll(".monthly-plan");
-        const lifetimePlans = document.querySelectorAll(".lifetime-plan");
+        const annualPlans = document.querySelectorAll(".annual-plan");
 
         const showPlans = (planType) => {
             const showMonthly = planType === 'monthly';
             monthlyPlans.forEach(card => card.style.display = showMonthly ? 'block' : 'none');
-            lifetimePlans.forEach(card => card.style.display = !showMonthly ? 'block' : 'none');
+            annualPlans.forEach(card => card.style.display = !showMonthly ? 'block' : 'none');
         };
 
         toggleButtons.forEach(button => {
@@ -1533,4 +1547,3 @@
     </script>
 </body>
 </html>
-
