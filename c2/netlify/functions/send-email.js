@@ -4,12 +4,6 @@ const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
 const crypto = require('crypto');
 
-/**
- * Escribe una nueva fila en la hoja de cálculo de Google Sheets.
- * @param {string} email - El correo electrónico del usuario.
- * @param {string} token - El token de descarga único.
- * @param {string} fingerprint - El fingerprint del dispositivo.
- */
 async function appendToSheet(email, token, fingerprint) {
   try {
     const rawKey = process.env.GOOGLE_PRIVATE_KEY;
@@ -36,12 +30,9 @@ async function appendToSheet(email, token, fingerprint) {
 
     const timestampISO = new Date().toISOString();
     
-    // --- CORRECCIÓN CLAVE ---
-    // Nos aseguramos de que los nombres de las claves aquí coincidan EXACTAMENTE
-    // con las cabeceras de tu archivo de Google Sheets.
     await sheet.addRow({ 
       'Email': email, 
-      'Fecha de Solicitud': timestampISO, // Esta cabecera debe existir en tu hoja.
+      'Fecha de Solicitud': timestampISO,
       'Fingerprint': fingerprint,
       'TokenUnico': token, 
     });
@@ -54,7 +45,6 @@ async function appendToSheet(email, token, fingerprint) {
   }
 }
 
-// --- Handler principal de la función de Netlify ---
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -63,7 +53,9 @@ exports.handler = async (event) => {
   try {
     const data = JSON.parse(event.body);
     
-    const transporter = nodemailer.createTransporter({
+    // --- CORRECCIÓN CLAVE ---
+    // El nombre correcto de la función es createTransport (sin la 'er' al final).
+    const transporter = nodemailer.createTransport({
       host: 'smtp.hostinger.com',
       port: 465,
       secure: true,
