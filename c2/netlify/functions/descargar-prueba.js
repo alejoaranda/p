@@ -1,16 +1,11 @@
 // /functions/descargar-prueba.js
-// Este es el "portero" que valida el token y la fecha de caducidad.
-
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
 
-// URL de descarga directa de tu archivo en Google Drive.
-// He modificado tu enlace para forzar la descarga en lugar de la vista previa.
 const GOOGLE_DRIVE_DIRECT_DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id=1pwhZu0_7JvXkxvlVK9Rk1Kmj2WcNfMjk";
-const EXPIRATION_HOURS = 12; // Horas de validez del enlace.
+const EXPIRATION_HOURS = 12;
 
-exports.handler = async (event ) => {
-  // Obtiene el token de la URL (ej: ?token=XXXX).
+exports.handler = async (event) => {
   const token = event.queryStringParameters.token;
 
   if (!token) {
@@ -18,26 +13,40 @@ exports.handler = async (event ) => {
   }
 
   try {
-    // 1. Conectar con Google Sheets.
+    const rawKey = process.env.GOOGLE_PRIVATE_KEY;
+    if (!rawKey || !rawKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
+      console.error('Error Crítico: La variable de entorno GOOGLE_PRIVATE_KEY no está configurada correctamente.');
+      throw new Error('La clave privada de Google no está configurada.');
+    }
+    const privateKey = rawKey.replace(/\\n/g, '\n');
+
     const serviceAccountAuth = new JWT({
       email: process.env.GOOGLE_CLIENT_EMAIL,
-      key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      key: privateKey,
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    } );
+    });
+
     const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAuth);
     await doc.loadInfo();
-    const sheet = doc.sheetsByIndex[0];
+    
+    const sheet = doc.sheetsByTitle['Prueba']; 
+    if (!sheet) {
+        throw new Error('No se encontró la hoja "Prueba"');
+    }
+    
     const rows = await sheet.getRows();
 
-    // 2. Buscar la fila que coincide con el token.
+    // Buscamos la fila que coincide con el token.
     const targetRow = rows.find(row => row.get('TokenUnico') === token);
 
     if (!targetRow) {
-      return { statusCode: 404, body: "Error: Enlace de descarga no válido o caducado." };
+      return { statusCode: 404, body: "Error: Enlace de descarga no válido o ya utilizado." };
     }
 
-    // 3. Verificar si el enlace ha caducado.
-    const requestDate = new Date(targetRow.get('FechaDeSolicitud'));
+    // --- CORRECCIÓN CLAVE ---
+    // Leemos la fecha desde la columna 'Fecha de Solicitud' para que coincida
+    // con lo que escribe la otra función.
+    const requestDate = new Date(targetRow.get('Fecha de Solicitud'));
     const expirationDate = new Date(requestDate.getTime() + EXPIRATION_HOURS * 60 * 60 * 1000);
     const now = new Date();
 
@@ -48,9 +57,9 @@ exports.handler = async (event ) => {
       };
     }
 
-    // 4. ¡Éxito! Redirigir al usuario a la descarga real.
+    // ¡Éxito! Redirigir al usuario a la descarga.
     return {
-      statusCode: 302, // Código de redirección.
+      statusCode: 302,
       headers: {
         'Location': GOOGLE_DRIVE_DIRECT_DOWNLOAD_URL
       }
@@ -58,6 +67,6 @@ exports.handler = async (event ) => {
 
   } catch (error) {
     console.error("Error en la función de descarga:", error);
-    return { statusCode: 500, body: "Ha ocurrido un error en el servidor." };
+    return { statusCode: 500, body: "Ha ocurrido un error en el servidor al validar el enlace." };
   }
 };
