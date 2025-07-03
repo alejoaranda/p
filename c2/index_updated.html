@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CostePro - Gestión Profesional de Cocina y Escandallos</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* * =================================
+         * CSS Variables & Base Styles
+         * =================================
+         */
+        :root {
+            --primary: #264653;
+            --primary-light: #2a9d8f;
+            --primary-dark: #213c47;
+            --secondary: #e9c46a;
+            --accent: #f4a261;
+            --danger: #e76f51;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition-fast: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background-color: var(--gray-50);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* * =================================
+         * Header & Navigation
+         * =================================
+         */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-fast);
+            transform: translateY(0);
+        }
+
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow-md);
+        }
+
+        .header.hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover { transform: scale(1.05); }
+
+        .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-fast);
+        }
+        .logo:hover .logo-icon {
+            box-shadow: var(--shadow-md);
+            transform: rotate(5deg);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--gray-600);
+            font-weight: 500;
+            transition: var(--transition-fast);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        .nav-link:hover {
+            color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-light), var(--secondary));
+            transition: var(--transition-fast);
+            transform: translateX(-50%);
+        }
+        .nav-link:hover::after { width: 100%; }
+        
+        .cta-button {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--shadow-md);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            z-index: 1001; /* Ensure it's above the menu */
+        }
+        .mobile-menu-toggle:hover { transform: scale(1.1); }
+
+        /* * =================================
+         * Hero Section
+         * =================================
+         */
+        .hero {
+            padding-top: 120px;
+            padding-bottom: 80px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background-color: var(--primary-dark);
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary), var(--primary-light), var(--accent));
+            background-size: 400% 400%;
+            animation: liquid-gradient 18s ease infinite;
+            z-index: 1;
+        }
+        
+        @keyframes liquid-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: heroContentFloat 6s ease-in-out infinite;
+        }
+        @keyframes heroContentFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+            background: linear-gradient(45deg, #fff, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        .hero-button {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: var(--primary-dark);
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: var(--transition-slow);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+        }
+        .hero-button:hover {
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 0 16px 48px rgba(233, 196, 106, 0.6);
+        }
+
+        /* * =================================
+         * General Section Styles
+         * =================================
+         */
+        .section {
+            padding: 5rem 0;
+            position: relative;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-light), var(--secondary));
+            border-radius: 2px;
+        }
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        /* * =================================
+         * Features Section
+         * =================================
+         */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-slow);
+            border: 1px solid var(--gray-200);
+        }
+        .feature-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+        .feature-icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+        }
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: var(--shadow-md);
+        }
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .feature-description {
+            color: var(--gray-600);
+        }
+
+        /* * =================================
+         * Trial Section
+         * =================================
+         */
+        #trial {
+            background-color: var(--white);
+        }
+        .trial-content {
+            text-align: center;
+        }
+        #request-trial-btn {
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            color: var(--primary-dark);
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            box-shadow: var(--shadow-md);
+        }
+        #request-trial-btn:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* * =================================
+         * Pricing Section
+         * =================================
+         */
+        #pricing { background-color: var(--gray-50); }
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            background-color: var(--gray-200);
+            border-radius: 0.75rem;
+            padding: 0.5rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .toggle-button {
+            background-color: transparent;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            color: var(--gray-600);
+            font-size: 1rem;
+        }
+        .toggle-button.active {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+        .pricing-card {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-slow);
+            position: relative;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        .pricing-card.featured {
+            background: var(--primary-dark);
+            color: white;
+            border-color: var(--secondary);
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        .pricing-card.featured:hover {
+            transform: scale(1.08) translateY(-10px);
+        }
+        .pricing-card.featured::after {
+            content: 'Más Popular';
+            position: absolute;
+            top: -1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: var(--primary-dark);
+            padding: 0.25rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-sm);
+        }
+        .pricing-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        .pricing-card.featured .pricing-title { color: white; }
+        .pricing-description {
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            min-height: 40px;
+        }
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 500;
+            opacity: 0.7;
+        }
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        .pricing-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .pricing-features li i {
+            color: var(--primary-light);
+            font-size: 1.1rem;
+        }
+        .pricing-card.featured .pricing-features li i { color: var(--secondary); }
+        .pricing-button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            transition: var(--transition-fast);
+            cursor: pointer;
+        }
+        .pricing-card:not(.featured) .pricing-button {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        .pricing-card:not(.featured) .pricing-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .pricing-card.featured .pricing-button {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: var(--primary-dark);
+            box-shadow: var(--shadow-sm);
+        }
+        .pricing-card.featured .pricing-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .lifetime-plan { display: none; }
+
+        /* * =================================
+         * FAQ Section
+         * =================================
+         */
+        #faq {
+            background: var(--white);
+        }
+        .faq-accordion {
+            max-width: 800px;
+            margin: 3rem auto 0;
+            border-top: 1px solid var(--gray-200);
+        }
+        .faq-item {
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            padding: 1.5rem 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+        .faq-question:hover {
+            background-color: var(--gray-50);
+        }
+        .faq-question i {
+            transition: transform 0.3s ease;
+            color: var(--primary-light);
+        }
+        .faq-question.active i {
+            transform: rotate(45deg);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out, padding 0.3s ease;
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+        .faq-answer p {
+            padding: 0 1rem 1.5rem;
+        }
+
+        /* * =================================
+         * Contact & Footer
+         * =================================
+         */
+        .contact {
+            background: var(--primary-dark);
+            color: white;
+        }
+        .contact .section-title, .contact .section-subtitle { color: white; }
+        .contact .section-subtitle { opacity: 0.8; }
+        
+        .contact-form {
+            max-width: 700px;
+            margin: 3rem auto 0;
+            display: grid;
+            gap: 1.5rem;
+        }
+        .form-group {
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-200);
+        }
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--gray-600);
+            border-radius: 0.5rem;
+            color: var(--white);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: var(--gray-400);
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(233, 196, 106, 0.3);
+        }
+        .contact-form button {
+            justify-self: center; /* Center the button */
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: var(--primary-dark);
+        }
+        .form-status {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-weight: 500;
+            height: 24px; /* Reserve space to prevent layout shift */
+        }
+
+        .footer {
+            background: var(--primary-dark);
+            color: var(--gray-200);
+            padding: 4rem 0 2rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .footer-section h4 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .footer-section h4::after {
+            content: '';
+            position: absolute;
+            bottom: -0.25rem;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--secondary);
+        }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 0.5rem; }
+        .footer-links a {
+            color: var(--gray-200);
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-600);
+            font-size: 0.875rem;
+        }
+        
+        /* * =================================
+         * Legal Section
+         * =================================
+         */
+        .legal-content {
+            max-width: 800px;
+            margin: 2rem auto 0;
+        }
+        .legal-content h3 {
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+        .legal-content p {
+            margin-bottom: 1rem;
+            color: var(--gray-600);
+        }
+
+
+        /* * =================================
+         * Modal Styles
+         * =================================
+         */
+        .modal {
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: var(--white);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal.is-visible .modal-content {
+            transform: scale(1);
+        }
+        .close-button {
+            color: var(--gray-600);
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .close-button:hover { color: var(--primary-dark); }
+        .modal h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .modal p {
+            font-size: 1rem;
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+        }
+        .modal-form input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+        .modal-form input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2);
+        }
+        .modal-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition-fast);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .modal-message {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--primary-light);
+            font-weight: 500;
+            height: 20px;
+        }
+
+
+        /* * =================================
+         * Animations & Utility
+         * =================================
+         */
+        .animate-on-scroll {
+            opacity: 0;
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-up { transform: translateY(30px); }
+        .fade-left { transform: translateX(-30px); }
+        .fade-right { transform: translateX(30px); }
+        .scale-in { transform: scale(0.9); }
+
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translate(0, 0) scale(1);
+        }
+
+        /* * =================================
+         * Responsive Design
+         * =================================
+         */
+        @media (max-width: 768px) {
+            .section { padding: 3rem 0; }
+            .section-title { font-size: 2rem; }
+            .nav-menu {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                right: -100%; /* Start off-screen */
+                width: 100%;
+                height: 100vh;
+                background: var(--primary-dark);
+                padding-top: 5rem;
+                text-align: center;
+                transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            }
+            .nav-menu.active { right: 0; }
+            .nav-link {
+                color: white;
+                font-size: 1.5rem;
+                padding: 1rem;
+                display: block;
+            }
+            .nav .cta-button { display: none; } /* Specific rule to hide only header button */
+            .mobile-menu-toggle { display: block; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .pricing-card.featured { transform: none; }
+            .modal-content { padding: 2rem 1.5rem; }
+            .modal h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo">
+                    <div class="logo-icon">C</div>
+                    <span>CostePro</span>
+                </a>
+                
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#features" class="nav-link">Características</a></li>
+                    <li><a href="#trial" class="nav-link">Prueba Gratis</a></li>
+                    <li><a href="#pricing" class="nav-link">Precios</a></li>
+                    <li><a href="#faq" class="nav-link">FAQ</a></li>
+                    <li><a href="#contact" class="nav-link">Contacto</a></li>
+                </ul>
+                
+                <a href="#pricing" class="cta-button">Obtener Plan</a>
+                
+                <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Abrir menú">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1>COSTEPRO</h1>
+                <p>Calcula costes, crea escandallos y diseña menús con nuestra potente hoja de cálculo en Excel.</p>
+                <button class="hero-button" id="hero-trial-btn">
+                    <i class="fas fa-play-circle"></i>
+                    Prueba Gratis por 3 Días
+                </button>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll fade-up">Todo lo que necesitas en un solo lugar</h2>
+                <p class="section-subtitle animate-on-scroll fade-up">CostePro centraliza las operaciones clave de tu cocina para maximizar la eficiencia y rentabilidad.</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card animate-on-scroll fade-up">
+                        <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                        <h3 class="feature-title">Escandallos Automáticos</h3>
+                        <p class="feature-description">Creación inteligente de escandallos con cálculos automáticos de costes por plato y margen de beneficio.</p>
+                    </div>
+                    
+                    <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 100ms;">
+                        <div class="feature-icon"><i class="fas fa-utensils"></i></div>
+                        <h3 class="feature-title">Creador de Menús</h3>
+                        <p class="feature-description">Diseña menús completos con cálculo automático de costes totales y análisis de rentabilidad.</p>
+                    </div>
+                    
+                    <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 200ms;">
+                        <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+                        <h3 class="feature-title">Libro de Recetas</h3>
+                        <p class="feature-description">Organiza todas tus recetas con ingredientes, cantidades y procedimientos de forma profesional.</p>
+                    </div>
+                    
+                    <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 300ms;">
+                        <div class="feature-icon"><i class="fas fa-thermometer-half"></i></div>
+                        <h3 class="feature-title">Registros de Cocina</h3>
+                        <p class="feature-description">Optimiza la seguridad alimentaria con registros APPCC simplificados. Gestiona temperaturas, limpieza, mantenimiento de freidoras y más.</p>
+                    </div>
+                    
+                    <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 400ms;">
+                        <div class="feature-icon"><i class="fas fa-envelope"></i></div>
+                        <h3 class="feature-title">Soporte por Email</h3>
+                        <p class="feature-description">Recibe ayuda y resuelve tus dudas a través de nuestro soporte por correo electrónico, incluido en el plan estándar.</p>
+                    </div>
+                    
+                    <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 500ms;">
+                        <div class="feature-icon"><i class="fab fa-whatsapp"></i></div>
+                        <h3 class="feature-title">Soporte Premium</h3>
+                        <p class="feature-description">Obtén asistencia prioritaria y directa a través de WhatsApp con nuestro plan Premium para una resolución más rápida.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Trial Section -->
+        <section id="trial" class="section">
+            <div class="container">
+                <div class="trial-content">
+                    <h2 class="section-title animate-on-scroll fade-up">Pruébalo sin Compromiso</h2>
+                    <p class="section-subtitle animate-on-scroll fade-up">Descubre todo el potencial de CostePro con una prueba gratuita de 3 días. No se requiere tarjeta de crédito.</p>
+                    <button id="request-trial-btn" class="cta-button animate-on-scroll scale-in">
+                        <i class="fas fa-download"></i>
+                        Solicitar Prueba Gratuita
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll fade-up">Elige tu Plan Perfecto</h2>
+                <p class="section-subtitle animate-on-scroll fade-up">Ofrecemos flexibilidad total. Elige una suscripción mensual o realiza un pago único para acceso vitalicio.</p>
+                
+                <div class="toggle-container animate-on-scroll fade-up">
+                    <button class="toggle-button active" data-plan-type="monthly">Pago Mensual</button>
+                    <button class="toggle-button" data-plan-type="lifetime">Pago Único</button>
+                </div>
+
+                <div class="pricing-grid">
+                    <!-- Monthly Plans -->
+                    <div class="pricing-card monthly-plan animate-on-scroll fade-right">
+                        <h3 class="pricing-title">CostePro</h3>
+                        <p class="pricing-description">La solución esencial para un control total de tus costes.</p>
+                        <div class="pricing-price">8,99€ <span>/mes</span></div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check-circle"></i>Escandallos automáticos</li>
+                            <li><i class="fas fa-check-circle"></i>Creador de menús</li>
+                            <li><i class="fas fa-check-circle"></i>Libro de recetas</li>
+                            <li><i class="fas fa-check-circle"></i>Registros de cocina</li>
+                            <li><i class="fas fa-check-circle"></i>Soporte por Email</li>
+                        </ul>
+                        <a href="https://buy.stripe.com/14AaEW72SdIZ1kn0FDcjS00" target="_blank" class="pricing-button">Suscribirse</a>
+                    </div>
+                    
+                    <div class="pricing-card featured monthly-plan animate-on-scroll scale-in">
+                        <h3 class="pricing-title">CostePro Premium</h3>
+                        <p class="pricing-description">Todo lo de CostePro, más herramientas para llevar tu negocio al siguiente nivel.</p>
+                        <div class="pricing-price">15,99€ <span>/mes</span></div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check-circle"></i>Todo lo del plan CostePro</li>
+                            <li><i class="fas fa-check-circle"></i><strong>Biblioteca de 600+ recetas</strong></li>
+                            <li><i class="fas fa-check-circle"></i>Soporte prioritario por WhatsApp</li>
+                            <li><i class="fas fa-check-circle"></i>Acceso a futuras actualizaciones</li>
+                        </ul>
+                        <a href="https://buy.stripe.com/eVq4gy5YOawN0gj9c9cjS01" target="_blank" class="pricing-button">Suscribirse</a>
+                    </div>
+
+                    <!-- Lifetime Plans -->
+                    <div class="pricing-card lifetime-plan animate-on-scroll fade-right">
+                        <h3 class="pricing-title">CostePro Vitalicio</h3>
+                        <p class="pricing-description">Acceso para siempre a la solución esencial de control de costes.</p>
+                        <div class="pricing-price">98,99€ <span>/pago único</span></div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check-circle"></i>Escandallos automáticos</li>
+                            <li><i class="fas fa-check-circle"></i>Creador de menús</li>
+                            <li><i class="fas fa-check-circle"></i>Libro de recetas</li>
+                            <li><i class="fas fa-check-circle"></i>Registros de cocina</li>
+                            <li><i class="fas fa-check-circle"></i>Soporte por Email</li>
+                        </ul>
+                        <a href="https://buy.stripe.com/28EaEWcncgVb3sv9c9cjS04" target="_blank" class="pricing-button">Comprar Ahora</a>
+                    </div>
+                    
+                    <div class="pricing-card featured lifetime-plan animate-on-scroll scale-in">
+                        <h3 class="pricing-title">CostePro Premium Vitalicio</h3>
+                        <p class="pricing-description">El paquete definitivo con acceso de por vida a todas las herramientas.</p>
+                        <div class="pricing-price">178,99€ <span>/pago único</span></div>
+                        <ul class="pricing-features">
+                            <li><i class="fas fa-check-circle"></i>Todo lo del plan CostePro</li>
+                            <li><i class="fas fa-check-circle"></i><strong>Biblioteca de 600+ recetas</strong></li>
+                            <li><i class="fas fa-check-circle"></i>Soporte prioritario por WhatsApp</li>
+                            <li><i class="fas fa-check-circle"></i>Acceso a futuras actualizaciones</li>
+                        </ul>
+                        <a href="https://buy.stripe.com/cNi14m4UK7kBe79dspcjS05" target="_blank" class="pricing-button">Comprar Ahora</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- FAQ Section -->
+        <section id="faq" class="section">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll fade-up">Preguntas Frecuentes</h2>
+                <p class="section-subtitle animate-on-scroll fade-up">¿Tienes dudas? Aquí respondemos a las preguntas más comunes sobre CostePro.</p>
+                
+                <div class="faq-accordion">
+                    <div class="faq-item animate-on-scroll fade-up">
+                        <button class="faq-question">
+                            <span>¿CostePro es un software o una plantilla de Excel?</span>
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>CostePro es una plantilla de Excel avanzada, pero diseñada y pensada con la simplicidad y la experiencia visual de una aplicación. No requiere instalación, solo Microsoft Excel, ofreciendo una interfaz intuitiva y potente.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item animate-on-scroll fade-up">
+                        <button class="faq-question">
+                            <span>¿Necesito conocimientos avanzados de Excel para usarla?</span>
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>¡Para nada! Hemos diseñado CostePro para que sea muy fácil de usar, incluso si no eres un experto en Excel. La navegación es clara y la mayoría de los cálculos complejos se realizan automáticamente. Además, ofrecemos soporte por WhatsApp para ayudarte con cualquier duda.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item animate-on-scroll fade-up">
+                        <button class="faq-question">
+                            <span>¿Qué diferencia hay entre el pago mensual y el pago único?</span>
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>El pago mensual te da acceso a la plantilla y a todas las actualizaciones mientras tu suscripción esté activa. El pago único (Vitalicio) te da acceso para siempre a la versión actual de la plantilla y a todas las futuras actualizaciones sin coste adicional. ¡Es un solo pago para toda la vida!</p>
+                        </div>
+                    </div>
+                    <div class="faq-item animate-on-scroll fade-up">
+                        <button class="faq-question">
+                            <span>¿En qué sistema operativo puedo usar CostePro?</span>
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <div class="faq-answer">
+                            <p>CostePro es totalmente compatible con todas las versiones de Excel para Windows, desde 2011 hasta la versión más reciente de Microsoft 365. En cuanto a Mac, debido a las limitaciones de su sistema operativo, muchas funciones avanzadas no son compatibles actualmente. Estamos explorando la posibilidad de ofrecer soporte completo para Mac en el futuro.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section contact">
+            <div class="container">
+                <h2 class="section-title animate-on-scroll fade-up" style="color:white;">Contacta con Nosotros</h2>
+                <p class="section-subtitle animate-on-scroll fade-up" style="color:var(--gray-200);">¿Tienes alguna pregunta o sugerencia? Rellena el formulario y te responderemos lo antes posible.</p>
+                
+                <form id="contact-form" class="contact-form animate-on-scroll fade-up">
+                    <div class="form-group">
+                        <label for="contact-name">Nombre</label>
+                        <input type="text" id="contact-name" name="name" placeholder="Tu nombre completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Correo Electrónico</label>
+                        <input type="email" id="contact-email" name="email" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-message">Mensaje</label>
+                        <textarea id="contact-message" name="message" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                    </div>
+                    <button type="submit" class="cta-button">
+                        <i class="fas fa-paper-plane"></i> Enviar Mensaje
+                    </button>
+                </form>
+                <p id="form-status" class="form-status"></p>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <a href="#" class="logo" style="color: white; margin-bottom: 1rem;">
+                        <div class="logo-icon">C</div>
+                        <span>CostePro</span>
+                    </a>
+                    <p>&copy; 2025 CostePro. Todos los derechos reservados.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Enlaces</h4>
+                    <ul class="footer-links">
+                        <li><a href="#features">Características</a></li>
+                        <li><a href="#pricing">Precios</a></li>
+                        <li><a href="#contact">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                     <ul class="footer-links">
+                        <li><a href="#privacy">Política de Privacidad</a></li>
+                        <li><a href="#terms">Términos de Servicio</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>Pagos 100% seguros gestionados por Stripe.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Legal Sections -->
+    <section id="privacy" class="section">
+        <div class="container">
+            <h2 class="section-title">Política de Privacidad</h2>
+            <div class="legal-content animate-on-scroll fade-up">
+                <h3>1. Introducción</h3>
+                <p>Bienvenido a CostePro. Nos comprometemos a proteger tu privacidad. Esta política explica qué información recopilamos, cómo la usamos y qué derechos tienes sobre ella.</p>
+                <h3>2. Información que Recopilamos</h3>
+                <p>Recopilamos la información que nos proporcionas directamente, como tu nombre y correo electrónico al solicitar una prueba o contactarnos. También recopilamos datos de pago a través de nuestro procesador de pagos, Stripe, pero no almacenamos los detalles de tu tarjeta.</p>
+                <h3>3. Cómo Usamos tu Información</h3>
+                <p>Usamos tu información para proporcionarte nuestros servicios, procesar tus pagos, comunicarnos contigo y mejorar nuestra plataforma.</p>
+                <h3>4. Seguridad de los Datos</h3>
+                <p>Implementamos medidas de seguridad para proteger tu información contra el acceso no autorizado. Sin embargo, ningún sistema es 100% seguro.</p>
+                <h3>5. Tus Derechos</h3>
+                <p>Tienes derecho a acceder, corregir o eliminar tu información personal. Contáctanos si deseas ejercer estos derechos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="terms" class="section bg-gray-50">
+        <div class="container">
+            <h2 class="section-title">Términos de Servicio</h2>
+            <div class="legal-content animate-on-scroll fade-up">
+                <h3>1. Aceptación de los Términos</h3>
+                <p>Al comprar o utilizar nuestra plantilla de CostePro ("Servicio"), aceptas cumplir con estos Términos de Servicio.</p>
+                <h3>2. Licencia de Uso</h3>
+                <p>Te otorgamos una licencia limitada, no exclusiva e intransferible para usar la plantilla de CostePro para fines comerciales internos. No puedes revender, redistribuir o compartir la plantilla.</p>
+                <h3>3. Pagos y Suscripciones</h3>
+                <p>Los planes de suscripción se renuevan automáticamente a menos que se cancelen. Los pagos únicos otorgan una licencia vitalicia para la versión adquirida y sus futuras actualizaciones.</p>
+                <h3>4. Propiedad Intelectual</h3>
+                <p>La plantilla, su diseño y contenido son propiedad exclusiva de CostePro.</p>
+                <h3>5. Limitación de Responsabilidad</h3>
+                <p>CostePro se proporciona "tal cual". No somos responsables de ninguna pérdida de datos o daños comerciales derivados del uso de nuestra plantilla.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Trial Modal -->
+    <div id="trial-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-modal-btn">&times;</span>
+            <h2>Solicita tu Prueba Gratuita</h2>
+            <p>Introduce tu email y te enviaremos el enlace de descarga de la versión de prueba de 3 días de CostePro.</p>
+            <form id="trial-form" class="modal-form">
+                <input type="email" id="trial-email" placeholder="Tu correo electrónico" required>
+                <button type="submit" class="modal-button">Enviar Enlace</button>
+            </form>
+            <p class="modal-message" id="modal-message"></p>
+        </div>
+    </div>
+
+    <!-- Device Fingerprint Script -->
+    <script>
+        // Función para generar un fingerprint único del dispositivo
+        function generateDeviceFingerprint() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('Device fingerprint', 2, 2);
+            
+            const fingerprint = {
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                platform: navigator.platform,
+                cookieEnabled: navigator.cookieEnabled,
+                doNotTrack: navigator.doNotTrack,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                screen: `${screen.width}x${screen.height}x${screen.colorDepth}`,
+                canvas: canvas.toDataURL(),
+                webgl: getWebGLFingerprint(),
+                plugins: getPluginsFingerprint(),
+                fonts: getFontsFingerprint()
+            };
+            
+            // Crear un hash simple del fingerprint
+            const fingerprintString = JSON.stringify(fingerprint);
+            return hashCode(fingerprintString).toString();
+        }
+
+        function getWebGLFingerprint() {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (!gl) return 'no-webgl';
+                
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                return debugInfo ? 
+                    gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + '~' + 
+                    gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 
+                    'no-debug-info';
+            } catch (e) {
+                return 'webgl-error';
+            }
+        }
+
+        function getPluginsFingerprint() {
+            try {
+                return Array.from(navigator.plugins)
+                    .map(plugin => plugin.name)
+                    .sort()
+                    .join(',');
+            } catch (e) {
+                return 'plugins-error';
+            }
+        }
+
+        function getFontsFingerprint() {
+            const testFonts = [
+                'Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana',
+                'Georgia', 'Palatino', 'Garamond', 'Bookman', 'Comic Sans MS',
+                'Trebuchet MS', 'Arial Black', 'Impact'
+            ];
+            
+            const availableFonts = [];
+            const testString = 'mmmmmmmmmmlli';
+            const testSize = '72px';
+            const h = document.getElementsByTagName('body')[0];
+            
+            // Crear elemento de prueba
+            const s = document.createElement('span');
+            s.style.fontSize = testSize;
+            s.style.position = 'absolute';
+            s.style.left = '-9999px';
+            s.innerHTML = testString;
+            
+            const defaultWidth = {};
+            const defaultHeight = {};
+            
+            // Obtener dimensiones por defecto
+            for (const font of ['monospace', 'sans-serif', 'serif']) {
+                s.style.fontFamily = font;
+                h.appendChild(s);
+                defaultWidth[font] = s.offsetWidth;
+                defaultHeight[font] = s.offsetHeight;
+                h.removeChild(s);
+            }
+            
+            // Probar cada fuente
+            for (const font of testFonts) {
+                let detected = false;
+                for (const baseFont of ['monospace', 'sans-serif', 'serif']) {
+                    s.style.fontFamily = font + ',' + baseFont;
+                    h.appendChild(s);
+                    const matched = (s.offsetWidth !== defaultWidth[baseFont] || 
+                                   s.offsetHeight !== defaultHeight[baseFont]);
+                    h.removeChild(s);
+                    detected = detected || matched;
+                }
+                if (detected) {
+                    availableFonts.push(font);
+                }
+            }
+            
+            return availableFonts.join(',');
+        }
+
+        function hashCode(str) {
+            let hash = 0;
+            if (str.length === 0) return hash;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convertir a 32bit integer
+            }
+            return Math.abs(hash);
+        }
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // --- Header Scroll Logic ---
+        const header = document.getElementById('header');
+        let lastScrollTop = 0;
+        
+        const handleHeaderScroll = () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            if (scrollTop > lastScrollTop && scrollTop > 200) {
+                header.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        };
+
+        // --- Mobile Menu Logic ---
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const toggleMenu = () => {
+            navMenu.classList.toggle('active');
+            const icon = mobileToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+            mobileToggle.setAttribute('aria-label', navMenu.classList.contains('active') ? 'Cerrar menú' : 'Abrir menú');
+        };
+
+        mobileToggle.addEventListener('click', toggleMenu);
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (navMenu.classList.contains('active')) {
+                    toggleMenu();
+                }
+            });
+        });
+
+        // --- Pricing Toggle Logic ---
+        const toggleButtons = document.querySelectorAll(".toggle-button");
+        const monthlyPlans = document.querySelectorAll(".monthly-plan");
+        const lifetimePlans = document.querySelectorAll(".lifetime-plan");
+
+        const showPlans = (planType) => {
+            const showMonthly = planType === 'monthly';
+            monthlyPlans.forEach(card => card.style.display = showMonthly ? 'block' : 'none');
+            lifetimePlans.forEach(card => card.style.display = !showMonthly ? 'block' : 'none');
+        };
+
+        toggleButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                toggleButtons.forEach(btn => btn.classList.remove("active"));
+                this.classList.add("active");
+                showPlans(this.dataset.planType);
+            });
+        });
+        
+        // Initialize with monthly plans
+        showPlans('monthly');
+
+        // --- Trial Modal Logic ---
+        const trialModal = document.getElementById("trial-modal");
+        const heroTrialBtn = document.getElementById("hero-trial-btn");
+        const requestTrialBtn = document.getElementById("request-trial-btn");
+        const closeModalBtn = document.getElementById("close-modal-btn");
+        
+        const openModal = () => trialModal.classList.add("is-visible");
+        const closeModal = () => {
+            trialModal.classList.remove("is-visible");
+            setTimeout(() => {
+                const modalMessage = document.getElementById("modal-message");
+                modalMessage.textContent = "";
+                modalMessage.style.color = 'var(--primary-light)'; // Reset color
+                document.getElementById("trial-form").reset();
+                document.querySelector("#trial-form button").disabled = false;
+            }, 300);
+        };
+
+        heroTrialBtn.addEventListener("click", openModal);
+        requestTrialBtn.addEventListener("click", openModal);
+        closeModalBtn.addEventListener("click", closeModal);
+        
+        trialModal.addEventListener("click", (event) => {
+            if (event.target === trialModal) closeModal();
+        });
+        
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && trialModal.classList.contains('is-visible')) closeModal();
+        });
+        
+        // --- FAQ Accordion Logic ---
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const icon = question.querySelector('i');
+
+                question.classList.toggle('active');
+                icon.classList.toggle('fa-plus');
+                icon.classList.toggle('fa-minus');
+
+                if (question.classList.contains('active')) {
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                } else {
+                    answer.style.maxHeight = '0';
+                }
+            });
+        });
+        
+        // --- Unified Form Submission Logic ---
+        const handleFormSubmit = async (payload, formElement, messageElement) => {
+            const submitButton = formElement.querySelector('button[type="submit"]');
+            
+            messageElement.textContent = "Enviando...";
+            messageElement.style.color = 'var(--gray-600)';
+            submitButton.disabled = true;
+
+            try {
+                const response = await fetch('/.netlify/functions/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                messageElement.textContent = result.message;
+                messageElement.style.color = 'var(--primary-light)';
+                
+                if (formElement.id === 'trial-form') {
+                    setTimeout(closeModal, 3000);
+                } else {
+                    formElement.reset();
+                     setTimeout(() => {
+                        messageElement.textContent = '';
+                        submitButton.disabled = false;
+                    }, 5000);
+                }
+
+            } catch (error) {
+                console.error('Error sending email:', error);
+                messageElement.textContent = "Error al enviar. Inténtalo de nuevo.";
+                messageElement.style.color = 'var(--danger)';
+                submitButton.disabled = false;
+            }
+        };
+
+        // --- Trial Form Event Listener ---
+        const trialForm = document.getElementById("trial-form");
+        trialForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            const userEmail = document.getElementById("trial-email").value;
+            const deviceFingerprint = generateDeviceFingerprint();
+            
+            const payload = {
+                formType: 'trial',
+                email: userEmail,
+                fingerprint: deviceFingerprint
+            };
+            handleFormSubmit(payload, this, document.getElementById("modal-message"));
+        });
+        
+        // --- Contact Form Event Listener ---
+        const contactForm = document.getElementById('contact-form');
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const payload = {
+                formType: 'contact',
+                name: document.getElementById('contact-name').value,
+                email: document.getElementById('contact-email').value,
+                message: document.getElementById('contact-message').value
+            };
+            handleFormSubmit(payload, this, document.getElementById('form-status'));
+        });
+
+
+        // --- Animate on Scroll Logic (Intersection Observer) ---
+        const animatedElements = document.querySelectorAll('.animate-on-scroll');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        animatedElements.forEach(el => observer.observe(el));
+
+        // --- Optimized Scroll Listener ---
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    handleHeaderScroll();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+    });
+    </script>
+</body>
+</html>
+
