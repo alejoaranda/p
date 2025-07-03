@@ -65,7 +65,7 @@ exports.handler = async (event) => {
     }
 
     // Configuración del transportador de Nodemailer para Hostinger.
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: 'smtp.hostinger.com',
       port: 465,
       secure: true,
@@ -87,7 +87,7 @@ exports.handler = async (event) => {
       await appendToSheet(data.email, token, fingerprint);
 
       // 4. Construir el enlace de descarga especial que apunta a nuestra otra función.
-      // ¡IMPORTANTE! Reemplaza "TU_DOMINIO.com" por tu dominio real.
+      // ¡IMPORTANTE! Reemplaza "costepro.top" por tu dominio real si es diferente.
       const downloadLink = `https://costepro.top/.netlify/functions/descargar-prueba?token=${token}`;
 
       // 5. Enviar el email al cliente con la plantilla elegante y el enlace temporal.
@@ -181,4 +181,3 @@ exports.handler = async (event) => {
     return { statusCode: 500, body: 'Error al procesar la solicitud.' };
   }
 };
-
