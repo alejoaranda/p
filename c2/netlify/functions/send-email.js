@@ -1,71 +1,69 @@
 // /functions/send-email.js
-// Versión completa con lógica de enlace temporal de 12 horas y registro en Google Sheets.
-
 const nodemailer = require('nodemailer');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
 const crypto = require('crypto');
 
-// --- Función para escribir en Google Sheets ---
-// Esta función se conecta a tu hoja de cálculo y añade una nueva fila con los datos del solicitante.
+/**
+ * Escribe una nueva fila en la hoja de cálculo de Google Sheets.
+ * @param {string} email - El correo electrónico del usuario.
+ * @param {string} token - El token de descarga único.
+ * @param {string} fingerprint - El fingerprint del dispositivo.
+ */
 async function appendToSheet(email, token, fingerprint) {
   try {
-    // Autenticación con Google usando las variables de entorno que configurarás en tu servidor.
+    const rawKey = process.env.GOOGLE_PRIVATE_KEY;
+    if (!rawKey || !rawKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
+      console.error('Error Crítico: La variable de entorno GOOGLE_PRIVATE_KEY no está configurada correctamente.');
+      throw new Error('La clave privada de Google no está configurada.');
+    }
+    const privateKey = rawKey.replace(/\\n/g, '\n');
+
     const serviceAccountAuth = new JWT({
       email: process.env.GOOGLE_CLIENT_EMAIL,
-      key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'), // Formato correcto para la clave privada.
+      key: privateKey,
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
 
     const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAuth);
-    await doc.loadInfo(); // Carga la información del documento.
+    await doc.loadInfo();
     
-    // Buscar la hoja llamada "Prueba"
     const sheet = doc.sheetsByTitle['Prueba'];
     if (!sheet) {
-      console.error('No se encontró la hoja "Prueba" en el documento de Google Sheets');
-      return;
+      console.error('Error: No se encontró la hoja "Prueba" en el documento de Google Sheets.');
+      throw new Error('No se encontró la hoja de cálculo "Prueba".');
     }
 
-    // Guarda la fecha en formato ISO, que es el estándar universal para fechas y horas.
     const timestampISO = new Date().toISOString();
     
-    // Añade la nueva fila con los datos en las columnas especificadas:
-    // Columna A: Email
-    // Columna B: Fecha de solicitud
-    // Columna C: Fingerprint del dispositivo
+    // --- CORRECCIÓN CLAVE ---
+    // Nos aseguramos de que los nombres de las claves aquí coincidan EXACTAMENTE
+    // con las cabeceras de tu archivo de Google Sheets.
     await sheet.addRow({ 
-      Email: email, 
-      'Fecha de Solicitud': timestampISO,
+      'Email': email, 
+      'Fecha de Solicitud': timestampISO, // Esta cabecera debe existir en tu hoja.
       'Fingerprint': fingerprint,
-      TokenUnico: token, 
-      FechaDeSolicitud: timestampISO 
+      'TokenUnico': token, 
     });
     
-    console.log(`Email ${email}, fingerprint ${fingerprint} y token han sido añadidos a Google Sheets.`);
+    console.log(`Registro exitoso en Google Sheets para el email: ${email}`);
 
   } catch (error) {
-    // Si falla, solo lo mostramos en la consola del servidor para no detener el envío del email al cliente.
     console.error('Error al escribir en Google Sheets:', error);
+    throw error;
   }
 }
 
-// --- Handler principal de la función ---
-// Esta es la función principal que se ejecuta cuando el formulario es enviado.
+// --- Handler principal de la función de Netlify ---
 exports.handler = async (event) => {
-  // Solo permitir peticiones de tipo POST.
-  if (event.httpMethod !== 'POST' ) {
+  if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   try {
     const data = JSON.parse(event.body);
-    if (!data.email) {
-      return { statusCode: 400, body: 'El correo electrónico es requerido.' };
-    }
-
-    // Configuración del transportador de Nodemailer para Hostinger.
-    const transporter = nodemailer.createTransport({
+    
+    const transporter = nodemailer.createTransporter({
       host: 'smtp.hostinger.com',
       port: 465,
       secure: true,
@@ -75,26 +73,22 @@ exports.handler = async (event) => {
       }
     });
 
-    // --- Lógica para la PRUEBA GRATUITA ---
     if (data.formType === 'trial') {
-      // 1. Generar un token único y seguro.
+      if (!data.email) {
+        return { statusCode: 400, body: 'El correo electrónico es requerido.' };
+      }
+
       const token = crypto.randomBytes(16).toString('hex');
-      
-      // 2. Obtener el fingerprint del dispositivo (enviado desde el frontend)
       const fingerprint = data.fingerprint || 'no-fingerprint';
       
-      // 3. Guardar la información en Google Sheets.
       await appendToSheet(data.email, token, fingerprint);
 
-      // 4. Construir el enlace de descarga especial que apunta a nuestra otra función.
-      // ¡IMPORTANTE! Reemplaza "costepro.top" por tu dominio real si es diferente.
-      const downloadLink = `https://costepro.top/.netlify/functions/descargar-prueba?token=${token}`;
+      const downloadLink = `${process.env.URL}/.netlify/functions/descargar-prueba?token=${token}`;
 
-      // 5. Enviar el email al cliente con la plantilla elegante y el enlace temporal.
       const mailToCustomer = {
         from: `"CostePro" <${process.env.HOSTINGER_EMAIL}>`,
         to: data.email,
-        subject: '✅ Tu enlace de descarga para CostePro (expira en 12 horas )',
+        subject: '✅ Tu enlace de descarga para CostePro (expira en 12 horas)',
         html: `
           <!DOCTYPE html>
           <html lang="es">
@@ -135,49 +129,27 @@ exports.handler = async (event) => {
       };
       await transporter.sendMail(mailToCustomer);
 
-      // 6. Notificación para ti (opcional pero recomendado).
-      const notificationToOwner = {
-        from: `"Notificación Web" <${process.env.HOSTINGER_EMAIL}>`,
-        to: process.env.HOSTINGER_EMAIL,
-        subject: '🚀 Nuevo usuario ha solicitado la prueba de 3 días',
-        html: `
-          <p>El usuario <strong>${data.email}</strong> ha recibido su enlace de descarga temporal.</p>
-          <p><strong>Fingerprint del dispositivo:</strong> ${fingerprint}</p>
-          <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
-        `
-      };
-      await transporter.sendMail(notificationToOwner);
-
-    // --- Lógica para el FORMULARIO DE CONTACTO (sin cambios) ---
+    } else if (data.formType === 'contact') {
+        const mailFromContactForm = {
+            from: `"Web CostePro" <${process.env.HOSTINGER_EMAIL}>`,
+            to: process.env.HOSTINGER_EMAIL,
+            subject: `📬 Nuevo mensaje de contacto de: ${data.name}`,
+            replyTo: data.email,
+            html: `<p>Nombre: ${data.name}</p><p>Email: ${data.email}</p><p>Mensaje: ${data.message}</p>`
+        };
+        await transporter.sendMail(mailFromContactForm);
     } else {
-      const mailFromContactForm = {
-        from: `"Web CostePro" <${process.env.HOSTINGER_EMAIL}>`,
-        to: process.env.HOSTINGER_EMAIL,
-        subject: `📬 Nuevo mensaje de contacto de: ${data.name}`,
-        replyTo: data.email,
-        html: `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-            <h2>Nuevo Mensaje de Contacto</h2>
-            <p><strong>Nombre:</strong> ${data.name}</p>
-            <p><strong>Email:</strong> ${data.email}</p>
-            <hr>
-            <p><strong>Mensaje:</strong></p>
-            <p>${data.message}</p>
-          </div>
-        `
-      };
-      await transporter.sendMail(mailFromContactForm);
+        return { statusCode: 400, body: 'Tipo de formulario no reconocido.' };
     }
 
     transporter.close();
     return {
       statusCode: 200,
-      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: '¡Listo! Revisa tu bandeja de entrada. El enlace caduca en 12 horas.' }),
+      body: JSON.stringify({ message: '¡Listo! Revisa tu bandeja de entrada.' }),
     };
 
   } catch (error) {
-    console.error('--- ERROR EN LA FUNCIÓN ---', error);
-    return { statusCode: 500, body: 'Error al procesar la solicitud.' };
+    console.error('--- ERROR GENERAL EN LA FUNCIÓN ---', error);
+    return { statusCode: 500, body: 'Error al procesar la solicitud. Revisa los logs del servidor.' };
   }
 };
