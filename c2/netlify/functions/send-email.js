@@ -6,16 +6,9 @@ const crypto = require('crypto');
 
 async function appendToSheet(email, token, fingerprint) {
   try {
-    const rawKey = process.env.GOOGLE_PRIVATE_KEY;
-    if (!rawKey || !rawKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
-      console.error('Error Crítico: La variable de entorno GOOGLE_PRIVATE_KEY no está configurada correctamente.');
-      throw new Error('La clave privada de Google no está configurada.');
-    }
-    const privateKey = rawKey.replace(/\\n/g, '\n');
-
     const serviceAccountAuth = new JWT({
       email: process.env.GOOGLE_CLIENT_EMAIL,
-      key: privateKey,
+      key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
 
@@ -24,44 +17,41 @@ async function appendToSheet(email, token, fingerprint) {
     
     const sheet = doc.sheetsByTitle['Prueba'];
     if (!sheet) {
-      console.error('Error: No se encontró la hoja "Prueba" en el documento de Google Sheets.');
-      throw new Error('No se encontró la hoja de cálculo "Prueba".');
+      console.error('Error: No se encontró la hoja "Prueba" en Google Sheets.');
+      return;
     }
 
-    // --- NUEVO: Calcular fecha de solicitud y expiración ---
-    const requestDate = new Date();
-    const expirationDate = new Date(requestDate);
-    expirationDate.setDate(requestDate.getDate() + 3); // Añadir 3 días
-
-    const requestTimestampISO = requestDate.toISOString();
-    const expirationTimestampISO = expirationDate.toISOString();
+    const timestampISO = new Date().toISOString();
     
-    // Añadir la nueva fila con la fecha de expiración
     await sheet.addRow({ 
-      'Email': email, 
-      'Fecha de Solicitud': requestTimestampISO,
-      'Fecha de expiración': expirationTimestampISO, // <-- NUEVO CAMPO
+      Email: email, 
+      'Fecha de Solicitud': timestampISO,
       'Fingerprint': fingerprint,
-      'TokenUnico': token, 
+      TokenUnico: token, 
     });
     
-    console.log(`Registro exitoso en Google Sheets para el email: ${email}`);
+    console.log(`Datos de ${email} añadidos a Google Sheets.`);
 
   } catch (error) {
     console.error('Error al escribir en Google Sheets:', error);
-    throw error;
+    // No lanzamos un error aquí para que el email se envíe igualmente al usuario
   }
 }
 
 exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== 'POST' ) {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   try {
     const data = JSON.parse(event.body);
-    
-    const transporter = nodemailer.createTransport({
+    const { formType, email, name, message, fingerprint } = data;
+
+    if (!email) {
+      return { statusCode: 400, body: JSON.stringify({ message: 'El correo electrónico es requerido.' }) };
+    }
+
+    const transporter = nodemailer.createTransporter({
       host: 'smtp.hostinger.com',
       port: 465,
       secure: true,
@@ -71,28 +61,24 @@ exports.handler = async (event) => {
       }
     });
 
-    if (data.formType === 'trial') {
-      if (!data.email) {
-        return { statusCode: 400, body: 'El correo electrónico es requerido.' };
-      }
-
+    if (formType === 'trial') {
       const token = crypto.randomBytes(16).toString('hex');
-      const fingerprint = data.fingerprint || 'no-fingerprint';
+      const safeFingerprint = fingerprint || 'no-fingerprint';
       
-      await appendToSheet(data.email, token, fingerprint);
+      await appendToSheet(email, token, safeFingerprint);
 
-      const downloadLink = `${process.env.URL}/.netlify/functions/descargar-prueba?token=${token}`;
+      // ¡IMPORTANTE! Asegúrate de que tu dominio es correcto aquí.
+      const downloadLink = `https://costepro.top/.netlify/functions/descargar-prueba?token=${token}`;
 
       const mailToCustomer = {
         from: `"CostePro" <${process.env.HOSTINGER_EMAIL}>`,
-        to: data.email,
-        subject: '✅ Tu enlace de descarga para CostePro (expira en 12 horas)',
+        to: email,
+        subject: '✅ Tu enlace de descarga para CostePro',
         html: `
           <!DOCTYPE html>
           <html lang="es">
           <head>
             <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
               body { font-family: 'Inter', Arial, sans-serif; margin: 0; padding: 0; background-color: #f9fafb; }
               .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -112,7 +98,6 @@ exports.handler = async (event) => {
                 <h2>¡Tu prueba gratuita está lista!</h2>
                 <p>Hola,</p>
                 <p>¡Muchas gracias por tu interés en <strong>CostePro</strong>! Haz clic en el botón de abajo para descargar tu versión de prueba.</p>
-                <p style="font-weight: bold; color: #e76f51;">Importante: Este enlace de descarga caducará automáticamente en 12 horas.</p>
                 <div class="button-container">
                   <a href="${downloadLink}" class="button">Descargar mi Prueba Gratis</a>
                 </div>
@@ -127,17 +112,24 @@ exports.handler = async (event) => {
       };
       await transporter.sendMail(mailToCustomer);
 
-    } else if (data.formType === 'contact') {
-        const mailFromContactForm = {
-            from: `"Web CostePro" <${process.env.HOSTINGER_EMAIL}>`,
-            to: process.env.HOSTINGER_EMAIL,
-            subject: `📬 Nuevo mensaje de contacto de: ${data.name}`,
-            replyTo: data.email,
-            html: `<p>Nombre: ${data.name}</p><p>Email: ${data.email}</p><p>Mensaje: ${data.message}</p>`
-        };
-        await transporter.sendMail(mailFromContactForm);
-    } else {
-        return { statusCode: 400, body: 'Tipo de formulario no reconocido.' };
+    } else if (formType === 'contact') {
+      const mailFromContactForm = {
+        from: `"Web CostePro" <${process.env.HOSTINGER_EMAIL}>`,
+        to: process.env.HOSTINGER_EMAIL,
+        subject: `📬 Nuevo mensaje de contacto de: ${name}`,
+        replyTo: email,
+        html: `
+          <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+            <h2>Nuevo Mensaje de Contacto</h2>
+            <p><strong>Nombre:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <hr>
+            <p><strong>Mensaje:</strong></p>
+            <p>${message}</p>
+          </div>
+        `
+      };
+      await transporter.sendMail(mailFromContactForm);
     }
 
     transporter.close();
@@ -147,7 +139,7 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
-    console.error('--- ERROR GENERAL EN LA FUNCIÓN ---', error);
-    return { statusCode: 500, body: 'Error al procesar la solicitud. Revisa los logs del servidor.' };
+    console.error('--- ERROR EN LA FUNCIÓN ---', error);
+    return { statusCode: 500, body: JSON.stringify({ message: 'Error al procesar la solicitud.' }) };
   }
 };
