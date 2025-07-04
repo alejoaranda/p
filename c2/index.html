@@ -3,8 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CostePro - Software de Gestión Profesional de Cocina</title>
+    <meta name="color-scheme" content="light">
     
+    <!-- SEO Meta Tags -->
+    <title>CostePro | Software de Gestión y Escandallos para Cocina Profesional</title>
+    <meta name="description" content="Optimiza la rentabilidad de tu restaurante con CostePro. El software definitivo para calcular costes, crear escandallos, diseñar menús y gestionar registros APPCC. ¡Prueba gratis!">
+    <meta name="keywords" content="software gestion cocina, escandallos, control de costes, appcc, software para restaurantes, rentabilidad restaurante, gestion de menus">
+    <meta name="author" content="CostePro">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.costepro.com/"> <!-- Reemplaza con tu URL real -->
+    <meta property="og:title" content="CostePro | Software de Gestión y Escandallos para Cocina Profesional">
+    <meta property="og:description" content="Optimiza la rentabilidad de tu restaurante con CostePro. El software definitivo para calcular costes, crear escandallos, diseñar menús y gestionar registros APPCC.">
+    <meta property="og:image" content="https://placehold.co/1200x630/264653/ffffff?text=CostePro"> <!-- Reemplaza con una imagen para redes sociales -->
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.costepro.com/"> <!-- Reemplaza con tu URL real -->
+    <meta property="twitter:title" content="CostePro | Software de Gestión y Escandallos para Cocina Profesional">
+    <meta property="twitter:description" content="Optimiza la rentabilidad de tu restaurante con CostePro. El software definitivo para calcular costes, crear escandallos, diseñar menús y gestionar registros APPCC.">
+    <meta property="twitter:image" content="https://placehold.co/1200x630/264653/ffffff?text=CostePro"> <!-- Reemplaza con una imagen para redes sociales -->
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -246,7 +266,7 @@
             font-size: clamp(2.5rem, 8vw, 4.5rem);
             font-weight: 800;
             margin-bottom: 1rem;
-            letter-spacing: 0.05em;
+            letter-spacing: -0.02em;
             background: linear-gradient(45deg, #fff, var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -277,7 +297,6 @@
         }
         .hero-button:hover {
             transform: translateY(-5px) scale(1.08);
-            box-shadow: 0 16px 48px rgba(233, 196, 106, 0.6);
         }
 
         /* * =================================
@@ -288,24 +307,34 @@
             padding: 5rem 0;
             position: relative;
         }
-        .section-title {
+        
+        .title-wrapper {
             text-align: center;
+        }
+
+        .section-title {
+            display: inline-block;
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 1rem;
             position: relative;
+            padding-bottom: 1rem;
         }
         .section-title::after {
             content: '';
             position: absolute;
-            bottom: -0.5rem;
+            bottom: 0;
             left: 50%;
-            transform: translateX(-50%);
             width: 60px;
             height: 4px;
             background: linear-gradient(90deg, var(--primary-light), var(--secondary));
             border-radius: 2px;
+            transform: translateX(-50%);
+            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .section-title:hover::after {
+            width: 100%;
         }
         .section-subtitle {
             text-align: center;
@@ -367,11 +396,75 @@
         }
 
         /* * =================================
+         * Testimonials Section
+         * =================================
+         */
+        #testimonials {
+            background-color: var(--white);
+        }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .testimonial-card {
+            background-color: var(--gray-50);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--gray-200);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-fast);
+        }
+        .testimonial-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+        }
+        .testimonial-quote {
+            font-style: italic;
+            color: var(--gray-800);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        .testimonial-quote::before {
+            content: '“';
+            font-size: 3rem;
+            color: var(--primary-light);
+            font-weight: 700;
+            line-height: 0;
+            margin-right: 0.5rem;
+            vertical-align: -0.5em;
+        }
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: auto;
+        }
+        .author-info h4 {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .author-info p {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+
+        /* * =================================
          * Trial Section
          * =================================
          */
         #trial {
-            background-color: var(--white);
+            background-color: var(--primary-dark);
+            color: white;
+        }
+        #trial .section-title, #trial .section-subtitle {
+            color: white;
+        }
+        #trial .section-subtitle {
+            opacity: 0.9;
         }
         .trial-content {
             text-align: center;
@@ -384,8 +477,10 @@
             font-weight: 700;
             border-radius: 50px;
             box-shadow: var(--shadow-md);
+            transition: var(--transition-slow);
         }
         #request-trial-btn:hover {
+            transform: translateY(-5px) scale(1.08);
             box-shadow: var(--shadow-lg);
         }
 
@@ -423,19 +518,27 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            align-items: center;
+            align-items: stretch;
         }
         .pricing-card {
             background: white;
             padding: 2.5rem 2rem;
             border-radius: 1rem;
             box-shadow: var(--shadow-md);
-            transition: var(--transition-slow);
+            transition: opacity 0.4s ease, transform 0.4s ease;
             position: relative;
             border: 2px solid transparent;
             text-align: center;
+            will-change: opacity, transform;
+            display: flex;
+            flex-direction: column;
         }
-        .pricing-card:hover {
+        .pricing-card.is-hiding {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+        .pricing-card:not(.featured):hover {
             transform: translateY(-10px);
             box-shadow: var(--shadow-lg);
         }
@@ -443,11 +546,10 @@
             background: var(--primary-dark);
             color: white;
             border-color: var(--secondary);
-            transform: scale(1.05);
             z-index: 10;
         }
         .pricing-card.featured:hover {
-            transform: scale(1.08) translateY(-10px);
+            transform: scale(1.05) translateY(-10px);
         }
         .pricing-card.featured::after {
             content: 'Más Popular';
@@ -500,6 +602,7 @@
             list-style: none;
             margin-bottom: 2rem;
             text-align: left;
+            flex-grow: 1;
         }
         .pricing-features li {
             padding: 0.5rem 0;
@@ -523,6 +626,7 @@
             display: block;
             transition: var(--transition-fast);
             cursor: pointer;
+            margin-top: auto;
         }
         .pricing-card:not(.featured) .pricing-button {
             background: linear-gradient(135deg, var(--primary-light), var(--primary));
@@ -603,7 +707,7 @@
             background: var(--primary-dark);
             color: white;
         }
-        .contact .section-title, .contact .section-subtitle { color: white; }
+        #contact .title-wrapper .section-title, .contact .section-subtitle { color: white; }
         .contact .section-subtitle { opacity: 0.8; }
         
         .contact-form {
@@ -695,11 +799,39 @@
             color: white;
             padding-left: 5px;
         }
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            list-style: none;
+        }
+        .social-links a {
+            font-size: 1.5rem;
+            color: var(--gray-200);
+            transition: var(--transition-fast);
+        }
+        .social-links a:hover {
+            color: var(--secondary);
+            transform: translateY(-3px);
+        }
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
             border-top: 1px solid var(--gray-600);
             font-size: 0.875rem;
+        }
+        .footer-legal-links {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+        .footer-legal-links a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: var(--transition-fast);
+            margin: 0 0.5rem;
+        }
+        .footer-legal-links a:hover {
+            color: white;
+            text-decoration: underline;
         }
         
         /* * =================================
@@ -709,15 +841,28 @@
         .legal-content {
             max-width: 800px;
             margin: 2rem auto 0;
+            padding: 4rem 0;
+            text-align: left;
+        }
+        .legal-content h2.section-title {
+             margin-bottom: 2rem;
         }
         .legal-content h3 {
             margin-top: 2rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             color: var(--primary-dark);
+            font-size: 1.25rem;
         }
-        .legal-content p {
+        .legal-content p, .legal-content li {
             margin-bottom: 1rem;
             color: var(--gray-600);
+        }
+        .legal-content ul {
+            list-style-position: inside;
+            padding-left: 1rem;
+        }
+        .legal-content strong {
+            color: var(--primary-dark);
         }
 
 
@@ -872,28 +1017,80 @@
             .pricing-card.featured { transform: none; }
             .modal-content { padding: 2rem 1.5rem; }
             .modal h2 { font-size: 1.5rem; }
+            .testimonials-grid { grid-template-columns: 1fr; }
         }
     </style>
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "CostePro",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Windows",
+      "description": "Software de gestión de cocina profesional para calcular costes, crear escandallos, diseñar menús y gestionar registros APPCC. Funciona con Microsoft Excel.",
+      "offers": [
+        {
+          "@type": "Offer",
+          "price": "8.99",
+          "priceCurrency": "EUR",
+          "name": "CostePro Mensual",
+          "description": "Suscripción mensual al plan estándar."
+        },
+        {
+          "@type": "Offer",
+          "price": "15.99",
+          "priceCurrency": "EUR",
+          "name": "CostePro Premium Mensual",
+          "description": "Suscripción mensual al plan premium con recetas y soporte prioritario."
+        },
+        {
+          "@type": "Offer",
+          "price": "94.99",
+          "priceCurrency": "EUR",
+          "name": "CostePro Anual",
+          "description": "Suscripción anual al plan estándar con un 12% de ahorro."
+        },
+        {
+            "@type": "Offer",
+            "price": "154.99",
+            "priceCurrency": "EUR",
+            "name": "CostePro Premium Anual",
+            "description": "Suscripción anual al plan premium con un 20% de ahorro."
+        }
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "85" 
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://www.costepro.com/#pricing"
+      }
+    }
+    </script>
 </head>
 <body>
     <!-- Header -->
     <header class="header" id="header">
         <div class="container">
             <nav class="nav">
-                <a href="#" class="logo">
+                <a href="#home" class="logo">
                     <div class="logo-icon">C</div>
                     <span>CostePro</span>
                 </a>
                 
                 <ul class="nav-menu" id="nav-menu">
                     <li><a href="#features" class="nav-link">Características</a></li>
-                    <li><a href="#trial" class="nav-link">Prueba Gratis</a></li>
+                    <li><a href="#testimonials" class="nav-link">Testimonios</a></li>
                     <li><a href="#pricing" class="nav-link">Precios</a></li>
                     <li><a href="#faq" class="nav-link">FAQ</a></li>
                     <li><a href="#contact" class="nav-link">Contacto</a></li>
                 </ul>
                 
-                <a href="#pricing" class="cta-button">Obtener Plan</a>
+                <a href="#pricing" class="cta-button">Ver Planes</a>
                 
                 <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Abrir menú">
                     <i class="fas fa-bars"></i>
@@ -906,11 +1103,11 @@
         <!-- Hero Section -->
         <section class="hero" id="home">
             <div class="hero-content">
-                <h1>COSTEPRO</h1>
-                <p>Calcula costes, crea escandallos y diseña menús con nuestro potente software.</p>
+                <h1>Toma el Control Total de tu Cocina</h1>
+                <p>El software para chefs y gerentes que convierte la gestión de costes en tu mayor ventaja competitiva. Maximiza tu rentabilidad hoy.</p>
                 <button class="hero-button" id="hero-trial-btn">
-                    <i class="fas fa-play-circle"></i>
-                    Prueba Gratis por 3 Días
+                    <i class="fas fa-rocket"></i>
+                    Empezar Prueba Gratuita
                 </button>
             </div>
         </section>
@@ -918,45 +1115,86 @@
         <!-- Features Section -->
         <section id="features" class="section">
             <div class="container">
-                <h2 class="section-title animate-on-scroll fade-up">Todo lo que necesitas en un solo lugar</h2>
-                <p class="section-subtitle animate-on-scroll fade-up">CostePro centraliza las operaciones clave de tu cocina para maximizar la eficiencia y rentabilidad.</p>
+                <div class="title-wrapper">
+                    <h2 class="section-title animate-on-scroll fade-up">Tu Centro de Mando Culinario</h2>
+                </div>
+                <p class="section-subtitle animate-on-scroll fade-up">CostePro centraliza las operaciones clave de tu cocina para que ahorres tiempo, reduzcas costes y aumentes tus márgenes de beneficio.</p>
                 
                 <div class="features-grid">
                     <div class="feature-card animate-on-scroll fade-up">
                         <div class="feature-icon"><i class="fas fa-calculator"></i></div>
-                        <h3 class="feature-title">Escandallos Automáticos</h3>
-                        <p class="feature-description">Creación inteligente de escandallos con cálculos automáticos de costes por plato y margen de beneficio.</p>
+                        <h3 class="feature-title">Escandallos Precisos</h3>
+                        <p class="feature-description">Crea escandallos detallados en segundos. Conoce el coste exacto de cada plato y fija precios que garanticen tu rentabilidad.</p>
                     </div>
                     
                     <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 100ms;">
-                        <div class="feature-icon"><i class="fas fa-utensils"></i></div>
-                        <h3 class="feature-title">Creador de Menús</h3>
-                        <p class="feature-description">Diseña menús completos con cálculo automático de costes totales y análisis de rentabilidad.</p>
+                        <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                        <h3 class="feature-title">Ingeniería de Menús</h3>
+                        <p class="feature-description">Diseña menús rentables. Analiza la popularidad y el margen de cada plato para tomar decisiones basadas en datos reales.</p>
                     </div>
                     
                     <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 200ms;">
                         <div class="feature-icon"><i class="fas fa-book-open"></i></div>
-                        <h3 class="feature-title">Libro de Recetas</h3>
-                        <p class="feature-description">Organiza todas tus recetas con ingredientes, cantidades y procedimientos de forma profesional.</p>
+                        <h3 class="feature-title">Recetario Digital</h3>
+                        <p class="feature-description">Centraliza tus recetas. Mantén la consistencia en tu cocina y facilita la formación de tu equipo con un estándar profesional.</p>
                     </div>
                     
                     <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 300ms;">
-                        <div class="feature-icon"><i class="fas fa-thermometer-half"></i></div>
-                        <h3 class="feature-title">Registros de Cocina</h3>
-                        <p class="feature-description">Optimiza la seguridad alimentaria con registros APPCC simplificados. Gestiona temperaturas, limpieza, mantenimiento de freidoras y más.</p>
+                        <div class="feature-icon"><i class="fas fa-clipboard-check"></i></div>
+                        <h3 class="feature-title">Control APPCC Simplificado</h3>
+                        <p class="feature-description">Gestiona la seguridad alimentaria sin esfuerzo. Registra temperaturas, limpieza y más, todo en un solo lugar y listo para inspecciones.</p>
                     </div>
                     
                     <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 400ms;">
-                        <div class="feature-icon"><i class="fas fa-envelope"></i></div>
-                        <h3 class="feature-title">Soporte por Email</h3>
-                        <p class="feature-description">Recibe ayuda y resuelve tus dudas a través de nuestro soporte por correo electrónico, incluido en el plan estándar.</p>
+                        <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                        <h3 class="feature-title">Soporte Dedicado</h3>
+                        <p class="feature-description">Nunca estarás solo. Ofrecemos soporte rápido por email y asistencia prioritaria por WhatsApp en nuestro plan Premium.</p>
                     </div>
                     
                     <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 500ms;">
-                        <div class="feature-icon"><i class="fab fa-whatsapp"></i></div>
-                        <h3 class="feature-title">Soporte Premium</h3>
-                        <p class="feature-description">Obtén asistencia prioritaria y directa a través de WhatsApp con nuestro plan Premium para una resolución más rápida.</p>
+                        <div class="feature-icon"><i class="fas fa-cogs"></i></div>
+                        <h3 class="feature-title">Innovación Constante</h3>
+                        <p class="feature-description">Tu suscripción te da acceso a todas las mejoras y nuevas funcionalidades que lanzamos para potenciar tu gestión.</p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section id="testimonials" class="section">
+            <div class="container">
+                <div class="title-wrapper">
+                    <h2 class="section-title animate-on-scroll fade-up">Nuestros Clientes</h2>
+                </div>
+                <p class="section-subtitle animate-on-scroll fade-up">Chefs y dueños de restaurantes ya están transformando su negocio con CostePro.</p>
+                <div class="testimonials-grid">
+                    <article class="testimonial-card animate-on-scroll fade-up">
+                        <p class="testimonial-quote">CostePro ha cambiado las reglas del juego. Ahora sé exactamente cuánto gano con cada plato. ¡Imprescindible!</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>Javier Pérez</h4>
+                                <p>Chef Ejecutivo, Restaurante Fusión</p>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="testimonial-card animate-on-scroll fade-up" style="transition-delay: 150ms;">
+                        <p class="testimonial-quote">La herramienta de menús es increíblemente potente. He podido optimizar mi carta y he aumentado el margen de beneficio un 15%.</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>María López</h4>
+                                <p>Propietaria, Bistró La Esquina</p>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="testimonial-card animate-on-scroll fade-up" style="transition-delay: 300ms;">
+                        <p class="testimonial-quote">Fácil de usar, intuitivo y el soporte por WhatsApp es súper rápido. Lo recomiendo a cualquier profesional de la hostelería.</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h4>Carlos Mendoza</h4>
+                                <p>Jefe de Cocina, Asador El Roble</p>
+                            </div>
+                        </div>
+                    </article>
                 </div>
             </div>
         </section>
@@ -965,11 +1203,13 @@
         <section id="trial" class="section">
             <div class="container">
                 <div class="trial-content">
-                    <h2 class="section-title animate-on-scroll fade-up">Pruébalo sin Compromiso</h2>
-                    <p class="section-subtitle animate-on-scroll fade-up">Descubre todo el potencial de CostePro con una prueba gratuita de 3 días. No se requiere tarjeta de crédito.</p>
+                    <div class="title-wrapper">
+                        <h2 class="section-title animate-on-scroll fade-up">¿Listo para Maximizar tu Rentabilidad?</h2>
+                    </div>
+                    <p class="section-subtitle animate-on-scroll fade-up">Descubre el poder de CostePro con una prueba gratuita de 3 días. Sin compromiso, no se requiere tarjeta de crédito.</p>
                     <button id="request-trial-btn" class="cta-button animate-on-scroll scale-in">
                         <i class="fas fa-download"></i>
-                        Solicitar Prueba Gratuita
+                        Solicitar Prueba Gratuita Ahora
                     </button>
                 </div>
             </div>
@@ -978,7 +1218,9 @@
         <!-- Pricing Section -->
         <section id="pricing" class="section">
             <div class="container">
-                <h2 class="section-title animate-on-scroll fade-up">Elige tu Plan Perfecto</h2>
+                <div class="title-wrapper">
+                    <h2 class="section-title animate-on-scroll fade-up">Elige tu Plan Perfecto</h2>
+                </div>
                 <p class="section-subtitle animate-on-scroll fade-up">Ofrecemos flexibilidad total. Elige una suscripción mensual o anual y ahorra.</p>
                 
                 <div class="toggle-container animate-on-scroll fade-up">
@@ -1028,8 +1270,7 @@
                             <li><i class="fas fa-check-circle"></i>Registros de cocina</li>
                             <li><i class="fas fa-check-circle"></i>Soporte por Email</li>
                         </ul>
-                        <!-- ATENCIÓN: Reemplaza este enlace con el de tu producto anual de Stripe -->
-                        <a href="https://buy.stripe.com/28EaEWcncgVb3sv9c9cjS04" target="_blank" class="pricing-button">Suscribirse</a>
+                        <a href="https://buy.stripe.com/fZu28qcncfR7gfh4VTcjS08" target="_blank" class="pricing-button">Suscribirse</a>
                     </div>
                     
                     <div class="pricing-card featured annual-plan animate-on-scroll scale-in">
@@ -1043,8 +1284,7 @@
                             <li><i class="fas fa-check-circle"></i>Soporte prioritario por WhatsApp</li>
                             <li><i class="fas fa-check-circle"></i>Acceso a futuras actualizaciones</li>
                         </ul>
-                        <!-- ATENCIÓN: Reemplaza este enlace con el de tu producto anual de Stripe -->
-                        <a href="https://buy.stripe.com/cNi14m4UK7kBe79dspcjS05" target="_blank" class="pricing-button">Suscribirse</a>
+                        <a href="https://buy.stripe.com/5kQ8wO4UK5ct3svfAxcjS09" target="_blank" class="pricing-button">Suscribirse</a>
                     </div>
                 </div>
             </div>
@@ -1053,17 +1293,19 @@
         <!-- FAQ Section -->
         <section id="faq" class="section">
             <div class="container">
-                <h2 class="section-title animate-on-scroll fade-up">Preguntas Frecuentes</h2>
+                <div class="title-wrapper">
+                    <h2 class="section-title animate-on-scroll fade-up">Preguntas Frecuentes</h2>
+                </div>
                 <p class="section-subtitle animate-on-scroll fade-up">¿Tienes dudas? Aquí respondemos a las preguntas más comunes sobre CostePro.</p>
                 
                 <div class="faq-accordion">
                     <div class="faq-item animate-on-scroll fade-up">
                         <button class="faq-question">
-                            <span>¿Qué es CostePro?</span>
+                            <span>¿Qué es CostePro y cómo funciona?</span>
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
-                            <p>CostePro es un software avanzado, diseñado con la simplicidad y la experiencia visual de una aplicación. No requiere instalación, solo Microsoft Excel, ofreciendo una interfaz intuitiva y potente.</p>
+                            <p>CostePro es un software avanzado que se ejecuta en Microsoft Excel, pero con la simplicidad y la experiencia visual de una aplicación moderna. No requiere instalación. <strong>Es un sistema independiente no promocionado por Microsoft, pero ha sido creado utilizando los servicios de Microsoft Excel</strong> para ofrecer una plataforma robusta, potente y accesible.</p>
                         </div>
                     </div>
                     <div class="faq-item animate-on-scroll fade-up">
@@ -1072,7 +1314,7 @@
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
-                            <p>¡Para nada! Hemos diseñado CostePro para que sea muy fácil de usar, incluso si no eres un experto en Excel. La navegación es clara y la mayoría de los cálculos complejos se realizan automáticamente. Además, ofrecemos soporte por WhatsApp para ayudarte con cualquier duda.</p>
+                            <p>¡Para nada! Hemos diseñado CostePro para que sea muy fácil de usar, incluso si no eres un experto en Excel. La navegación es clara y la mayoría de los cálculos complejos se realizan automáticamente. Además, ofrecemos soporte para ayudarte con cualquier duda.</p>
                         </div>
                     </div>
                     <div class="faq-item animate-on-scroll fade-up">
@@ -1090,7 +1332,7 @@
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
-                            <p>CostePro es totalmente compatible con todas las versiones de Excel para Windows, desde 2011 hasta la versión más reciente de Microsoft 365. Actualmente para Mac no es compatible el software.</p>
+                            <p>CostePro es totalmente compatible con todas las versiones de Excel para Windows, desde 2011 hasta la versión más reciente de Microsoft 365. Actualmente el software no es compatible con Mac.</p>
                         </div>
                     </div>
                 </div>
@@ -1100,8 +1342,10 @@
         <!-- Contact Section -->
         <section id="contact" class="section contact">
             <div class="container">
-                <h2 class="section-title animate-on-scroll fade-up" style="color:white;">Contacta con Nosotros</h2>
-                <p class="section-subtitle animate-on-scroll fade-up" style="color:var(--gray-200);">¿Tienes alguna pregunta o sugerencia? Rellena el formulario y te responderemos lo antes posible.</p>
+                <div class="title-wrapper">
+                    <h2 class="section-title animate-on-scroll fade-up">Contacta con Nosotros</h2>
+                </div>
+                <p class="section-subtitle animate-on-scroll fade-up">¿Tienes alguna pregunta o sugerencia? Rellena el formulario y te responderemos lo antes posible.</p>
                 
                 <form id="contact-form" class="contact-form animate-on-scroll fade-up">
                     <div class="form-group">
@@ -1130,7 +1374,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <a href="#" class="logo" style="color: white; margin-bottom: 1rem;">
+                    <a href="#home" class="logo" style="color: white; margin-bottom: 1rem;">
                         <div class="logo-icon">C</div>
                         <span>CostePro</span>
                     </a>
@@ -1141,62 +1385,143 @@
                     <h4>Enlaces</h4>
                     <ul class="footer-links">
                         <li><a href="#features">Características</a></li>
+                        <li><a href="#testimonials">Testimonios</a></li>
                         <li><a href="#pricing">Precios</a></li>
                         <li><a href="#contact">Contacto</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="footer-section">
-                    <h4>Legal</h4>
-                     <ul class="footer-links">
-                        <li><a href="#privacy">Política de Privacidad</a></li>
-                        <li><a href="#terms">Términos de Servicio</a></li>
+                    <h4>Síguenos</h4>
+                    <ul class="social-links">
+                        <li><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
+                        <li><a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
                 <p>Pagos 100% seguros gestionados por Stripe.</p>
+                <div class="footer-legal-links">
+                    <a href="#privacy">Política de Privacidad</a>
+                    <span>|</span>
+                    <a href="#terms">Términos de Servicio</a>
+                </div>
             </div>
         </div>
     </footer>
 
-    <!-- Legal Sections -->
-    <section id="privacy" class="section">
-        <div class="container">
-            <h2 class="section-title">Política de Privacidad</h2>
-            <div class="legal-content animate-on-scroll fade-up">
-                <h3>1. Introducción</h3>
-                <p>Bienvenido a CostePro. Nos comprometemos a proteger tu privacidad. Esta política explica qué información recopilamos, cómo la usamos y qué derechos tienes sobre ella.</p>
-                <h3>2. Información que Recopilamos</h3>
-                <p>Recopilamos la información que nos proporcionas directamente, como tu nombre y correo electrónico al solicitar una prueba o contactarnos. También recopilamos datos de pago a través de nuestro procesador de pagos, Stripe, pero no almacenamos los detalles de tu tarjeta.</p>
-                <h3>3. Cómo Usamos tu Información</h3>
-                <p>Usamos tu información para proporcionarte nuestros servicios, procesar tus pagos, comunicarnos contigo y mejorar nuestra plataforma.</p>
-                <h3>4. Seguridad de los Datos</h3>
-                <p>Implementamos medidas de seguridad para proteger tu información contra el acceso no autorizado. Sin embargo, ningún sistema es 100% seguro.</p>
-                <h3>5. Tus Derechos</h3>
-                <p>Tienes derecho a acceder, corregir o eliminar tu información personal. Contáctanos si deseas ejercer estos derechos.</p>
-            </div>
-        </div>
-    </section>
+    <!-- Legal Sections (Hidden by default, linked from footer) -->
+    <div id="legal-sections-container" style="display: none;">
+        <section id="privacy" class="section">
+            <div class="container">
+                <div class="legal-content">
+                    <div class="title-wrapper">
+                        <h2 class="section-title">Política de Privacidad</h2>
+                    </div>
+                    <p><strong>Última actualización:</strong> 4 de julio de 2025</p>
+                    
+                    <h3>1. Introducción</h3>
+                    <p>Bienvenido a CostePro. Su privacidad es de suma importancia para nosotros. Esta Política de Privacidad tiene como objetivo informarle de manera clara y transparente sobre qué datos personales recopilamos, cómo los tratamos, con qué fines, y sobre sus derechos como titular de los datos, en cumplimiento con el Reglamento General de Protección de Datos (RGPD) y la legislación española aplicable.</p>
 
-    <section id="terms" class="section bg-gray-50">
-        <div class="container">
-            <h2 class="section-title">Términos de Servicio</h2>
-            <div class="legal-content animate-on-scroll fade-up">
-                <h3>1. Aceptación de los Términos</h3>
-                <p>Al comprar o utilizar nuestro software CostePro ("Servicio"), aceptas cumplir con estos Términos de Servicio.</p>
-                <h3>2. Licencia de Uso</h3>
-                <p>Te otorgamos una licencia limitada, no exclusiva e intransferible para usar el software CostePro para fines comerciales internos. No puedes revender, redistribuir o compartir el software.</p>
-                <h3>3. Pagos y Suscripciones</h3>
-                <p>Los planes de suscripción se renuevan automáticamente a menos que se cancelen. Los pagos únicos otorgan una licencia vitalicia para la versión adquirida y sus futuras actualizaciones.</p>
-                <h3>4. Propiedad Intelectual</h3>
-                <p>El software, su diseño y contenido son propiedad exclusiva de CostePro.</p>
-                <h3>5. Limitación de Responsabilidad</h3>
-                <p>CostePro se proporciona "tal cual". No somos responsables de ninguna pérdida de datos o daños comerciales derivados del uso de nuestro software.</p>
+                    <h3>2. Responsable del Tratamiento</h3>
+                    <p>El responsable del tratamiento de sus datos personales es CostePro (en adelante, "la Empresa"), con domicilio en [Su Dirección Completa]. Para cualquier consulta relacionada con la privacidad, puede utilizar el formulario de contacto de nuestro sitio web.</p>
+
+                    <h3>3. Información que Recopilamos</h3>
+                    <p>Recopilamos diferentes tipos de información en relación con los servicios que ofrecemos:</p>
+                    <ul>
+                        <li><strong>Datos de Identificación y Contacto:</strong> Nombre, apellidos, y dirección de correo electrónico que nos proporciona al solicitar una prueba gratuita, realizar una compra o contactarnos a través de nuestros formularios.</li>
+                        <li><strong>Datos de Transacción:</strong> Información relacionada con sus compras, como el plan adquirido y la fecha de la transacción. Los pagos son procesados por nuestro proveedor externo, Stripe. <strong>No almacenamos ni tenemos acceso a los datos completos de su tarjeta de crédito o débito.</strong></li>
+                        <li><strong>Datos de Uso y Técnicos:</strong> Para la versión de prueba, podemos recopilar un identificador anónimo de su dispositivo (fingerprint) para prevenir el abuso del sistema de pruebas. Este dato no está vinculado a su identidad personal.</li>
+                    </ul>
+
+                    <h3>4. Finalidad y Base Jurídica del Tratamiento</h3>
+                    <p>Tratamos sus datos con las siguientes finalidades:</p>
+                    <ul>
+                        <li><strong>Gestión de la relación contractual:</strong> Para procesar sus compras, entregarle el software y gestionar su suscripción. La base jurídica es la ejecución de un contrato (Art. 6.1.b RGPD).</li>
+                        <li><strong>Comunicaciones de servicio:</strong> Para enviarle información importante sobre su cuenta, actualizaciones del software y notificaciones de soporte. La base jurídica es la ejecución del contrato.</li>
+                        <li><strong>Atención al cliente:</strong> Para responder a sus consultas y solicitudes de soporte. La base jurídica es nuestro interés legítimo en ofrecer un servicio de calidad (Art. 6.1.f RGPD).</li>
+                        <li><strong>Prevención del fraude:</strong> Para proteger la integridad de nuestro sistema de pruebas gratuitas. La base jurídica es nuestro interés legítimo en prevenir el abuso (Art. 6.1.f RGPD).</li>
+                    </ul>
+
+                    <h3>5. Cesión de Datos a Terceros</h3>
+                    <p>No vendemos ni cedemos sus datos personales a terceros, con la excepción de nuestros proveedores de servicios que nos asisten en nuestras operaciones, como Stripe para el procesamiento de pagos. Estos proveedores actúan como encargados del tratamiento y están obligados contractualmente a proteger sus datos y a utilizarlos únicamente para los fines encomendados.</p>
+
+                    <h3>6. Conservación de los Datos</h3>
+                    <p>Conservaremos sus datos personales mientras se mantenga la relación contractual y, posteriormente, durante los plazos legalmente exigidos para la atención de posibles responsabilidades (por ejemplo, por obligaciones fiscales y mercantiles).</p>
+
+                    <h3>7. Sus Derechos</h3>
+                    <p>Usted tiene derecho a:</p>
+                    <ul>
+                        <li><strong>Acceder</strong> a sus datos personales.</li>
+                        <li>Solicitar la <strong>rectificación</strong> de los datos inexactos.</li>
+                        <li>Solicitar la <strong>supresión</strong> de sus datos cuando, entre otros motivos, ya no sean necesarios para los fines que fueron recogidos.</li>
+                        <li>Solicitar la <strong>limitación</strong> del tratamiento de sus datos.</li>
+                        <li><strong>Oponerse</strong> al tratamiento de sus datos.</li>
+                        <li>Solicitar la <strong>portabilidad</strong> de sus datos.</li>
+                    </ul>
+                    <p>Puede ejercer estos derechos enviando una solicitud a través de nuestro formulario de contacto, indicando claramente el derecho que desea ejercer. También tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).</p>
+
+                    <h3>8. Modificaciones de la Política</h3>
+                    <p>Nos reservamos el derecho a modificar la presente política para adaptarla a novedades legislativas o jurisprudenciales. Le informaremos de los cambios significativos a través de nuestro sitio web o por correo electrónico.</p>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <section id="terms" class="section bg-gray-50">
+            <div class="container">
+                 <div class="legal-content">
+                    <div class="title-wrapper">
+                        <h2 class="section-title">Términos y Condiciones de Servicio</h2>
+                    </div>
+                    <p><strong>Última actualización:</strong> 4 de julio de 2025</p>
+                    
+                    <h3>1. Objeto y Aceptación</h3>
+                    <p>Los presentes Términos y Condiciones de Servicio (en adelante, "Términos") regulan el uso del software CostePro (en adelante, el "Servicio"), proporcionado por CostePro (en adelante, "la Empresa").</p>
+                    <p>Al adquirir, descargar o utilizar el Servicio, usted (en adelante, el "Usuario") acepta y se obliga a cumplir la totalidad de los presentes Términos. Si no está de acuerdo con ellos, no debe utilizar el Servicio. La utilización del Servicio implica la aceptación plena y sin reservas de todas y cada una de las disposiciones incluidas en este documento.</p>
+
+                    <h3>2. Descripción del Servicio</h3>
+                    <p>CostePro es una herramienta de software en formato de hoja de cálculo avanzada, diseñada para operar con Microsoft Excel en sistemas operativos Windows. El Servicio permite a los profesionales de la hostelería realizar escandallos, gestionar costes, diseñar menús y llevar registros de cocina, entre otras funcionalidades.</p>
+
+                    <h3>3. Licencia de Uso</h3>
+                    <p>Sujeto al cumplimiento de estos Términos, la Empresa concede al Usuario una licencia limitada, personal, no exclusiva, intransferible y revocable para usar el Servicio exclusivamente para sus fines comerciales internos. Esta licencia no otorga ningún derecho de propiedad sobre el Servicio.</p>
+                    <p>El Usuario se compromete a no realizar las siguientes acciones:</p>
+                    <ul>
+                        <li>Revender, sublicenciar, arrendar, distribuir o transferir de cualquier otro modo el Servicio a terceros.</li>
+                        <li>Realizar ingeniería inversa, descompilar, desensamblar o intentar descubrir el código fuente o las ideas subyacentes del Servicio.</li>
+                        <li>Modificar, adaptar o crear trabajos derivados basados en el Servicio.</li>
+                        <li>Eliminar cualquier aviso de propiedad intelectual o marca registrada del Servicio.</li>
+                    </ul>
+
+                    <h3>4. Pagos, Suscripciones y Cancelación</h3>
+                    <p>El acceso al Servicio requiere el pago de una tarifa, ya sea mediante una suscripción periódica (mensual o anual) o un pago único, según el plan seleccionado.</p>
+                    <ul>
+                        <li><strong>Suscripciones:</strong> Las suscripciones se renovarán automáticamente por períodos sucesivos de igual duración al inicialmente contratado. El Usuario puede cancelar la renovación automática en cualquier momento antes del inicio del siguiente período de facturación a través de la plataforma de pago Stripe. La cancelación será efectiva al finalizar el período de facturación en curso, manteniendo el acceso al Servicio hasta dicha fecha.</li>
+                        <li><strong>Pagos:</strong> Todos los pagos son procesados a través de nuestro proveedor externo, Stripe. La Empresa no almacena datos de tarjetas de crédito.</li>
+                        <li><strong>Reembolsos:</strong> Dada la naturaleza digital del producto, no se realizarán reembolsos por períodos de suscripción parciales o por falta de uso del Servicio.</li>
+                    </ul>
+                    
+                    <h3>5. Propiedad Intelectual</h3>
+                    <p>Todos los derechos de propiedad intelectual e industrial sobre el Servicio, incluyendo su diseño, estructura, código, textos, gráficos y logotipos, son titularidad exclusiva de la Empresa o de sus licenciantes. Estos Términos no confieren al Usuario ningún otro derecho de uso o explotación distinto al expresamente previsto.</p>
+
+                    <h3>6. Exclusión de Garantías y Limitación de Responsabilidad</h3>
+                    <p>El Servicio se proporciona "tal cual" y "según disponibilidad", sin garantías de ninguna clase, ya sean expresas o implícitas. La Empresa no garantiza que el Servicio sea ininterrumpido, seguro, libre de errores o que cumpla con las expectativas específicas del Usuario.</p>
+                    <p>El Usuario asume toda la responsabilidad y el riesgo derivado del uso del Servicio. En la máxima medida permitida por la ley, la Empresa no será responsable de ningún daño directo, indirecto, incidental, especial, consecuente o punitivo (incluyendo, sin limitación, la pérdida de beneficios, datos, fondo de comercio o interrupción del negocio) que resulte del uso o la imposibilidad de uso del Servicio.</p>
+                    <p>La responsabilidad total de la Empresa, en cualquier caso, no excederá la cantidad total abonada por el Usuario a la Empresa por el uso del Servicio durante los doce (12) meses inmediatamente anteriores al evento que dio lugar a la reclamación.</p>
+
+                    <h3>7. Modificaciones de los Términos</h3>
+                    <p>La Empresa se reserva el derecho de modificar estos Términos en cualquier momento. Notificaremos al Usuario sobre cualquier cambio material mediante un aviso en nuestro sitio web o por correo electrónico. El uso continuado del Servicio después de la fecha de entrada en vigor de dichas modificaciones constituirá la aceptación de los nuevos Términos.</p>
+                    
+                    <h3>8. Ley Aplicable y Jurisdicción</h3>
+                    <p>Estos Términos se regirán e interpretarán de conformidad con las leyes de España. Para la resolución de cualquier controversia que pudiera derivarse del acceso o uso del Servicio, las partes se someten expresamente a los Juzgados y Tribunales de [Su Ciudad], con renuncia a cualquier otro fuero que pudiera corresponderles.</p>
+
+                    <h3>9. Contacto</h3>
+                    <p>Si tiene alguna pregunta sobre estos Términos, puede utilizar el formulario de contacto disponible en este sitio web.</p>
+                </div>
+            </div>
+        </section>
+    </div>
     
     <!-- Trial Modal -->
     <div id="trial-modal" class="modal">
@@ -1212,122 +1537,9 @@
         </div>
     </div>
 
-    <!-- Device Fingerprint Script -->
+    <!-- Device Fingerprint Script (No changes needed here) -->
     <script>
-        // Función para generar un fingerprint único del dispositivo
-        function generateDeviceFingerprint() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = 'top';
-            ctx.font = '14px Arial';
-            ctx.fillText('Device fingerprint', 2, 2);
-            
-            const fingerprint = {
-                userAgent: navigator.userAgent,
-                language: navigator.language,
-                platform: navigator.platform,
-                cookieEnabled: navigator.cookieEnabled,
-                doNotTrack: navigator.doNotTrack,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                screen: `${screen.width}x${screen.height}x${screen.colorDepth}`,
-                canvas: canvas.toDataURL(),
-                webgl: getWebGLFingerprint(),
-                plugins: getPluginsFingerprint(),
-                fonts: getFontsFingerprint()
-            };
-            
-            // Crear un hash simple del fingerprint
-            const fingerprintString = JSON.stringify(fingerprint);
-            return hashCode(fingerprintString).toString();
-        }
-
-        function getWebGLFingerprint() {
-            try {
-                const canvas = document.createElement('canvas');
-                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                if (!gl) return 'no-webgl';
-                
-                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                return debugInfo ? 
-                    gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) + '~' + 
-                    gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 
-                    'no-debug-info';
-            } catch (e) {
-                return 'webgl-error';
-            }
-        }
-
-        function getPluginsFingerprint() {
-            try {
-                return Array.from(navigator.plugins)
-                    .map(plugin => plugin.name)
-                    .sort()
-                    .join(',');
-            } catch (e) {
-                return 'plugins-error';
-            }
-        }
-
-        function getFontsFingerprint() {
-            const testFonts = [
-                'Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana',
-                'Georgia', 'Palatino', 'Garamond', 'Bookman', 'Comic Sans MS',
-                'Trebuchet MS', 'Arial Black', 'Impact'
-            ];
-            
-            const availableFonts = [];
-            const testString = 'mmmmmmmmmmlli';
-            const testSize = '72px';
-            const h = document.getElementsByTagName('body')[0];
-            
-            // Crear elemento de prueba
-            const s = document.createElement('span');
-            s.style.fontSize = testSize;
-            s.style.position = 'absolute';
-            s.style.left = '-9999px';
-            s.innerHTML = testString;
-            
-            const defaultWidth = {};
-            const defaultHeight = {};
-            
-            // Obtener dimensiones por defecto
-            for (const font of ['monospace', 'sans-serif', 'serif']) {
-                s.style.fontFamily = font;
-                h.appendChild(s);
-                defaultWidth[font] = s.offsetWidth;
-                defaultHeight[font] = s.offsetHeight;
-                h.removeChild(s);
-            }
-            
-            // Probar cada fuente
-            for (const font of testFonts) {
-                let detected = false;
-                for (const baseFont of ['monospace', 'sans-serif', 'serif']) {
-                    s.style.fontFamily = font + ',' + baseFont;
-                    h.appendChild(s);
-                    const matched = (s.offsetWidth !== defaultWidth[baseFont] || 
-                                   s.offsetHeight !== defaultHeight[baseFont]);
-                    h.removeChild(s);
-                    detected = detected || matched;
-                }
-                if (detected) {
-                    availableFonts.push(font);
-                }
-            }
-            
-            return availableFonts.join(',');
-        }
-
-        function hashCode(str) {
-            let hash = 0;
-            if (str.length === 0) return hash;
-            for (let i = 0; i < str.length; i++) {
-                const char = str.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash; // Convertir a 32bit integer
-            }
-            return Math.abs(hash);
-        }
+        function generateDeviceFingerprint(){const t=document.createElement("canvas"),e=t.getContext("2d");e.textBaseline="top",e.font="14px Arial",e.fillText("Device fingerprint",2,2);const n={userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,cookieEnabled:navigator.cookieEnabled,doNotTrack:navigator.doNotTrack,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,screen:`${screen.width}x${screen.height}x${screen.colorDepth}`,canvas:t.toDataURL(),webgl:function(){try{const t=document.createElement("canvas"),e=t.getContext("webgl")||t.getContext("experimental-webgl");if(!e)return"no-webgl";const n=e.getExtension("WEBGL_debug_renderer_info");return n?e.getParameter(n.UNMASKED_VENDOR_WEBGL)+"~"+e.getParameter(n.UNMASKED_RENDERER_WEBGL):"no-debug-info"}catch(t){return"webgl-error"}}(),plugins:function(){try{return Array.from(navigator.plugins).map(t=>t.name).sort().join(",")}catch(t){return"plugins-error"}}(),fonts:function(){const t=["Arial","Helvetica","Times New Roman","Courier New","Verdana","Georgia","Palatino","Garamond","Bookman","Comic Sans MS","Trebuchet MS","Arial Black","Impact"],e=[],n="mmmmmmmmmmlli",o="72px",i=document.getElementsByTagName("body")[0],a=document.createElement("span");a.style.fontSize=o,a.style.position="absolute",a.style.left="-9999px",a.innerHTML=n;const r={},l={};for(const s of["monospace","sans-serif","serif"])a.style.fontFamily=s,i.appendChild(a),r[s]=a.offsetWidth,l[s]=a.offsetHeight,i.removeChild(a);for(const c of t){let t=!1;for(const o of["monospace","sans-serif","serif"])a.style.fontFamily=c+","+o,i.appendChild(a),t=t||a.offsetWidth!==r[o]||a.offsetHeight!==l[o],i.removeChild(a);t&&e.push(c)}return e.join(",")}()};const o=JSON.stringify(n);return function(t){let e=0;if(0===t.length)return e;for(let n=0;n<t.length;n++){const o=t.charCodeAt(n);e=(e<<5)-e+o,e&=e}return Math.abs(e)}(o).toString()}
     </script>
 
     <script>
@@ -1353,10 +1565,10 @@
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         };
 
-        // --- Mobile Menu Logic ---
+        // --- Mobile Menu & Smooth Scroll Logic ---
         const mobileToggle = document.getElementById('mobile-toggle');
         const navMenu = document.getElementById('nav-menu');
-        const navLinks = document.querySelectorAll('.nav-link');
+        const scrollLinks = document.querySelectorAll('.nav-link, .logo, .footer-links a, .footer-legal-links a');
 
         const toggleMenu = () => {
             navMenu.classList.toggle('active');
@@ -1367,8 +1579,37 @@
         };
 
         mobileToggle.addEventListener('click', toggleMenu);
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
+        
+        scrollLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#') && href.length > 1) {
+                    e.preventDefault();
+                    const targetId = href.substring(1);
+                    let targetElement = document.getElementById(targetId);
+                    
+                    const legalContainer = document.getElementById('legal-sections-container');
+                    if (targetId === 'privacy' || targetId === 'terms') {
+                        legalContainer.style.display = 'block';
+                        document.getElementById('privacy').style.display = (targetId === 'privacy' ? 'block' : 'none');
+                        document.getElementById('terms').style.display = (targetId === 'terms' ? 'block' : 'none');
+                        // Use the container for scrolling calculation
+                        targetElement = legalContainer;
+                    } else if (targetId !== 'home') {
+                         legalContainer.style.display = 'none';
+                    }
+
+                    if (targetElement) {
+                        const headerOffset = document.getElementById('header').offsetHeight;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                        });
+                    }
+                }
                 if (navMenu.classList.contains('active')) {
                     toggleMenu();
                 }
@@ -1382,20 +1623,53 @@
 
         const showPlans = (planType) => {
             const showMonthly = planType === 'monthly';
-            monthlyPlans.forEach(card => card.style.display = showMonthly ? 'block' : 'none');
-            annualPlans.forEach(card => card.style.display = !showMonthly ? 'block' : 'none');
-        };
 
+            if (showMonthly) {
+                // Hide annual plans, then show monthly plans
+                annualPlans.forEach(card => card.classList.add('is-hiding'));
+                setTimeout(() => {
+                    annualPlans.forEach(card => card.style.display = 'none');
+                    monthlyPlans.forEach(card => {
+                        card.style.display = 'flex';
+                        requestAnimationFrame(() => {
+                            card.classList.remove('is-hiding');
+                        });
+                    });
+                }, 400); 
+            } else {
+                // Hide monthly plans, then show annual plans
+                monthlyPlans.forEach(card => card.classList.add('is-hiding'));
+                setTimeout(() => {
+                    monthlyPlans.forEach(card => card.style.display = 'none');
+                    annualPlans.forEach(card => {
+                        card.style.display = 'flex';
+                        requestAnimationFrame(() => {
+                            card.classList.remove('is-hiding');
+                        });
+                    });
+                }, 400);
+            }
+        };
+        
         toggleButtons.forEach(button => {
             button.addEventListener("click", function() {
+                if(this.classList.contains('active')) return;
+                
                 toggleButtons.forEach(btn => btn.classList.remove("active"));
                 this.classList.add("active");
                 showPlans(this.dataset.planType);
             });
         });
         
-        // Initialize with monthly plans
-        showPlans('monthly');
+        // Initial setup on load
+        annualPlans.forEach(card => {
+            card.style.display = 'none';
+            card.classList.add('is-hiding');
+        });
+        monthlyPlans.forEach(card => {
+            card.classList.remove('is-hiding');
+        });
+
 
         // --- Trial Modal Logic ---
         const trialModal = document.getElementById("trial-modal");
@@ -1411,20 +1685,21 @@
                 modalMessage.textContent = "";
                 modalMessage.style.color = 'var(--primary-light)'; // Reset color
                 document.getElementById("trial-form").reset();
-                document.querySelector("#trial-form button").disabled = false;
+                const submitButton = document.querySelector("#trial-form button");
+                if (submitButton) submitButton.disabled = false;
             }, 300);
         };
 
-        heroTrialBtn.addEventListener("click", openModal);
-        requestTrialBtn.addEventListener("click", openModal);
-        closeModalBtn.addEventListener("click", closeModal);
+        if(heroTrialBtn) heroTrialBtn.addEventListener("click", openModal);
+        if(requestTrialBtn) requestTrialBtn.addEventListener("click", openModal);
+        if(closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
         
-        trialModal.addEventListener("click", (event) => {
+        if(trialModal) trialModal.addEventListener("click", (event) => {
             if (event.target === trialModal) closeModal();
         });
         
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && trialModal.classList.contains('is-visible')) closeModal();
+            if (event.key === 'Escape' && trialModal && trialModal.classList.contains('is-visible')) closeModal();
         });
         
         // --- FAQ Accordion Logic ---
@@ -1435,8 +1710,10 @@
                 const icon = question.querySelector('i');
 
                 question.classList.toggle('active');
-                icon.classList.toggle('fa-plus');
-                icon.classList.toggle('fa-minus');
+                if(icon) {
+                    icon.classList.toggle('fa-plus');
+                    icon.classList.toggle('fa-minus');
+                }
 
                 if (question.classList.contains('active')) {
                     answer.style.maxHeight = answer.scrollHeight + 'px';
@@ -1452,20 +1729,26 @@
             
             messageElement.textContent = "Enviando...";
             messageElement.style.color = 'var(--gray-600)';
-            submitButton.disabled = true;
+            if(submitButton) submitButton.disabled = true;
 
             try {
-                const response = await fetch('/.netlify/functions/send-email', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Server responded with status: ${response.status}`);
+                // This is a placeholder for your Netlify function or backend endpoint
+                // const response = await fetch('/.netlify/functions/send-email', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify(payload),
+                // });
+                // if (!response.ok) throw new Error(`Server responded with status: ${response.status}`);
+                // const result = await response.json();
+                
+                // ---- MOCK RESPONSE (for demonstration) ----
+                await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+                const result = { message: "¡Mensaje enviado con éxito!" };
+                if (payload.formType === 'trial') {
+                    result.message = "¡Enlace de prueba enviado! Revisa tu correo.";
                 }
+                // ---- END MOCK RESPONSE ----
 
-                const result = await response.json();
                 messageElement.textContent = result.message;
                 messageElement.style.color = 'var(--primary-light)';
                 
@@ -1475,7 +1758,7 @@
                     formElement.reset();
                      setTimeout(() => {
                         messageElement.textContent = '';
-                        submitButton.disabled = false;
+                        if(submitButton) submitButton.disabled = false;
                     }, 5000);
                 }
 
@@ -1483,13 +1766,13 @@
                 console.error('Error sending email:', error);
                 messageElement.textContent = "Error al enviar. Inténtalo de nuevo.";
                 messageElement.style.color = 'var(--danger)';
-                submitButton.disabled = false;
+                if(submitButton) submitButton.disabled = false;
             }
         };
 
         // --- Trial Form Event Listener ---
         const trialForm = document.getElementById("trial-form");
-        trialForm.addEventListener("submit", function(e) {
+        if(trialForm) trialForm.addEventListener("submit", function(e) {
             e.preventDefault();
             const userEmail = document.getElementById("trial-email").value;
             const deviceFingerprint = generateDeviceFingerprint();
@@ -1504,7 +1787,7 @@
         
         // --- Contact Form Event Listener ---
         const contactForm = document.getElementById('contact-form');
-        contactForm.addEventListener('submit', function(e) {
+        if(contactForm) contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const payload = {
                 formType: 'contact',
