@@ -1103,7 +1103,7 @@
         <!-- Hero Section -->
         <section class="hero" id="home">
             <div class="hero-content">
-                <h1>COSTEPRO</h1>
+                <h1>Toma el Control Total de tu Cocina</h1>
                 <p>El software para chefs y gerentes que convierte la gestión de costes en tu mayor ventaja competitiva. Maximiza tu rentabilidad hoy.</p>
                 <button class="hero-button" id="hero-trial-btn">
                     <i class="fas fa-rocket"></i>
@@ -1528,7 +1528,6 @@
         <div class="modal-content">
             <span class="close-button" id="close-modal-btn">&times;</span>
             <h2>Solicita tu Prueba Gratuita</h2>
-            <p>Introduce tu email y te enviaremos el enlace de descarga de la versión de prueba de 3 días de CostePro.</p>
             <form id="trial-form" class="modal-form">
                 <input type="email" id="trial-email" placeholder="Tu correo electrónico" required>
                 <button type="submit" class="modal-button">Enviar Enlace</button>
@@ -1732,28 +1731,26 @@
             if(submitButton) submitButton.disabled = true;
 
             try {
-                // This is a placeholder for your Netlify function or backend endpoint
-                // const response = await fetch('/.netlify/functions/send-email', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify(payload),
-                // });
-                // if (!response.ok) throw new Error(`Server responded with status: ${response.status}`);
-                // const result = await response.json();
-                
-                // ---- MOCK RESPONSE (for demonstration) ----
-                await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
-                const result = { message: "¡Mensaje enviado con éxito!" };
-                if (payload.formType === 'trial') {
-                    result.message = "¡Enlace de prueba enviado! Revisa tu correo.";
+                // REAL FETCH to Netlify function
+                const response = await fetch('/.netlify/functions/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!response.ok) {
+                    // Try to get error message from backend
+                    const errorResult = await response.json().catch(() => ({ message: 'Error en el servidor.' }));
+                    throw new Error(errorResult.message || `El servidor respondió con el estado: ${response.status}`);
                 }
-                // ---- END MOCK RESPONSE ----
+
+                const result = await response.json();
 
                 messageElement.textContent = result.message;
                 messageElement.style.color = 'var(--primary-light)';
                 
                 if (formElement.id === 'trial-form') {
-                    setTimeout(closeModal, 3000);
+                    setTimeout(closeModal, 4000);
                 } else {
                     formElement.reset();
                      setTimeout(() => {
@@ -1763,7 +1760,7 @@
                 }
 
             } catch (error) {
-                console.error('Error sending email:', error);
+                console.error('Error al enviar el formulario:', error);
                 messageElement.textContent = "Error al enviar. Inténtalo de nuevo.";
                 messageElement.style.color = 'var(--danger)';
                 if(submitButton) submitButton.disabled = false;
