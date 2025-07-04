@@ -6,6 +6,7 @@ const crypto = require('crypto');
 
 async function appendToSheet(email, token, fingerprint) {
   try {
+    // Validar que la clave privada de Google esté configurada correctamente
     const rawKey = process.env.GOOGLE_PRIVATE_KEY;
     if (!rawKey || !rawKey.startsWith('-----BEGIN PRIVATE KEY-----')) {
       console.error('Error Crítico: La variable de entorno GOOGLE_PRIVATE_KEY no está configurada correctamente.');
@@ -13,6 +14,7 @@ async function appendToSheet(email, token, fingerprint) {
     }
     const privateKey = rawKey.replace(/\\n/g, '\n');
 
+    // Autenticación con la cuenta de servicio de Google
     const serviceAccountAuth = new JWT({
       email: process.env.GOOGLE_CLIENT_EMAIL,
       key: privateKey,
@@ -28,19 +30,12 @@ async function appendToSheet(email, token, fingerprint) {
       throw new Error('No se encontró la hoja de cálculo "Prueba".');
     }
 
-    // --- NUEVO: Calcular fecha de solicitud y expiración ---
-    const requestDate = new Date();
-    const expirationDate = new Date(requestDate);
-    expirationDate.setDate(requestDate.getDate() + 3); // Añadir 3 días
-
-    const requestTimestampISO = requestDate.toISOString();
-    const expirationTimestampISO = expirationDate.toISOString();
+    const requestTimestampISO = new Date().toISOString();
     
-    // Añadir la nueva fila con la fecha de expiración
+    // Añadir la nueva fila con los datos. La fecha de solicitud se usará para la validación de 12h.
     await sheet.addRow({ 
       'Email': email, 
       'Fecha de Solicitud': requestTimestampISO,
-      'Fecha de expiración': expirationTimestampISO, // <-- NUEVO CAMPO
       'Fingerprint': fingerprint,
       'TokenUnico': token, 
     });
@@ -49,7 +44,8 @@ async function appendToSheet(email, token, fingerprint) {
 
   } catch (error) {
     console.error('Error al escribir en Google Sheets:', error);
-    throw error;
+    // Lanzamos el error para que la función principal lo capture y devuelva un error 500
+    throw error; 
   }
 }
 
@@ -60,7 +56,8 @@ exports.handler = async (event) => {
 
   try {
     const data = JSON.parse(event.body);
-    
+    const { formType, email, name, message, fingerprint } = data;
+
     const transporter = nodemailer.createTransport({
       host: 'smtp.hostinger.com',
       port: 465,
@@ -71,22 +68,24 @@ exports.handler = async (event) => {
       }
     });
 
-    if (data.formType === 'trial') {
-      if (!data.email) {
-        return { statusCode: 400, body: 'El correo electrónico es requerido.' };
+    if (formType === 'trial') {
+      if (!email) {
+        return { statusCode: 400, body: JSON.stringify({ message: 'El correo electrónico es requerido.' }) };
       }
 
       const token = crypto.randomBytes(16).toString('hex');
-      const fingerprint = data.fingerprint || 'no-fingerprint';
+      const safeFingerprint = fingerprint || 'no-fingerprint';
       
-      await appendToSheet(data.email, token, fingerprint);
+      // Intentar escribir en la hoja de cálculo. Si falla, la función se detendrá aquí.
+      await appendToSheet(email, token, safeFingerprint);
 
+      // Usar la variable de entorno de Netlify para la URL base, que es más robusto.
       const downloadLink = `${process.env.URL}/.netlify/functions/descargar-prueba?token=${token}`;
 
       const mailToCustomer = {
         from: `"CostePro" <${process.env.HOSTINGER_EMAIL}>`,
-        to: data.email,
-        subject: '✅ Tu enlace de descarga para CostePro (expira en 12 horas)',
+        to: email,
+        subject: '✅ Tu enlace de descarga para CostePro',
         html: `
           <!DOCTYPE html>
           <html lang="es">
@@ -112,7 +111,6 @@ exports.handler = async (event) => {
                 <h2>¡Tu prueba gratuita está lista!</h2>
                 <p>Hola,</p>
                 <p>¡Muchas gracias por tu interés en <strong>CostePro</strong>! Haz clic en el botón de abajo para descargar tu versión de prueba.</p>
-                <p style="font-weight: bold; color: #e76f51;">Importante: Este enlace de descarga caducará automáticamente en 12 horas.</p>
                 <div class="button-container">
                   <a href="${downloadLink}" class="button">Descargar mi Prueba Gratis</a>
                 </div>
@@ -131,9 +129,18 @@ exports.handler = async (event) => {
         const mailFromContactForm = {
             from: `"Web CostePro" <${process.env.HOSTINGER_EMAIL}>`,
             to: process.env.HOSTINGER_EMAIL,
-            subject: `📬 Nuevo mensaje de contacto de: ${data.name}`,
-            replyTo: data.email,
-            html: `<p>Nombre: ${data.name}</p><p>Email: ${data.email}</p><p>Mensaje: ${data.message}</p>`
+            subject: `📬 Nuevo mensaje de contacto de: ${name}`,
+            replyTo: email,
+            html: `
+              <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>Nuevo Mensaje de Contacto</h2>
+                <p><strong>Nombre:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <hr>
+                <p><strong>Mensaje:</strong></p>
+                <p>${message}</p>
+              </div>
+            `
         };
         await transporter.sendMail(mailFromContactForm);
     } else {
@@ -148,6 +155,6 @@ exports.handler = async (event) => {
 
   } catch (error) {
     console.error('--- ERROR GENERAL EN LA FUNCIÓN ---', error);
-    return { statusCode: 500, body: 'Error al procesar la solicitud. Revisa los logs del servidor.' };
+    return { statusCode: 500, body: JSON.stringify({ message: 'Error al procesar la solicitud. Revisa los logs del servidor.' }) };
   }
 };
