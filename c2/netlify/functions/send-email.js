@@ -30,12 +30,18 @@ async function appendToSheet(email, token, fingerprint) {
       throw new Error('No se encontró la hoja de cálculo "Prueba".');
     }
 
-    const requestTimestampISO = new Date().toISOString();
+    // Calcular fecha de solicitud y expiración (12 horas, como en el script de descarga)
+    const requestDate = new Date();
+    const expirationDate = new Date(requestDate.getTime() + 12 * 60 * 60 * 1000); 
+
+    const requestTimestampISO = requestDate.toISOString();
+    const expirationTimestampISO = expirationDate.toISOString();
     
-    // Añadir la nueva fila con los datos. La fecha de solicitud se usará para la validación de 12h.
+    // Añadir la nueva fila con los datos, incluyendo la fecha de expiración
     await sheet.addRow({ 
       'Email': email, 
       'Fecha de Solicitud': requestTimestampISO,
+      'Fecha de expiración': expirationTimestampISO,
       'Fingerprint': fingerprint,
       'TokenUnico': token, 
     });
