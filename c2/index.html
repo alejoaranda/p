@@ -211,6 +211,53 @@
             z-index: 1001; /* Ensure it's above the menu */
         }
         .mobile-menu-toggle:hover { transform: scale(1.1); }
+        
+        /* Language Selector Styles */
+        .language-selector {
+            position: relative;
+            margin-left: 1rem;
+        }
+        .language-selector-button {
+            background: none;
+            border: 1px solid var(--gray-200);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+        .language-selector-button:hover {
+            background-color: var(--gray-100);
+        }
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-md);
+            list-style: none;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            min-width: 150px;
+            z-index: 1010;
+        }
+        .language-selector:hover .language-dropdown {
+            display: block;
+        }
+        .language-option {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .language-option:hover {
+            background-color: var(--gray-100);
+        }
+
 
         /* * =================================
          * Hero Section
@@ -965,7 +1012,6 @@
             height: 20px;
         }
 
-
         /* * =================================
          * Animations & Utility
          * =================================
@@ -1018,6 +1064,7 @@
             .modal-content { padding: 2rem 1.5rem; }
             .modal h2 { font-size: 1.5rem; }
             .testimonials-grid { grid-template-columns: 1fr; }
+            .language-selector { margin-left: auto; margin-right: 1rem; }
         }
     </style>
     
@@ -1033,31 +1080,31 @@
       "offers": [
         {
           "@type": "Offer",
-          "price": "8.99",
+          "price": "9.99",
           "priceCurrency": "EUR",
           "name": "CostePro Mensual",
-          "description": "Suscripción mensual al plan estándar."
+          "description": "Suscripción mensual al plan estándar con funciones de inteligencia artificial."
         },
         {
           "@type": "Offer",
-          "price": "15.99",
+          "price": "18.99",
           "priceCurrency": "EUR",
           "name": "CostePro Premium Mensual",
-          "description": "Suscripción mensual al plan premium con recetas y soporte prioritario."
+          "description": "Suscripción mensual al plan premium con creación de recetas masivas, asistente gastronómico IA y soporte prioritario."
         },
         {
           "@type": "Offer",
-          "price": "94.99",
+          "price": "104.90",
           "priceCurrency": "EUR",
           "name": "CostePro Anual",
-          "description": "Suscripción anual al plan estándar con un 12% de ahorro."
+          "description": "Suscripción anual al plan estándar con inteligencia artificial y un 13% de ahorro."
         },
         {
             "@type": "Offer",
-            "price": "154.99",
+            "price": "182.99",
             "priceCurrency": "EUR",
             "name": "CostePro Premium Anual",
-            "description": "Suscripción anual al plan premium con un 20% de ahorro."
+            "description": "Suscripción anual al plan premium con creación de recetas masivas, asistente gastronómico y un 20% de ahorro."
         }
       ],
       "aggregateRating": {
@@ -1083,15 +1130,30 @@
                 </a>
                 
                 <ul class="nav-menu" id="nav-menu">
-                    <li><a href="#features" class="nav-link">Características</a></li>
-                    <li><a href="#testimonials" class="nav-link">Testimonios</a></li>
-                    <li><a href="#pricing" class="nav-link">Precios</a></li>
-                    <li><a href="#faq" class="nav-link">FAQ</a></li>
-                    <li><a href="#contact" class="nav-link">Contacto</a></li>
+                    <li><a href="#features" class="nav-link" data-translate="nav_features">Características</a></li>
+                    <li><a href="#testimonials" class="nav-link" data-translate="nav_testimonials">Testimonios</a></li>
+                    <li><a href="#pricing" class="nav-link" data-translate="nav_pricing">Precios</a></li>
+                    <li><a href="#faq" class="nav-link" data-translate="nav_faq">FAQ</a></li>
+                    <li><a href="#contact" class="nav-link" data-translate="nav_contact">Contacto</a></li>
                 </ul>
                 
-                <a href="#pricing" class="cta-button">Ver Planes</a>
-                
+                <a href="#pricing" class="cta-button" data-translate="nav_cta">Ver Planes</a>
+                 
+                <div class="language-selector">
+                    <button class="language-selector-button" id="lang-selector-btn">
+                        <i class="fas fa-globe"></i>
+                        <span id="current-lang">Español</span>
+                    </button>
+                    <ul class="language-dropdown">
+                        <li class="language-option" data-lang="es">Español</li>
+                        <li class="language-option" data-lang="en">English</li>
+                        <li class="language-option" data-lang="de">Deutsch</li>
+                        <li class="language-option" data-lang="fr">Français</li>
+                        <li class="language-option" data-lang="pt">Português</li>
+                        <li class="language-option" data-lang="it">Italiano</li>
+                    </ul>
+                </div>
+
                 <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Abrir menú">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -1103,11 +1165,11 @@
         <!-- Hero Section -->
         <section class="hero" id="home">
             <div class="hero-content">
-                <h1>COSTEPRO</h1>
-                <p>El software para chefs y gerentes que convierte la gestión de costes en tu mayor ventaja competitiva. Maximiza tu rentabilidad hoy.</p>
+                <h1 data-translate="hero_title">COSTEPRO</h1>
+                <p data-translate="hero_subtitle">El software para chefs y gerentes que convierte la gestión de costes en tu mayor ventaja competitiva. Maximiza tu rentabilidad hoy.</p>
                 <button class="hero-button" id="hero-trial-btn">
                     <i class="fas fa-rocket"></i>
-                    Empezar Prueba Gratuita
+                    <span data-translate="hero_cta">Empezar Prueba Gratuita</span>
                 </button>
             </div>
         </section>
@@ -1116,45 +1178,45 @@
         <section id="features" class="section">
             <div class="container">
                 <div class="title-wrapper">
-                    <h2 class="section-title animate-on-scroll fade-up">Tu Centro de Mando Culinario</h2>
+                    <h2 class="section-title animate-on-scroll fade-up" data-translate="features_title">Tu Centro de Mando Culinario</h2>
                 </div>
-                <p class="section-subtitle animate-on-scroll fade-up">CostePro centraliza las operaciones clave de tu cocina para que ahorres tiempo, reduzcas costes y aumentes tus márgenes de beneficio.</p>
+                <p class="section-subtitle animate-on-scroll fade-up" data-translate="features_subtitle">CostePro centraliza las operaciones clave de tu cocina para que ahorres tiempo, reduzcas costes y aumentes tus márgenes de beneficio.</p>
                 
                 <div class="features-grid">
                     <div class="feature-card animate-on-scroll fade-up">
-                        <div class="feature-icon"><i class="fas fa-calculator"></i></div>
-                        <h3 class="feature-title">Escandallos Precisos</h3>
-                        <p class="feature-description">Crea escandallos detallados en segundos. Conoce el coste exacto de cada plato y fija precios que garanticen tu rentabilidad.</p>
+                        <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                        <h3 class="feature-title" data-translate="feature4_title">Creación con IA y Análisis</h3>
+                        <p class="feature-description" data-translate="feature4_desc">Crea recetas y menús completos al instante con inteligencia artificial. Deja que la IA te ayude a ser más eficiente y rentable.</p>
                     </div>
                     
                     <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 100ms;">
-                        <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
-                        <h3 class="feature-title">Ingeniería de Menús</h3>
-                        <p class="feature-description">Diseña menús rentables. Analiza la popularidad y el margen de cada plato para tomar decisiones basadas en datos reales.</p>
+                        <div class="feature-icon"><i class="fas fa-comment-dots"></i></div>
+                        <h3 class="feature-title" data-translate="feature5_title">Asistente Gastronómico IA</h3>
+                        <p class="feature-description" data-translate="feature5_desc">Nuestro asistente IA responde a tus preguntas, te da ideas para menús, te ayuda a optimizar y mucho más.</p>
                     </div>
-                    
+
                     <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 200ms;">
-                        <div class="feature-icon"><i class="fas fa-book-open"></i></div>
-                        <h3 class="feature-title">Recetario Digital</h3>
-                        <p class="feature-description">Centraliza tus recetas. Mantén la consistencia en tu cocina y facilita la formación de tu equipo con un estándar profesional.</p>
+                        <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+                        <h3 class="feature-title" data-translate="feature1_title">Escandallos Precisos</h3>
+                        <p class="feature-description" data-translate="feature1_desc">Crea escandallos detallados en segundos. Conoce el coste exacto de cada plato y fija precios que garanticen tu rentabilidad.</p>
                     </div>
                     
                     <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 300ms;">
-                        <div class="feature-icon"><i class="fas fa-clipboard-check"></i></div>
-                        <h3 class="feature-title">Control APPCC Simplificado</h3>
-                        <p class="feature-description">Gestiona la seguridad alimentaria sin esfuerzo. Registra temperaturas, limpieza y más, todo en un solo lugar y listo para inspecciones.</p>
+                        <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                        <h3 class="feature-title" data-translate="feature2_title">Ingeniería de Menús</h3>
+                        <p class="feature-description" data-translate="feature2_desc">Diseña menús rentables. Analiza la popularidad y el margen de cada plato para tomar decisiones basadas en datos reales.</p>
                     </div>
                     
                     <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 400ms;">
-                        <div class="feature-icon"><i class="fas fa-headset"></i></div>
-                        <h3 class="feature-title">Soporte Dedicado</h3>
-                        <p class="feature-description">Nunca estarás solo. Ofrecemos soporte rápido por email y asistencia prioritaria por WhatsApp en nuestro plan Premium.</p>
+                        <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+                        <h3 class="feature-title" data-translate="feature3_title">Recetario Digital</h3>
+                        <p class="feature-description" data-translate="feature3_desc">Centraliza tus recetas. Mantén la consistencia en tu cocina y facilita la formación de tu equipo con un estándar profesional.</p>
                     </div>
                     
                     <div class="feature-card animate-on-scroll fade-up" style="transition-delay: 500ms;">
                         <div class="feature-icon"><i class="fas fa-cogs"></i></div>
-                        <h3 class="feature-title">Innovación Constante</h3>
-                        <p class="feature-description">Tu suscripción te da acceso a todas las mejoras y nuevas funcionalidades que lanzamos para potenciar tu gestión.</p>
+                        <h3 class="feature-title" data-translate="feature6_title">Innovación Constante</h3>
+                        <p class="feature-description" data-translate="feature6_desc">Tu suscripción te da acceso a todas las mejoras y nuevas funcionalidades que lanzamos para potenciar tu gestión.</p>
                     </div>
                 </div>
             </div>
@@ -1164,34 +1226,34 @@
         <section id="testimonials" class="section">
             <div class="container">
                 <div class="title-wrapper">
-                    <h2 class="section-title animate-on-scroll fade-up">Nuestros Clientes</h2>
+                    <h2 class="section-title animate-on-scroll fade-up" data-translate="testimonials_title">Nuestros Clientes</h2>
                 </div>
-                <p class="section-subtitle animate-on-scroll fade-up">Chefs y dueños de restaurantes ya están transformando su negocio con CostePro.</p>
+                <p class="section-subtitle animate-on-scroll fade-up" data-translate="testimonials_subtitle">Chefs y dueños de restaurantes ya están transformando su negocio con CostePro.</p>
                 <div class="testimonials-grid">
                     <article class="testimonial-card animate-on-scroll fade-up">
-                        <p class="testimonial-quote">CostePro ha cambiado las reglas del juego. Ahora sé exactamente cuánto gano con cada plato. ¡Imprescindible!</p>
+                        <p class="testimonial-quote" data-translate="testimonial1_quote">CostePro ha cambiado las reglas del juego. Ahora sé exactamente cuánto gano con cada plato. ¡Imprescindible!</p>
                         <div class="testimonial-author">
                             <div class="author-info">
-                                <h4>Javier Pérez</h4>
-                                <p>Chef Ejecutivo, Restaurante Fusión</p>
+                                <h4 data-translate="testimonial1_author">Javier Pérez</h4>
+                                <p data-translate="testimonial1_role">Chef Ejecutivo, Restaurante Fusión</p>
                             </div>
                         </div>
                     </article>
                     <article class="testimonial-card animate-on-scroll fade-up" style="transition-delay: 150ms;">
-                        <p class="testimonial-quote">La herramienta de menús es increíblemente potente. He podido optimizar mi carta y he aumentado el margen de beneficio un 15%.</p>
+                        <p class="testimonial-quote" data-translate="testimonial2_quote">La herramienta de menús es increíblemente potente. He podido optimizar mi carta y he aumentado el margen de beneficio un 15%.</p>
                         <div class="testimonial-author">
                             <div class="author-info">
-                                <h4>María López</h4>
-                                <p>Propietaria, Bistró La Esquina</p>
+                                <h4 data-translate="testimonial2_author">María López</h4>
+                                <p data-translate="testimonial2_role">Propietaria, Bistró La Esquina</p>
                             </div>
                         </div>
                     </article>
                     <article class="testimonial-card animate-on-scroll fade-up" style="transition-delay: 300ms;">
-                        <p class="testimonial-quote">Fácil de usar, intuitivo y el soporte por WhatsApp es súper rápido. Lo recomiendo a cualquier profesional de la hostelería.</p>
+                        <p class="testimonial-quote" data-translate="testimonial3_quote">Fácil de usar, intuitivo y el soporte por WhatsApp es súper rápido. Lo recomiendo a cualquier profesional de la hostelería.</p>
                         <div class="testimonial-author">
                             <div class="author-info">
-                                <h4>Carlos Mendoza</h4>
-                                <p>Jefe de Cocina, Asador El Roble</p>
+                                <h4 data-translate="testimonial3_author">Carlos Mendoza</h4>
+                                <p data-translate="testimonial3_role">Jefe de Cocina, Asador El Roble</p>
                             </div>
                         </div>
                     </article>
@@ -1204,12 +1266,12 @@
             <div class="container">
                 <div class="trial-content">
                     <div class="title-wrapper">
-                        <h2 class="section-title animate-on-scroll fade-up">¿Listo para Maximizar tu Rentabilidad?</h2>
+                        <h2 class="section-title animate-on-scroll fade-up" data-translate="trial_title">¿Listo para Maximizar tu Rentabilidad?</h2>
                     </div>
-                    <p class="section-subtitle animate-on-scroll fade-up">Descubre el poder de CostePro con una prueba gratuita de 3 días. Sin compromiso, no se requiere tarjeta de crédito.</p>
+                    <p class="section-subtitle animate-on-scroll fade-up" data-translate="trial_subtitle">Descubre el poder de CostePro con una prueba gratuita de 3 días. Sin compromiso, no se requiere tarjeta de crédito.</p>
                     <button id="request-trial-btn" class="cta-button animate-on-scroll scale-in">
                         <i class="fas fa-download"></i>
-                        Solicitar Prueba Gratuita Ahora
+                        <span data-translate="trial_cta">Solicitar Prueba Gratuita Ahora</span>
                     </button>
                 </div>
             </div>
@@ -1219,72 +1281,74 @@
         <section id="pricing" class="section">
             <div class="container">
                 <div class="title-wrapper">
-                    <h2 class="section-title animate-on-scroll fade-up">Elige tu Plan Perfecto</h2>
+                    <h2 class="section-title animate-on-scroll fade-up" data-translate="pricing_title">Elige tu Plan Perfecto</h2>
                 </div>
-                <p class="section-subtitle animate-on-scroll fade-up">Ofrecemos flexibilidad total. Elige una suscripción mensual o anual y ahorra.</p>
+                <p class="section-subtitle animate-on-scroll fade-up" data-translate="pricing_subtitle">Ofrecemos flexibilidad total. Elige una suscripción mensual o anual y ahorra.</p>
                 
                 <div class="toggle-container animate-on-scroll fade-up">
-                    <button class="toggle-button active" data-plan-type="monthly">Suscripción Mensual</button>
-                    <button class="toggle-button" data-plan-type="annual">Suscripción Anual</button>
+                    <button class="toggle-button active" data-plan-type="monthly" data-translate="pricing_toggle_monthly">Suscripción Mensual</button>
+                    <button class="toggle-button" data-plan-type="annual" data-translate="pricing_toggle_annual">Suscripción Anual</button>
                 </div>
 
                 <div class="pricing-grid">
                     <!-- Monthly Plans -->
                     <div class="pricing-card monthly-plan animate-on-scroll fade-right">
-                        <h3 class="pricing-title">CostePro</h3>
-                        <p class="pricing-description">La solución esencial para un control total de tus costes.</p>
-                        <div class="pricing-price">8,99€ <span>/mes</span></div>
+                        <h3 class="pricing-title" data-translate="pricing1_title">CostePro</h3>
+                        <p class="pricing-description" data-translate="pricing1_desc">La solución esencial para un control total de tus costes.</p>
+                        <div class="pricing-price">9,99€ <span data-translate="pricing_per_month">/mes</span></div>
                         <ul class="pricing-features">
-                            <li><i class="fas fa-check-circle"></i>Escandallos automáticos</li>
-                            <li><i class="fas fa-check-circle"></i>Creador de menús</li>
-                            <li><i class="fas fa-check-circle"></i>Libro de recetas</li>
-                            <li><i class="fas fa-check-circle"></i>Registros de cocina</li>
-                            <li><i class="fas fa-check-circle"></i>Soporte por Email</li>
+                            <li data-translate="pricing_feature1"><i class="fas fa-check-circle"></i>Escandallos automáticos</li>
+                            <li data-translate="pricing_feature2"><i class="fas fa-check-circle"></i>Creador de menús</li>
+                            <li data-translate="pricing_feature3"><i class="fas fa-check-circle"></i>Libro de recetas</li>
+                            <li data-translate="pricing_feature_ai_basic"><i class="fas fa-check-circle"></i><strong>Creación de recetas con IA</strong></li>
+                            <li data-translate="pricing_feature4"><i class="fas fa-check-circle"></i>Registros de cocina</li>
                         </ul>
-                        <a href="https://buy.stripe.com/14AaEW72SdIZ1kn0FDcjS00" target="_blank" class="pricing-button">Suscribirse</a>
+                        <a href="https://buy.stripe.com/14AaEW72SdIZ1kn0FDcjS00" target="_blank" class="pricing-button" data-translate="pricing_subscribe">Suscribirse</a>
                     </div>
                     
                     <div class="pricing-card featured monthly-plan animate-on-scroll scale-in">
-                        <h3 class="pricing-title">CostePro Premium</h3>
-                        <p class="pricing-description">Todo lo de CostePro, más herramientas para llevar tu negocio al siguiente nivel.</p>
-                        <div class="pricing-price">15,99€ <span>/mes</span></div>
+                        <h3 class="pricing-title" data-translate="pricing2_title">CostePro Premium</h3>
+                        <p class="pricing-description" data-translate="pricing2_desc">Todo lo de CostePro, más herramientas para llevar tu negocio al siguiente nivel.</p>
+                        <div class="pricing-price">18,99€ <span data-translate="pricing_per_month">/mes</span></div>
                         <ul class="pricing-features">
-                            <li><i class="fas fa-check-circle"></i>Todo lo del plan CostePro</li>
-                            <li><i class="fas fa-check-circle"></i><strong>Biblioteca de 600+ recetas</strong></li>
-                            <li><i class="fas fa-check-circle"></i>Soporte prioritario por WhatsApp</li>
-                            <li><i class="fas fa-check-circle"></i>Acceso a futuras actualizaciones</li>
+                            <li data-translate="pricing_feature_all_standard"><i class="fas fa-check-circle"></i>Todo lo del plan CostePro</li>
+                            <li data-translate="pricing_feature_premium_assistant"><i class="fas fa-check-circle"></i><strong>Soporte prioritario y asistente gastronómico IA</strong></li>
+                            <li data-translate="pricing_feature_premium1"><i class="fas fa-check-circle"></i><strong>Creación de recetas masivas con IA</strong></li>
+                            <li data-translate="pricing_feature_premium_ai_menus"><i class="fas fa-check-circle"></i><strong>Creador de menús completos IA</strong></li>
+                            <li data-translate="pricing_feature_premium3"><i class="fas fa-check-circle"></i>Acceso a futuras actualizaciones</li>
                         </ul>
-                        <a href="https://buy.stripe.com/eVq4gy5YOawN0gj9c9cjS01" target="_blank" class="pricing-button">Suscribirse</a>
+                        <a href="https://buy.stripe.com/eVq4gy5YOawN0gj9c9cjS01" target="_blank" class="pricing-button" data-translate="pricing_subscribe">Suscribirse</a>
                     </div>
 
                     <!-- Annual Plans -->
                     <div class="pricing-card annual-plan animate-on-scroll fade-right">
-                        <h3 class="pricing-title">CostePro Anual</h3>
-                        <p class="pricing-description">Un año completo de acceso a la solución esencial.</p>
-                        <div class="savings-badge">¡Ahorra un 12%!</div>
-                        <div class="pricing-price">94,99€ <span>/año</span></div>
+                        <h3 class="pricing-title" data-translate="pricing3_title">CostePro Anual</h3>
+                        <p class="pricing-description" data-translate="pricing3_desc">Un año completo de acceso a la solución esencial.</p>
+                        <div class="savings-badge" data-translate="pricing_save13">¡Ahorra un 13%!</div>
+                        <div class="pricing-price">104,90€ <span data-translate="pricing_per_year">/año</span></div>
                         <ul class="pricing-features">
-                            <li><i class="fas fa-check-circle"></i>Escandallos automáticos</li>
-                            <li><i class="fas fa-check-circle"></i>Creador de menús</li>
-                            <li><i class="fas fa-check-circle"></i>Libro de recetas</li>
-                            <li><i class="fas fa-check-circle"></i>Registros de cocina</li>
-                            <li><i class="fas fa-check-circle"></i>Soporte por Email</li>
+                           <li data-translate="pricing_feature1"><i class="fas fa-check-circle"></i>Escandallos automáticos</li>
+                            <li data-translate="pricing_feature2"><i class="fas fa-check-circle"></i>Creador de menús</li>
+                            <li data-translate="pricing_feature3"><i class="fas fa-check-circle"></i>Libro de recetas</li>
+                            <li data-translate="pricing_feature_ai_basic"><i class="fas fa-check-circle"></i><strong>Creación de recetas con IA</strong></li>
+                            <li data-translate="pricing_feature4"><i class="fas fa-check-circle"></i>Registros de cocina</li>
                         </ul>
-                        <a href="https://buy.stripe.com/fZu28qcncfR7gfh4VTcjS08" target="_blank" class="pricing-button">Suscribirse</a>
+                        <a href="https://buy.stripe.com/fZu28qcncfR7gfh4VTcjS08" target="_blank" class="pricing-button" data-translate="pricing_subscribe">Suscribirse</a>
                     </div>
                     
                     <div class="pricing-card featured annual-plan animate-on-scroll scale-in">
-                        <h3 class="pricing-title">CostePro Premium Anual</h3>
-                        <p class="pricing-description">El paquete definitivo con un año de acceso a todas las herramientas.</p>
-                        <div class="savings-badge">¡Ahorra un 20%!</div>
-                        <div class="pricing-price">154,99€ <span>/año</span></div>
+                        <h3 class="pricing-title" data-translate="pricing4_title">CostePro Premium Anual</h3>
+                        <p class="pricing-description" data-translate="pricing4_desc">El paquete definitivo con un año de acceso a todas las herramientas.</p>
+                        <div class="savings-badge" data-translate="pricing_save20">¡Ahorra un 20%!</div>
+                        <div class="pricing-price">182,99€ <span data-translate="pricing_per_year">/año</span></div>
                         <ul class="pricing-features">
-                            <li><i class="fas fa-check-circle"></i>Todo lo del plan CostePro</li>
-                            <li><i class="fas fa-check-circle"></i><strong>Biblioteca de 600+ recetas</strong></li>
-                            <li><i class="fas fa-check-circle"></i>Soporte prioritario por WhatsApp</li>
-                            <li><i class="fas fa-check-circle"></i>Acceso a futuras actualizaciones</li>
+                            <li data-translate="pricing_feature_all_standard"><i class="fas fa-check-circle"></i>Todo lo del plan CostePro</li>
+                            <li data-translate="pricing_feature_premium_assistant"><i class="fas fa-check-circle"></i><strong>Soporte prioritario y asistente gastronómico IA</strong></li>
+                            <li data-translate="pricing_feature_premium1"><i class="fas fa-check-circle"></i><strong>Creación de recetas masivas con IA</strong></li>
+                            <li data-translate="pricing_feature_premium_ai_menus"><i class="fas fa-check-circle"></i><strong>Creador de menús completos IA</strong></li>
+                            <li data-translate="pricing_feature_premium3"><i class="fas fa-check-circle"></i>Acceso a futuras actualizaciones</li>
                         </ul>
-                        <a href="https://buy.stripe.com/5kQ8wO4UK5ct3svfAxcjS09" target="_blank" class="pricing-button">Suscribirse</a>
+                        <a href="https://buy.stripe.com/5kQ8wO4UK5ct3svfAxcjS09" target="_blank" class="pricing-button" data-translate="pricing_subscribe">Suscribirse</a>
                     </div>
                 </div>
             </div>
@@ -1294,45 +1358,45 @@
         <section id="faq" class="section">
             <div class="container">
                 <div class="title-wrapper">
-                    <h2 class="section-title animate-on-scroll fade-up">Preguntas Frecuentes</h2>
+                    <h2 class="section-title animate-on-scroll fade-up" data-translate="faq_title">Preguntas Frecuentes</h2>
                 </div>
-                <p class="section-subtitle animate-on-scroll fade-up">¿Tienes dudas? Aquí respondemos a las preguntas más comunes sobre CostePro.</p>
+                <p class="section-subtitle animate-on-scroll fade-up" data-translate="faq_subtitle">¿Tienes dudas? Aquí respondemos a las preguntas más comunes sobre CostePro.</p>
                 
                 <div class="faq-accordion">
                     <div class="faq-item animate-on-scroll fade-up">
                         <button class="faq-question">
-                            <span>¿Qué es CostePro y cómo funciona?</span>
+                            <span data-translate="faq1_q">¿Qué es CostePro y cómo funciona?</span>
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
-                            <p>CostePro es un software avanzado que se ejecuta en Microsoft Excel, pero con la simplicidad y la experiencia visual de una aplicación moderna. No requiere instalación. <strong>Es un sistema independiente no promocionado por Microsoft, pero ha sido creado utilizando los servicios de Microsoft Excel</strong> para ofrecer una plataforma robusta, potente y accesible.</p>
+                            <p data-translate="faq1_a">CostePro es un software avanzado que se ejecuta en Microsoft Excel, pero con la simplicidad y la experiencia visual de una aplicación moderna. No requiere instalación. <strong>Es un sistema independiente no promocionado por Microsoft, pero ha sido creado utilizando los servicios de Microsoft Excel</strong> para ofrecer una plataforma robusta, potente y accesible.</p>
                         </div>
                     </div>
                     <div class="faq-item animate-on-scroll fade-up">
                         <button class="faq-question">
-                            <span>¿Necesito conocimientos avanzados de Excel para usarlo?</span>
+                            <span data-translate="faq2_q">¿Necesito conocimientos avanzados de Excel para usarlo?</span>
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
-                            <p>¡Para nada! Hemos diseñado CostePro para que sea muy fácil de usar, incluso si no eres un experto en Excel. La navegación es clara y la mayoría de los cálculos complejos se realizan automáticamente. Además, ofrecemos soporte para ayudarte con cualquier duda.</p>
+                            <p data-translate="faq2_a">¡Para nada! Hemos diseñado CostePro para que sea muy fácil de usar, incluso si no eres un experto en Excel. La navegación es clara y la mayoría de los cálculos complejos se realizan automáticamente. Además, ofrecemos soporte para ayudarte con cualquier duda.</p>
                         </div>
                     </div>
                     <div class="faq-item animate-on-scroll fade-up">
                         <button class="faq-question">
-                            <span>¿Qué diferencia hay entre la suscripción mensual y la anual?</span>
+                            <span data-translate="faq3_q">¿Qué diferencia hay entre la suscripción mensual y la anual?</span>
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
-                            <p>Ambas suscripciones te dan acceso completo al software y a todas las actualizaciones mientras tu suscripción esté activa. La suscripción anual te ofrece un descuento significativo en comparación con el pago mensual, dándote el mejor precio por un año completo de servicio.</p>
+                            <p data-translate="faq3_a">Ambas suscripciones te dan acceso completo al software y a todas las actualizaciones mientras tu suscripción esté activa. La suscripción anual te ofrece un descuento significativo en comparación con el pago mensual, dándote el mejor precio por un año completo de servicio.</p>
                         </div>
                     </div>
                     <div class="faq-item animate-on-scroll fade-up">
                         <button class="faq-question">
-                            <span>¿En qué sistema operativo puedo usar CostePro?</span>
+                            <span data-translate="faq4_q">¿En qué sistema operativo puedo usar CostePro?</span>
                             <i class="fas fa-plus"></i>
                         </button>
                         <div class="faq-answer">
-                            <p>CostePro es totalmente compatible con todas las versiones de Excel para Windows, desde 2011 hasta la versión más reciente de Microsoft 365. Actualmente el software no es compatible con Mac.</p>
+                            <p data-translate="faq4_a">CostePro es totalmente compatible con todas las versiones de Excel para Windows, desde 2011 hasta la versión más reciente de Microsoft 365. Actualmente el software no es compatible con Mac.</p>
                         </div>
                     </div>
                 </div>
@@ -1343,25 +1407,25 @@
         <section id="contact" class="section contact">
             <div class="container">
                 <div class="title-wrapper">
-                    <h2 class="section-title animate-on-scroll fade-up">Contacta con Nosotros</h2>
+                    <h2 class="section-title animate-on-scroll fade-up" data-translate="contact_title">Contacta con Nosotros</h2>
                 </div>
-                <p class="section-subtitle animate-on-scroll fade-up">¿Tienes alguna pregunta o sugerencia? Rellena el formulario y te responderemos lo antes posible.</p>
+                <p class="section-subtitle animate-on-scroll fade-up" data-translate="contact_subtitle">¿Tienes alguna pregunta o sugerencia? Rellena el formulario y te responderemos lo antes posible.</p>
                 
                 <form id="contact-form" class="contact-form animate-on-scroll fade-up">
                     <div class="form-group">
-                        <label for="contact-name">Nombre</label>
+                        <label for="contact-name" data-translate="contact_name">Nombre</label>
                         <input type="text" id="contact-name" name="name" placeholder="Tu nombre completo" required>
                     </div>
                     <div class="form-group">
-                        <label for="contact-email">Correo Electrónico</label>
+                        <label for="contact-email" data-translate="contact_email">Correo Electrónico</label>
                         <input type="email" id="contact-email" name="email" placeholder="tu@email.com" required>
                     </div>
                     <div class="form-group">
-                        <label for="contact-message">Mensaje</label>
+                        <label for="contact-message" data-translate="contact_message">Mensaje</label>
                         <textarea id="contact-message" name="message" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
                     </div>
                     <button type="submit" class="cta-button">
-                        <i class="fas fa-paper-plane"></i> Enviar Mensaje
+                        <i class="fas fa-paper-plane"></i> <span data-translate="contact_send">Enviar Mensaje</span>
                     </button>
                 </form>
                 <p id="form-status" class="form-status"></p>
@@ -1378,21 +1442,21 @@
                         <div class="logo-icon">C</div>
                         <span>CostePro</span>
                     </a>
-                    <p>&copy; 2025 CostePro. Todos los derechos reservados.</p>
+                    <p data-translate="footer_copyright">&copy; 2025 CostePro. Todos los derechos reservados.</p>
                 </div>
                 
                 <div class="footer-section">
-                    <h4>Enlaces</h4>
+                    <h4 data-translate="footer_links">Enlaces</h4>
                     <ul class="footer-links">
-                        <li><a href="#features">Características</a></li>
-                        <li><a href="#testimonials">Testimonios</a></li>
-                        <li><a href="#pricing">Precios</a></li>
-                        <li><a href="#contact">Contacto</a></li>
+                        <li><a href="#features" class="nav-link" data-translate="nav_features">Características</a></li>
+                        <li><a href="#testimonials" class="nav-link" data-translate="nav_testimonials">Testimonios</a></li>
+                        <li><a href="#pricing" class="nav-link" data-translate="nav_pricing">Precios</a></li>
+                        <li><a href="#contact" class="nav-link" data-translate="nav_contact">Contacto</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-section">
-                    <h4>Síguenos</h4>
+                    <h4 data-translate="footer_follow">Síguenos</h4>
                     <ul class="social-links">
                         <li><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
                         <li><a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a></li>
@@ -1402,11 +1466,11 @@
             </div>
             
             <div class="footer-bottom">
-                <p>Pagos 100% seguros gestionados por Stripe.</p>
+                <p data-translate="footer_secure_payment">Pagos 100% seguros gestionados por Stripe.</p>
                 <div class="footer-legal-links">
-                    <a href="#privacy">Política de Privacidad</a>
+                    <a href="#privacy" class="nav-link" data-translate="footer_privacy">Política de Privacidad</a>
                     <span>|</span>
-                    <a href="#terms">Términos de Servicio</a>
+                    <a href="#terms" class="nav-link" data-translate="footer_terms">Términos de Servicio</a>
                 </div>
             </div>
         </div>
@@ -1418,53 +1482,53 @@
             <div class="container">
                 <div class="legal-content">
                     <div class="title-wrapper">
-                        <h2 class="section-title">Política de Privacidad</h2>
+                        <h2 class="section-title" data-translate="legal_privacy_title">Política de Privacidad</h2>
                     </div>
-                    <p><strong>Última actualización:</strong> 4 de julio de 2025</p>
+                    <p data-translate="legal_privacy_update"><strong>Última actualización:</strong> 31 de agosto de 2025</p>
                     
-                    <h3>1. Introducción</h3>
-                    <p>Bienvenido a CostePro. Su privacidad es de suma importancia para nosotros. Esta Política de Privacidad tiene como objetivo informarle de manera clara y transparente sobre qué datos personales recopilamos, cómo los tratamos, con qué fines, y sobre sus derechos como titular de los datos, en cumplimiento con el Reglamento General de Protección de Datos (RGPD) y la legislación española aplicable.</p>
+                    <h3 data-translate="legal_privacy_intro_title">1. Introducción</h3>
+                    <p data-translate="legal_privacy_intro_p1">Bienvenido a CostePro. Su privacidad es de suma importancia para nosotros. Esta Política de Privacidad tiene como objetivo informarle de manera clara y transparente sobre qué datos personales recopilamos, cómo los tratamos, con qué fines, y sobre sus derechos como titular de los datos, en cumplimiento con el Reglamento General de Protección de Datos (RGPD) y la legislación suiza aplicable.</p>
 
-                    <h3>2. Responsable del Tratamiento</h3>
-                    <p>El responsable del tratamiento de sus datos personales es CostePro (en adelante, "la Empresa"), con domicilio en [Su Dirección Completa]. Para cualquier consulta relacionada con la privacidad, puede utilizar el formulario de contacto de nuestro sitio web.</p>
+                    <h3 data-translate="legal_privacy_responsible_title">2. Responsable del Tratamiento</h3>
+                    <p data-translate="legal_privacy_responsible_p1">El responsable del tratamiento de sus datos personales es CostePro (en adelante, "la Empresa"), con domicilio en Berna, Suiza. Para cualquier consulta relacionada con la privacidad, puede utilizar el formulario de contacto de nuestro sitio web.</p>
 
-                    <h3>3. Información que Recopilamos</h3>
-                    <p>Recopilamos diferentes tipos de información en relación con los servicios que ofrecemos:</p>
+                    <h3 data-translate="legal_privacy_info_title">3. Información que Recopilamos</h3>
+                    <p data-translate="legal_privacy_info_p1">Recopilamos diferentes tipos de información en relación con los servicios que ofrecemos:</p>
                     <ul>
-                        <li><strong>Datos de Identificación y Contacto:</strong> Nombre, apellidos, y dirección de correo electrónico que nos proporciona al solicitar una prueba gratuita, realizar una compra o contactarnos a través de nuestros formularios.</li>
-                        <li><strong>Datos de Transacción:</strong> Información relacionada con sus compras, como el plan adquirido y la fecha de la transacción. Los pagos son procesados por nuestro proveedor externo, Stripe. <strong>No almacenamos ni tenemos acceso a los datos completos de su tarjeta de crédito o débito.</strong></li>
-                        <li><strong>Datos de Uso y Técnicos:</strong> Para la versión de prueba, podemos recopilar un identificador anónimo de su dispositivo (fingerprint) para prevenir el abuso del sistema de pruebas. Este dato no está vinculado a su identidad personal.</li>
+                        <li data-translate="legal_privacy_info_list1"><strong>Datos de Identificación y Contacto:</strong> Nombre, apellidos, y dirección de correo electrónico que nos proporciona al solicitar una prueba gratuita, realizar una compra o contactarnos a través de nuestros formularios.</li>
+                        <li data-translate="legal_privacy_info_list2"><strong>Datos de Transacción:</strong> Información relacionada con sus compras, como el plan adquirido y la fecha de la transacción. Los pagos son procesados por nuestro proveedor externo, Stripe. <strong>No almacenamos ni tenemos acceso a los datos completos de su tarjeta de crédito o débito.</strong></li>
+                        <li data-translate="legal_privacy_info_list3"><strong>Datos de Uso y Técnicos:</strong> Para la versión de prueba, podemos recopilar un identificador anónimo de su dispositivo (fingerprint) para prevenir el abuso del sistema de pruebas. Este dato no está vinculado a su identidad personal.</li>
                     </ul>
 
-                    <h3>4. Finalidad y Base Jurídica del Tratamiento</h3>
-                    <p>Tratamos sus datos con las siguientes finalidades:</p>
+                    <h3 data-translate="legal_privacy_purpose_title">4. Finalidad y Base Jurídica del Tratamiento</h3>
+                    <p data-translate="legal_privacy_purpose_p1">Tratamos sus datos con las siguientes finalidades:</p>
                     <ul>
-                        <li><strong>Gestión de la relación contractual:</strong> Para procesar sus compras, entregarle el software y gestionar su suscripción. La base jurídica es la ejecución de un contrato (Art. 6.1.b RGPD).</li>
-                        <li><strong>Comunicaciones de servicio:</strong> Para enviarle información importante sobre su cuenta, actualizaciones del software y notificaciones de soporte. La base jurídica es la ejecución del contrato.</li>
-                        <li><strong>Atención al cliente:</strong> Para responder a sus consultas y solicitudes de soporte. La base jurídica es nuestro interés legítimo en ofrecer un servicio de calidad (Art. 6.1.f RGPD).</li>
-                        <li><strong>Prevención del fraude:</strong> Para proteger la integridad de nuestro sistema de pruebas gratuitas. La base jurídica es nuestro interés legítimo en prevenir el abuso (Art. 6.1.f RGPD).</li>
+                        <li data-translate="legal_privacy_purpose_list1"><strong>Gestión de la relación contractual:</strong> Para procesar sus compras, entregarle el software y gestionar su suscripción. La base jurídica es la ejecución de un contrato.</li>
+                        <li data-translate="legal_privacy_purpose_list2"><strong>Comunicaciones de servicio:</strong> Para enviarle información importante sobre su cuenta, actualizaciones del software y notificaciones de soporte. La base jurídica es la ejecución del contrato.</li>
+                        <li data-translate="legal_privacy_purpose_list3"><strong>Atención al cliente:</strong> Para responder a sus consultas y solicitudes de soporte. La base jurídica es nuestro interés legítimo en ofrecer un servicio de calidad.</li>
+                        <li data-translate="legal_privacy_purpose_list4"><strong>Prevención del fraude:</strong> Para proteger la integridad de nuestro sistema de pruebas gratuitas. La base jurídica es nuestro interés legítimo en prevenir el abuso.</li>
                     </ul>
 
-                    <h3>5. Cesión de Datos a Terceros</h3>
-                    <p>No vendemos ni cedemos sus datos personales a terceros, con la excepción de nuestros proveedores de servicios que nos asisten en nuestras operaciones, como Stripe para el procesamiento de pagos. Estos proveedores actúan como encargados del tratamiento y están obligados contractualmente a proteger sus datos y a utilizarlos únicamente para los fines encomendados.</p>
+                    <h3 data-translate="legal_privacy_transfer_title">5. Cesión de Datos a Terceros</h3>
+                    <p data-translate="legal_privacy_transfer_p1">No vendemos ni cedemos sus datos personales a terceros, con la excepción de nuestros proveedores de servicios que nos asisten en nuestras operaciones, como Stripe para el procesamiento de pagos. Estos proveedores actúan como encargados del tratamiento y están obligados contractualmente a proteger sus datos y a utilizarlos únicamente para los fines encomendados.</p>
 
-                    <h3>6. Conservación de los Datos</h3>
-                    <p>Conservaremos sus datos personales mientras se mantenga la relación contractual y, posteriormente, durante los plazos legalmente exigidos para la atención de posibles responsabilidades (por ejemplo, por obligaciones fiscales y mercantiles).</p>
+                    <h3 data-translate="legal_privacy_retention_title">6. Conservación de los Datos</h3>
+                    <p data-translate="legal_privacy_retention_p1">Conservaremos sus datos personales mientras se mantenga la relación contractual y, posteriormente, durante los plazos legalmente exigidos para la atención de posibles responsabilidades (por ejemplo, por obligaciones fiscales y mercantiles).</p>
 
-                    <h3>7. Sus Derechos</h3>
-                    <p>Usted tiene derecho a:</p>
+                    <h3 data-translate="legal_privacy_rights_title">7. Sus Derechos</h3>
+                    <p data-translate="legal_privacy_rights_p1">Usted tiene derecho a:</p>
                     <ul>
-                        <li><strong>Acceder</strong> a sus datos personales.</li>
-                        <li>Solicitar la <strong>rectificación</strong> de los datos inexactos.</li>
-                        <li>Solicitar la <strong>supresión</strong> de sus datos cuando, entre otros motivos, ya no sean necesarios para los fines que fueron recogidos.</li>
-                        <li>Solicitar la <strong>limitación</strong> del tratamiento de sus datos.</li>
-                        <li><strong>Oponerse</strong> al tratamiento de sus datos.</li>
-                        <li>Solicitar la <strong>portabilidad</strong> de sus datos.</li>
+                        <li data-translate="legal_privacy_rights_list1"><strong>Acceder</strong> a sus datos personales.</li>
+                        <li data-translate="legal_privacy_rights_list2">Solicitar la <strong>rectificación</strong> de los datos inexactos.</li>
+                        <li data-translate="legal_privacy_rights_list3">Solicitar la <strong>supresión</strong> de sus datos cuando, entre otros motivos, ya no sean necesarios para los fines que fueron recogidos.</li>
+                        <li data-translate="legal_privacy_rights_list4">Solicitar la <strong>limitación</strong> del tratamiento de sus datos.</li>
+                        <li data-translate="legal_privacy_rights_list5"><strong>Oponerse</strong> al tratamiento de sus datos.</li>
+                        <li data-translate="legal_privacy_rights_list6">Solicitar la <strong>portabilidad</strong> de sus datos.</li>
                     </ul>
-                    <p>Puede ejercer estos derechos enviando una solicitud a través de nuestro formulario de contacto, indicando claramente el derecho que desea ejercer. También tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).</p>
+                    <p data-translate="legal_privacy_rights_p2">Puede ejercer estos derechos enviando una solicitud a través de nuestro formulario de contacto, indicando claramente el derecho que desea ejercer. También tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).</p>
 
-                    <h3>8. Modificaciones de la Política</h3>
-                    <p>Nos reservamos el derecho a modificar la presente política para adaptarla a novedades legislativas o jurisprudenciales. Le informaremos de los cambios significativos a través de nuestro sitio web o por correo electrónico.</p>
+                    <h3 data-translate="legal_privacy_modifications_title">8. Modificaciones de la Política</h3>
+                    <p data-translate="legal_privacy_modifications_p1">Nos reservamos el derecho a modificar la presente política para adaptarla a novedades legislativas o jurisprudenciales. Le informaremos de los cambios significativos a través de nuestro sitio web o por correo electrónico.</p>
                 </div>
             </div>
         </section>
@@ -1473,51 +1537,49 @@
             <div class="container">
                  <div class="legal-content">
                     <div class="title-wrapper">
-                        <h2 class="section-title">Términos y Condiciones de Servicio</h2>
+                        <h2 class="section-title" data-translate="legal_terms_title">Términos y Condiciones de Servicio</h2>
                     </div>
-                    <p><strong>Última actualización:</strong> 4 de julio de 2025</p>
+                    <p data-translate="legal_terms_update"><strong>Última actualización:</strong> 31 de agosto de 2025</p>
                     
-                    <h3>1. Objeto y Aceptación</h3>
-                    <p>Los presentes Términos y Condiciones de Servicio (en adelante, "Términos") regulan el uso del software CostePro (en adelante, el "Servicio"), proporcionado por CostePro (en adelante, "la Empresa").</p>
-                    <p>Al adquirir, descargar o utilizar el Servicio, usted (en adelante, el "Usuario") acepta y se obliga a cumplir la totalidad de los presentes Términos. Si no está de acuerdo con ellos, no debe utilizar el Servicio. La utilización del Servicio implica la aceptación plena y sin reservas de todas y cada una de las disposiciones incluidas en este documento.</p>
+                    <h3 data-translate="legal_terms_object_title">1. Objeto y Aceptación</h3>
+                    <p data-translate="legal_terms_object_p1">Los presentes Términos y Condiciones de Servicio (en adelante, "Términos") regulan el uso del software CostePro (en adelante, el "Servicio"), proporcionado por CostePro (en adelante, "la Empresa").</p>
+                    <p data-translate="legal_terms_object_p2">Al adquirir, descargar o utilizar el Servicio, usted (en adelante, el "Usuario") acepta y se obliga a cumplir la totalidad de los presentes Términos. Si no está de acuerdo con ellos, no debe utilizar el Servicio. La utilización del Servicio implica la aceptación plena y sin reservas de todas y cada una de las disposiciones incluidas en este documento.</p>
 
-                    <h3>2. Descripción del Servicio</h3>
-                    <p>CostePro es una herramienta de software en formato de hoja de cálculo avanzada, diseñada para operar con Microsoft Excel en sistemas operativos Windows. El Servicio permite a los profesionales de la hostelería realizar escandallos, gestionar costes, diseñar menús y llevar registros de cocina, entre otras funcionalidades.</p>
+                    <h3 data-translate="legal_terms_description_title">2. Descripción del Servicio y Vinculación Tecnológica</h3>
+                    <p data-translate="legal_terms_description_p1">CostePro es una herramienta de software en formato de hoja de cálculo avanzada, diseñada para operar con Microsoft Excel en sistemas operativos Windows. El Servicio también utiliza la inteligencia artificial de Google Gemini para potenciar sus funcionalidades. No obstante, **la Empresa declara expresamente que CostePro es una propiedad intelectual y un producto de desarrollo independiente, sin ninguna relación comercial, asociación o respaldo oficial por parte de Microsoft ni de Google.** El uso de sus tecnologías es meramente instrumental para el funcionamiento del Servicio y no implica ningún tipo de afiliación.</p>
+                    <p data-translate="legal_terms_description_p2">El Servicio permite a los profesionales de la hostelería realizar escandallos, gestionar costes, diseñar menús y llevar registros de cocina, entre otras funcionalidades.</p>
 
-                    <h3>3. Licencia de Uso</h3>
-                    <p>Sujeto al cumplimiento de estos Términos, la Empresa concede al Usuario una licencia limitada, personal, no exclusiva, intransferible y revocable para usar el Servicio exclusivamente para sus fines comerciales internos. Esta licencia no otorga ningún derecho de propiedad sobre el Servicio.</p>
-                    <p>El Usuario se compromete a no realizar las siguientes acciones:</p>
+                    <h3 data-translate="legal_terms_ip_title">3. Propiedad Intelectual y Uso del Servicio</h3>
+                    <p data-translate="legal_terms_ip_p1">Todos los derechos de propiedad intelectual e industrial sobre el Servicio, incluyendo su diseño, estructura, código, textos, gráficos y logotipos, son titularidad exclusiva de la Empresa o de sus licenciantes. El Usuario se compromete a no realizar las siguientes acciones:</p>
                     <ul>
-                        <li>Revender, sublicenciar, arrendar, distribuir o transferir de cualquier otro modo el Servicio a terceros.</li>
-                        <li>Realizar ingeniería inversa, descompilar, desensamblar o intentar descubrir el código fuente o las ideas subyacentes del Servicio.</li>
-                        <li>Modificar, adaptar o crear trabajos derivados basados en el Servicio.</li>
-                        <li>Eliminar cualquier aviso de propiedad intelectual o marca registrada del Servicio.</li>
+                        <li data-translate="legal_terms_ip_list1">Revender, sublicenciar, arrendar, distribuir o transferir de cualquier otro modo el Servicio a terceros.</li>
+                        <li data-translate="legal_terms_ip_list2">Realizar ingeniería inversa, descompilar, desensamblar o intentar descubrir el código fuente o las ideas subyacentes del Servicio.</li>
+                        <li data-translate="legal_terms_ip_list3">Modificar, adaptar o crear trabajos derivados basados en el Servicio.</li>
+                        <li data-translate="legal_terms_ip_list4">Eliminar cualquier aviso de propiedad intelectual o marca registrada del Servicio.</li>
                     </ul>
+                    <p data-translate="legal_terms_ip_p2">Cualquier intento de violación, intrusión o modificación no autorizada del sistema de CostePro, así como el uso indebido o fraudulento del Servicio, será considerado un delito y será perseguido con toda la fuerza de la ley. La Empresa se reserva el derecho de emprender acciones legales, incluyendo la asistencia de servicios jurídicos especializados, para proteger su propiedad intelectual y la integridad de su sistema.</p>
 
-                    <h3>4. Pagos, Suscripciones y Cancelación</h3>
-                    <p>El acceso al Servicio requiere el pago de una tarifa, ya sea mediante una suscripción periódica (mensual o anual) o un pago único, según el plan seleccionado.</p>
+                    <h3 data-translate="legal_terms_payments_title">4. Pagos, Suscripciones y Cancelación</h3>
+                    <p data-translate="legal_terms_payments_p1">El acceso al Servicio requiere el pago de una tarifa, ya sea mediante una suscripción periódica (mensual o anual) o un pago único, según el plan seleccionado.</p>
                     <ul>
-                        <li><strong>Suscripciones:</strong> Las suscripciones se renovarán automáticamente por períodos sucesivos de igual duración al inicialmente contratado. El Usuario puede cancelar la renovación automática en cualquier momento antes del inicio del siguiente período de facturación a través de la plataforma de pago Stripe. La cancelación será efectiva al finalizar el período de facturación en curso, manteniendo el acceso al Servicio hasta dicha fecha.</li>
-                        <li><strong>Pagos:</strong> Todos los pagos son procesados a través de nuestro proveedor externo, Stripe. La Empresa no almacena datos de tarjetas de crédito.</li>
-                        <li><strong>Reembolsos:</strong> Dada la naturaleza digital del producto, no se realizarán reembolsos por períodos de suscripción parciales o por falta de uso del Servicio.</li>
+                        <li data-translate="legal_terms_payments_list1"><strong>Suscripciones:</strong> Las suscripciones se renovarán automáticamente por períodos sucesivos de igual duración al inicialmente contratado. El Usuario puede cancelar la renovación automática en cualquier momento antes del inicio del siguiente período de facturación a través de la plataforma de pago Stripe. La cancelación será efectiva al finalizar el período de facturación en curso, manteniendo el acceso al Servicio hasta dicha fecha.</li>
+                        <li data-translate="legal_terms_payments_list2"><strong>Pagos:</strong> Todos los pagos son procesados a través de nuestro proveedor externo, Stripe. La Empresa no almacena datos de tarjetas de crédito.</li>
+                        <li data-translate="legal_terms_payments_list3"><strong>Reembolsos:</strong> Dada la naturaleza digital del producto, no se realizarán reembolsos por períodos de suscripción parciales o por falta de uso del Servicio.</li>
                     </ul>
                     
-                    <h3>5. Propiedad Intelectual</h3>
-                    <p>Todos los derechos de propiedad intelectual e industrial sobre el Servicio, incluyendo su diseño, estructura, código, textos, gráficos y logotipos, son titularidad exclusiva de la Empresa o de sus licenciantes. Estos Términos no confieren al Usuario ningún otro derecho de uso o explotación distinto al expresamente previsto.</p>
+                    <h3 data-translate="legal_terms_exclusions_title">5. Exclusión de Garantías y Limitación de Responsabilidad</h3>
+                    <p data-translate="legal_terms_exclusions_p1">El Servicio se proporciona "tal cual" y "según disponibilidad", sin garantías de ninguna clase, ya sean expresas o implícitas. La Empresa no garantiza que el Servicio sea ininterrumpido, seguro, libre de errores o que cumpla con las expectativas específicas del Usuario.</p>
+                    <p data-translate="legal_terms_exclusions_p2">El Usuario asume toda la responsabilidad y el riesgo derivado del uso del Servicio. En la máxima medida permitida por la ley, la Empresa no será responsable de ningún daño directo, indirecto, incidental, especial, consecuente o punitivo (incluyendo, sin limitación, la pérdida de beneficios, datos, fondo de comercio o interrupción del negocio) que resulte del uso o la imposibilidad de uso del Servicio.</p>
+                    <p data-translate="legal_terms_exclusions_p3">La responsabilidad total de la Empresa, en cualquier caso, no excederá la cantidad total abonada por el Usuario a la Empresa por el uso del Servicio durante los doce (12) meses inmediatamente anteriores al evento que dio lugar a la reclamación.</p>
 
-                    <h3>6. Exclusión de Garantías y Limitación de Responsabilidad</h3>
-                    <p>El Servicio se proporciona "tal cual" y "según disponibilidad", sin garantías de ninguna clase, ya sean expresas o implícitas. La Empresa no garantiza que el Servicio sea ininterrumpido, seguro, libre de errores o que cumpla con las expectativas específicas del Usuario.</p>
-                    <p>El Usuario asume toda la responsabilidad y el riesgo derivado del uso del Servicio. En la máxima medida permitida por la ley, la Empresa no será responsable de ningún daño directo, indirecto, incidental, especial, consecuente o punitivo (incluyendo, sin limitación, la pérdida de beneficios, datos, fondo de comercio o interrupción del negocio) que resulte del uso o la imposibilidad de uso del Servicio.</p>
-                    <p>La responsabilidad total de la Empresa, en cualquier caso, no excederá la cantidad total abonada por el Usuario a la Empresa por el uso del Servicio durante los doce (12) meses inmediatamente anteriores al evento que dio lugar a la reclamación.</p>
-
-                    <h3>7. Modificaciones de los Términos</h3>
-                    <p>La Empresa se reserva el derecho de modificar estos Términos en cualquier momento. Notificaremos al Usuario sobre cualquier cambio material mediante un aviso en nuestro sitio web o por correo electrónico. El uso continuado del Servicio después de la fecha de entrada en vigor de dichas modificaciones constituirá la aceptación de los nuevos Términos.</p>
+                    <h3 data-translate="legal_terms_modifications_title">6. Modificaciones de los Términos</h3>
+                    <p data-translate="legal_terms_modifications_p1">La Empresa se reserva el derecho de modificar estos Términos en cualquier momento. Notificaremos al Usuario sobre cualquier cambio material mediante un aviso en nuestro sitio web o por correo electrónico. El uso continuado del Servicio después de la fecha de entrada en vigor de dichas modificaciones constituirá la aceptación de los nuevos Términos.</p>
                     
-                    <h3>8. Ley Aplicable y Jurisdicción</h3>
-                    <p>Estos Términos se regirán e interpretarán de conformidad con las leyes de España. Para la resolución de cualquier controversia que pudiera derivarse del acceso o uso del Servicio, las partes se someten expresamente a los Juzgados y Tribunales de [Su Ciudad], con renuncia a cualquier otro fuero que pudiera corresponderles.</p>
+                    <h3 data-translate="legal_terms_jurisdiction_title">7. Ley Aplicable y Jurisdicción</h3>
+                    <p data-translate="legal_terms_jurisdiction_p1">Estos Términos se regirán e interpretarán de conformidad con las leyes de Suiza. Para la resolución de cualquier controversia que pudiera derivarse del acceso o uso del Servicio, las partes se someten expresamente a los Juzgados y Tribunales de Berna, con renuncia a cualquier otro fuero que pudiera corresponderles.</p>
 
-                    <h3>9. Contacto</h3>
-                    <p>Si tiene alguna pregunta sobre estos Términos, puede utilizar el formulario de contacto disponible en este sitio web.</p>
+                    <h3 data-translate="legal_terms_contact_title">8. Contacto</h3>
+                    <p data-translate="legal_terms_contact_p1">Si tiene alguna pregunta sobre estos Términos, puede utilizar el formulario de contacto disponible en este sitio web.</p>
                 </div>
             </div>
         </section>
@@ -1527,23 +1589,626 @@
     <div id="trial-modal" class="modal">
         <div class="modal-content">
             <span class="close-button" id="close-modal-btn">&times;</span>
-            <h2>Solicita tu Prueba Gratuita</h2>
+            <h2 data-translate="modal_trial_title">Solicita tu Prueba Gratuita</h2>
             <form id="trial-form" class="modal-form">
                 <input type="email" id="trial-email" placeholder="Tu correo electrónico" required>
-                <button type="submit" class="modal-button">Enviar Enlace</button>
+                <button type="submit" class="modal-button" data-translate="modal_trial_cta">Enviar Enlace</button>
             </form>
             <p class="modal-message" id="modal-message"></p>
         </div>
     </div>
-
-    <!-- Device Fingerprint Script (No changes needed here) -->
-    <script>
-        function generateDeviceFingerprint(){const t=document.createElement("canvas"),e=t.getContext("2d");e.textBaseline="top",e.font="14px Arial",e.fillText("Device fingerprint",2,2);const n={userAgent:navigator.userAgent,language:navigator.language,platform:navigator.platform,cookieEnabled:navigator.cookieEnabled,doNotTrack:navigator.doNotTrack,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone,screen:`${screen.width}x${screen.height}x${screen.colorDepth}`,canvas:t.toDataURL(),webgl:function(){try{const t=document.createElement("canvas"),e=t.getContext("webgl")||t.getContext("experimental-webgl");if(!e)return"no-webgl";const n=e.getExtension("WEBGL_debug_renderer_info");return n?e.getParameter(n.UNMASKED_VENDOR_WEBGL)+"~"+e.getParameter(n.UNMASKED_RENDERER_WEBGL):"no-debug-info"}catch(t){return"webgl-error"}}(),plugins:function(){try{return Array.from(navigator.plugins).map(t=>t.name).sort().join(",")}catch(t){return"plugins-error"}}(),fonts:function(){const t=["Arial","Helvetica","Times New Roman","Courier New","Verdana","Georgia","Palatino","Garamond","Bookman","Comic Sans MS","Trebuchet MS","Arial Black","Impact"],e=[],n="mmmmmmmmmmlli",o="72px",i=document.getElementsByTagName("body")[0],a=document.createElement("span");a.style.fontSize=o,a.style.position="absolute",a.style.left="-9999px",a.innerHTML=n;const r={},l={};for(const s of["monospace","sans-serif","serif"])a.style.fontFamily=s,i.appendChild(a),r[s]=a.offsetWidth,l[s]=a.offsetHeight,i.removeChild(a);for(const c of t){let t=!1;for(const o of["monospace","sans-serif","serif"])a.style.fontFamily=c+","+o,i.appendChild(a),t=t||a.offsetWidth!==r[o]||a.offsetHeight!==l[o],i.removeChild(a);t&&e.push(c)}return e.join(",")}()};const o=JSON.stringify(n);return function(t){let e=0;if(0===t.length)return e;for(let n=0;n<t.length;n++){const o=t.charCodeAt(n);e=(e<<5)-e+o,e&=e}return Math.abs(e)}(o).toString()}
-    </script>
-
+    
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         
+        // --- Translations Object ---
+        const translations = {
+            es: {
+                nav_features: "Características",
+                nav_testimonials: "Testimonios",
+                nav_pricing: "Precios",
+                nav_faq: "FAQ",
+                nav_contact: "Contacto",
+                nav_cta: "Ver Planes",
+                hero_title: "COSTEPRO",
+                hero_subtitle: "El software para chefs y gerentes que convierte la gestión de costes en tu mayor ventaja competitiva. Maximiza tu rentabilidad hoy.",
+                hero_cta: "Empezar Prueba Gratuita",
+                features_title: "Tu Centro de Mando Culinario",
+                features_subtitle: "CostePro centraliza las operaciones clave de tu cocina para que ahorres tiempo, reduzcas costes y aumentes tus márgenes de beneficio.",
+                feature1_title: "Escandallos Precisos",
+                feature1_desc: "Crea escandallos detallados en segundos. Conoce el coste exacto de cada plato y fija precios que garanticen tu rentabilidad.",
+                feature2_title: "Ingeniería de Menús",
+                feature2_desc: "Diseña menús rentables. Analiza la popularidad y el margen de cada plato para tomar decisiones basadas en datos reales.",
+                feature3_title: "Recetario Digital",
+                feature3_desc: "Centraliza tus recetas. Mantén la consistencia en tu cocina y facilita la formación de tu equipo con un estándar profesional.",
+                feature4_title: "Creación con IA y Análisis",
+                feature4_desc: "Crea recetas y menús completos al instante con inteligencia artificial. Deja que la IA te ayude a ser más eficiente y rentable.",
+                feature5_title: "Asistente Gastronómico IA",
+                feature5_desc: "Nuestro asistente IA responde a tus preguntas, te da ideas para menús, te ayuda a optimizar y mucho más.",
+                feature6_title: "Innovación Constante",
+                feature6_desc: "Tu suscripción te da acceso a todas las mejoras y nuevas funcionalidades que lanzamos para potenciar tu gestión.",
+                testimonials_title: "Nuestros Clientes",
+                testimonials_subtitle: "Chefs y dueños de restaurantes ya están transformando su negocio con CostePro.",
+                testimonial1_quote: "CostePro ha cambiado las reglas del juego. Ahora sé exactamente cuánto gano con cada plato. ¡Imprescindible!",
+                testimonial1_author: "Javier Pérez",
+                testimonial1_role: "Chef Ejecutivo, Restaurante Fusión",
+                testimonial2_quote: "La herramienta de menús es increíblemente potente. He podido optimizar mi carta y he aumentado el margen de beneficio un 15%.",
+                testimonial2_author: "María López",
+                testimonial2_role: "Propietaria, Bistró La Esquina",
+                testimonial3_quote: "Fácil de usar, intuitivo y el soporte por WhatsApp es súper rápido. Lo recomiendo a cualquier profesional de la hostelería.",
+                testimonial3_author: "Carlos Mendoza",
+                testimonial3_role: "Jefe de Cocina, Asador El Roble",
+                trial_title: "¿Listo para Maximizar tu Rentabilidad?",
+                trial_subtitle: "Descubre el poder de CostePro con una prueba gratuita de 3 días. Sin compromiso, no se requiere tarjeta de crédito.",
+                trial_cta: "Solicitar Prueba Gratuita Ahora",
+                pricing_title: "Elige tu Plan Perfecto",
+                pricing_subtitle: "Ofrecemos flexibilidad total. Elige una suscripción mensual o anual y ahorra.",
+                pricing_toggle_monthly: "Suscripción Mensual",
+                pricing_toggle_annual: "Suscripción Anual",
+                pricing1_title: "CostePro",
+                pricing1_desc: "La solución esencial para un control total de tus costes.",
+                pricing_per_month: "/mes",
+                pricing_per_year: "/año",
+                pricing_feature1: "Escandallos automáticos",
+                pricing_feature2: "Creador de menús",
+                pricing_feature3: "Libro de recetas",
+                pricing_feature_ai_basic: "Creación de recetas con IA",
+                pricing_feature4: "Registros de cocina",
+                pricing_feature_premium_assistant: "Soporte prioritario y asistente gastronómico IA",
+                pricing_subscribe: "Suscribirse",
+                pricing2_title: "CostePro Premium",
+                pricing2_desc: "Todo lo de CostePro, más herramientas para llevar tu negocio al siguiente nivel.",
+                pricing_feature_all_standard: "Todo lo del plan CostePro",
+                pricing_feature_premium_assistant: "Soporte prioritario y asistente gastronómico IA",
+                pricing_feature_premium1: "Creación de recetas masivas con IA",
+                pricing_feature_premium_ai_menus: "Creador de menús completos IA",
+                pricing_feature_premium3: "Acceso a futuras actualizaciones",
+                pricing3_title: "CostePro Anual",
+                pricing3_desc: "Un año completo de acceso a la solución esencial.",
+                pricing_save13: "¡Ahorra un 13%!",
+                pricing4_title: "CostePro Premium Anual",
+                pricing4_desc: "El paquete definitivo con un año de acceso a todas las herramientas.",
+                pricing_save20: "¡Ahorra un 20%!",
+                faq_title: "Preguntas Frecuentes",
+                faq_subtitle: "¿Tienes dudas? Aquí respondemos a las preguntas más comunes sobre CostePro.",
+                faq1_q: "¿Qué es CostePro y cómo funciona?",
+                faq1_a: "CostePro es un software avanzado que se ejecuta en Microsoft Excel, pero con la simplicidad y la experiencia visual de una aplicación moderna. No requiere instalación. <strong>Es un sistema independiente no promocionado por Microsoft, pero ha sido creado utilizando los servicios de Microsoft Excel</strong> para ofrecer una plataforma robusta, potente y accesible.",
+                faq2_q: "¿Necesito conocimientos avanzados de Excel para usarlo?",
+                faq2_a: "¡Para nada! Hemos diseñado CostePro para que sea muy fácil de usar, incluso si no eres un experto en Excel. La navegación es clara y la mayoría de los cálculos complejos se realizan automáticamente. Además, ofrecemos soporte para ayudarte con cualquier duda.",
+                faq3_q: "¿Qué diferencia hay entre la suscripción mensual y la anual?",
+                faq3_a: "Ambas suscripciones te dan acceso completo al software y a todas las actualizaciones mientras tu suscripción esté activa. La suscripción anual te ofrece un descuento significativo en comparación con el pago mensual, dándote el mejor precio por un año completo de servicio.",
+                faq4_q: "¿En qué sistema operativo puedo usar CostePro?",
+                faq4_a: "CostePro es totalmente compatible con todas las versiones de Excel para Windows, desde 2011 hasta la versión más reciente de Microsoft 365. Actualmente el software no es compatible con Mac.",
+                contact_title: "Contacta con Nosotros",
+                contact_subtitle: "¿Tienes alguna pregunta o sugerencia? Rellena el formulario y te responderemos lo antes posible.",
+                contact_name: "Nombre",
+                contact_email: "Correo Electrónico",
+                contact_message: "Mensaje",
+                contact_send: "Enviar Mensaje",
+                footer_copyright: "© 2025 CostePro. Todos los derechos reservados.",
+                footer_links: "Enlaces",
+                footer_follow: "Síguenos",
+                footer_secure_payment: "Pagos 100% seguros gestionados por Stripe.",
+                footer_privacy: "Política de Privacidad",
+                footer_terms: "Términos de Servicio",
+                legal_privacy_title: "Política de Privacidad",
+                legal_privacy_update: "Última actualización:",
+                legal_privacy_intro_title: "1. Introducción",
+                legal_privacy_intro_p1: "Bienvenido a CostePro. Su privacidad es de suma importancia para nosotros. Esta Política de Privacidad tiene como objetivo informarle de manera clara y transparente sobre qué datos personales recopilamos, cómo los tratamos, con qué fines, y sobre sus derechos como titular de los datos, en cumplimiento con el Reglamento General de Protección de Datos (RGPD) y la legislación suiza aplicable.",
+                legal_privacy_responsible_title: "2. Responsable del Tratamiento",
+                legal_privacy_responsible_p1: "El responsable del tratamiento de sus datos personales es CostePro (en adelante, \"la Empresa\"), con domicilio en Berna, Suiza. Para cualquier consulta relacionada con la privacidad, puede utilizar el formulario de contacto de nuestro sitio web.",
+                legal_privacy_info_title: "3. Información que Recopilamos",
+                legal_privacy_info_p1: "Recopilamos diferentes tipos de información en relación con los servicios que ofrecemos:",
+                legal_privacy_info_list1: "<strong>Datos de Identificación y Contacto:</strong> Nombre, apellidos, y dirección de correo electrónico que nos proporciona al solicitar una prueba gratuita, realizar una compra o contactarnos a través de nuestros formularios.",
+                legal_privacy_info_list2: "<strong>Datos de Transacción:</strong> Información relacionada con sus compras, como el plan adquirido y la fecha de la transacción. Los pagos son procesados por nuestro proveedor externo, Stripe. <strong>No almacenamos ni tenemos acceso a los datos completos de su tarjeta de crédito o débito.</strong>",
+                legal_privacy_info_list3: "<strong>Datos de Uso y Técnicos:</strong> Para la versión de prueba, podemos recopilar un identificador anónimo de su dispositivo (fingerprint) para prevenir el abuso del sistema de pruebas. Este dato no está vinculado a su identidad personal.",
+                legal_privacy_purpose_title: "4. Finalidad y Base Jurídica del Tratamiento",
+                legal_privacy_purpose_p1: "Tratamos sus datos con las siguientes finalidades:",
+                legal_privacy_purpose_list1: "<strong>Gestión de la relación contractual:</strong> Para procesar sus compras, entregarle el software y gestionar su suscripción. La base jurídica es la ejecución de un contrato.",
+                legal_privacy_purpose_list2: "<strong>Comunicaciones de servicio:</strong> Para enviarle información importante sobre su cuenta, actualizaciones del software y notificaciones de soporte. La base jurídica es la ejecución del contrato.",
+                legal_privacy_purpose_list3: "<strong>Atención al cliente:</strong> Para responder a sus consultas y solicitudes de soporte. La base jurídica es nuestro interés legítimo en ofrecer un servicio de calidad.",
+                legal_privacy_purpose_list4: "<strong>Prevención del fraude:</strong> Para proteger la integridad de nuestro sistema de pruebas gratuitas. La base jurídica es nuestro interés legítimo en prevenir el abuso.",
+                legal_privacy_transfer_title: "5. Cesión de Datos a Terceros",
+                legal_privacy_transfer_p1: "No vendemos ni cedemos sus datos personales a terceros, con la excepción de nuestros proveedores de servicios que nos asisten en nuestras operaciones, como Stripe para el procesamiento de pagos. Estos proveedores actúan como encargados del tratamiento y están obligados contractualmente a proteger sus datos y a utilizarlos únicamente para los fines encomendados.",
+                legal_privacy_retention_title: "6. Conservación de los Datos",
+                legal_privacy_retention_p1: "Conservaremos sus datos personales mientras se mantenga la relación contractual y, posteriormente, durante los plazos legalmente exigidos para la atención de posibles responsabilidades (por ejemplo, por obligaciones fiscales y mercantiles).",
+                legal_privacy_rights_title: "7. Sus Derechos",
+                legal_privacy_rights_p1: "Usted tiene derecho a:",
+                legal_privacy_rights_list1: "<strong>Acceder</strong> a sus datos personales.",
+                legal_privacy_rights_list2: "Solicitar la <strong>rectificación</strong> de los datos inexactos.",
+                legal_privacy_rights_list3: "Solicitar la <strong>supresión</strong> de sus datos cuando, entre otros motivos, ya no sean necesarios para los fines que fueron recogidos.",
+                legal_privacy_rights_list4: "Solicitar la <strong>limitación</strong> del tratamiento de sus datos.",
+                legal_privacy_rights_list5: "<strong>Oponerse</strong> al tratamiento de sus datos.",
+                legal_privacy_rights_list6: "Solicitar la <strong>portabilidad</strong> de sus datos.",
+                legal_privacy_rights_p2: "Puede ejercer estos derechos enviando una solicitud a través de nuestro formulario de contacto, indicando claramente el derecho que desea ejercer. También tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).",
+                legal_privacy_modifications_title: "8. Modificaciones de la Política",
+                legal_privacy_modifications_p1: "Nos reservamos el derecho a modificar la presente política para adaptarla a novedades legislativas o jurisprudenciales. Le informaremos de los cambios significativos a través de nuestro sitio web o por correo electrónico.",
+                legal_terms_title: "Términos y Condiciones de Servicio",
+                legal_terms_update: "Última actualización:",
+                legal_terms_object_title: "1. Objeto y Aceptación",
+                legal_terms_object_p1: "Los presentes Términos y Condiciones de Servicio (en adelante, \"Términos\") regulan el uso del software CostePro (en adelante, el \"Servicio\"), proporcionado por CostePro (en adelante, \"la Empresa\").",
+                legal_terms_object_p2: "Al adquirir, descargar o utilizar el Servicio, usted (en adelante, el \"Usuario\") acepta y se obliga a cumplir la totalidad de los presentes Términos. Si no está de acuerdo con ellos, no debe utilizar el Servicio. La utilización del Servicio implica la aceptación plena y sin reservas de todas y cada una de las disposiciones incluidas en este documento.",
+                legal_terms_description_title: "2. Descripción del Servicio y Vinculación Tecnológica",
+                legal_terms_description_p1: "CostePro es una herramienta de software en formato de hoja de cálculo avanzada, diseñada para operar con Microsoft Excel en sistemas operativos Windows. El Servicio también utiliza la inteligencia artificial de Google Gemini para potenciar sus funcionalidades. No obstante, **la Empresa declara expresamente que CostePro es una propiedad intelectual y un producto de desarrollo independiente, sin ninguna relación comercial, asociación o respaldo oficial por parte de Microsoft ni de Google.** El uso de sus tecnologías es meramente instrumental para el funcionamiento del Servicio y no implica ningún tipo de afiliación.",
+                legal_terms_description_p2: "El Servicio permite a los profesionales de la hostelería realizar escandallos, gestionar costes, diseñar menús y llevar registros de cocina, entre otras funcionalidades.",
+                legal_terms_ip_title: "3. Propiedad Intelectual y Uso del Servicio",
+                legal_terms_ip_p1: "Todos los derechos de propiedad intelectual e industrial sobre el Servicio, incluyendo su diseño, estructura, código, textos, gráficos y logotipos, son titularidad exclusiva de la Empresa o de sus licenciantes. El Usuario se compromete a no realizar las siguientes acciones:",
+                legal_terms_ip_list1: "Revender, sublicenciar, arrendar, distribuir o transferir de cualquier otro modo el Servicio a terceros.",
+                legal_terms_ip_list2: "Realizar ingeniería inversa, descompilar, desensamblar o intentar descubrir el código fuente o las ideas subyacentes del Servicio.",
+                legal_terms_ip_list3: "Modificar, adaptar o crear trabajos derivados basados en el Servicio.",
+                legal_terms_ip_list4: "Eliminar cualquier aviso de propiedad intelectual o marca registrada del Servicio.",
+                legal_terms_ip_p2: "Cualquier intento de violación, intrusión o modificación no autorizada del sistema de CostePro, así como el uso indebido o fraudulento del Servicio, será considerado un delito y será perseguido con toda la fuerza de la ley. La Empresa se reserva el derecho de emprender acciones legales, incluyendo la asistencia de servicios jurídicos especializados, para proteger su propiedad intelectual y la integridad de su sistema.",
+                legal_terms_payments_title: "4. Pagos, Suscripciones y Cancelación",
+                legal_terms_payments_p1: "El acceso al Servicio requiere el pago de una tarifa, ya sea mediante una suscripción periódica (mensual o anual) o un pago único, según el plan seleccionado.",
+                legal_terms_payments_list1: "<strong>Suscripciones:</strong> Las suscripciones se renovarán automáticamente por períodos sucesivos de igual duración al inicialmente contratado. El Usuario puede cancelar la renovación automática en cualquier momento antes del inicio del siguiente período de facturación a través de la plataforma de pago Stripe. La cancelación será efectiva al finalizar el período de facturación en curso, manteniendo el acceso al Servicio hasta dicha fecha.",
+                legal_terms_payments_list2: "<strong>Pagos:</strong> Todos los pagos son procesados a través de nuestro proveedor externo, Stripe. La Empresa no almacena datos de tarjetas de crédito.",
+                legal_terms_payments_list3: "<strong>Reembolsos:</strong> Dada la naturaleza digital del producto, no se realizarán reembolsos por períodos de suscripción parciales o por falta de uso del Servicio.",
+                legal_terms_exclusions_title: "5. Exclusión de Garantías y Limitación de Responsabilidad",
+                legal_terms_exclusions_p1: "El Servicio se proporciona \"tal cual\" y \"según disponibilidad\", sin garantías de ninguna clase, ya sean expresas o implícitas. La Empresa no garantiza que el Servicio sea ininterrumpido, seguro, libre de errores o que cumpla con las expectativas específicas del Usuario.",
+                legal_terms_exclusions_p2: "El Usuario asume toda la responsabilidad y el riesgo derivado del uso del Servicio. En la máxima medida permitida por la ley, la Empresa no será responsable de ningún daño directo, indirecto, incidental, especial, consecuente o punitivo (incluyendo, sin limitación, la pérdida de beneficios, datos, fondo de comercio o interrupción del negocio) que resulte del uso o la imposibilidad de uso del Servicio.",
+                legal_terms_exclusions_p3: "La responsabilidad total de la Empresa, en cualquier caso, no excederá la cantidad total abonada por el Usuario a la Empresa por el uso del Servicio durante los doce (12) meses inmediatamente anteriores al evento que dio lugar a la reclamación.",
+                legal_terms_modifications_title: "6. Modificaciones de los Términos",
+                legal_terms_modifications_p1: "La Empresa se reserva el derecho de modificar estos Términos en cualquier momento. Notificaremos al Usuario sobre cualquier cambio material mediante un aviso en nuestro sitio web o por correo electrónico. El uso continuado del Servicio después de la fecha de entrada en vigor de dichas modificaciones constituirá la aceptación de los nuevos Términos.",
+                legal_terms_jurisdiction_title: "7. Ley Aplicable y Jurisdicción",
+                legal_terms_jurisdiction_p1: "Estos Términos se regirán e interpretarán de conformidad con las leyes de Suiza. Para la resolución de cualquier controversia que pudiera derivarse del acceso o uso del Servicio, las partes se someten expresamente a los Juzgados y Tribunales de Berna, con renuncia a cualquier otro fuero que pudiera corresponderles.",
+                legal_terms_contact_title: "8. Contacto",
+                legal_terms_contact_p1: "Si tiene alguna pregunta sobre estos Términos, puede utilizar el formulario de contacto disponible en este sitio web.",
+            },
+            en: {
+                nav_features: "Features",
+                nav_testimonials: "Testimonials",
+                nav_pricing: "Pricing",
+                nav_faq: "FAQ",
+                nav_contact: "Contact",
+                nav_cta: "View Plans",
+                hero_title: "COSTEPRO",
+                hero_subtitle: "The software for chefs and managers that turns cost management into your greatest competitive advantage. Maximizes your profitability today.",
+                hero_cta: "Start Free Trial",
+                features_title: "Your Culinary Command Center",
+                features_subtitle: "CostePro centralizes your kitchen's key operations to save time, reduce costs, and increase your profit margins.",
+                feature1_title: "Precise Costing",
+                feature1_desc: "Create detailed costings in seconds. Know the exact cost of each dish and set prices that guarantee your profitability.",
+                feature2_title: "Menu Engineering",
+                feature2_desc: "Design profitable menus. Analyze the popularity and margin of each dish to make decisions based on real data.",
+                feature3_title: "Digital Cookbook",
+                feature3_desc: "Centralize your recipes. Maintain consistency in your kitchen and facilitate team training with a professional standard.",
+                feature4_title: "AI Creation and Analysis",
+                feature4_desc: "Create recipes and complete menus instantly with artificial intelligence. Let AI help you be more efficient and profitable.",
+                feature5_title: "AI Gastronomic Assistant",
+                feature5_desc: "Our AI assistant answers your questions, gives you menu ideas, helps you optimize, and much more.",
+                feature6_title: "Constant Innovation",
+                feature6_desc: "Your subscription gives you access to all improvements and new features we launch to enhance your management.",
+                testimonials_title: "Our Clients",
+                testimonials_subtitle: "Chefs and restaurant owners are already transforming their business with CostePro.",
+                testimonial1_quote: "CostePro has been a game-changer. I now know exactly how much I make on each dish. A must-have!",
+                testimonial1_author: "Javier Pérez",
+                testimonial1_role: "Executive Chef, Fusión Restaurant",
+                testimonial2_quote: "The menu tool is incredibly powerful. I've been able to optimize my menu and have increased my profit margin by 15%.",
+                testimonial2_author: "María López",
+                testimonial2_role: "Owner, La Esquina Bistro",
+                testimonial3_quote: "Easy to use, intuitive, and the WhatsApp support is super fast. I recommend it to any hospitality professional.",
+                testimonial3_author: "Carlos Mendoza",
+                testimonial3_role: "Head Chef, El Roble Steakhouse",
+                trial_title: "Ready to Maximize Your Profitability?",
+                trial_subtitle: "Discover the power of CostePro with a 3-day free trial. No commitment, no credit card required.",
+                trial_cta: "Request Free Trial Now",
+                pricing_title: "Choose Your Perfect Plan",
+                pricing_subtitle: "We offer total flexibility. Choose a monthly or annual subscription and save.",
+                pricing_toggle_monthly: "Monthly Subscription",
+                pricing_toggle_annual: "Annual Subscription",
+                pricing1_title: "CostePro",
+                pricing1_desc: "The essential solution for total control of your costs.",
+                pricing_per_month: "/month",
+                pricing_per_year: "/year",
+                pricing_feature1: "Automatic costing",
+                pricing_feature2: "Menu creator",
+                pricing_feature3: "Recipe book",
+                pricing_feature_ai_basic: "AI Recipe Creation",
+                pricing_feature4: "Kitchen records",
+                pricing_feature_premium_assistant: "Priority support and AI gastronomic assistant",
+                pricing_subscribe: "Subscribe",
+                pricing2_title: "CostePro Premium",
+                pricing2_desc: "Everything in CostePro, plus tools to take your business to the next level.",
+                pricing_feature_all_standard: "Everything in the CostePro plan",
+                pricing_feature_premium_assistant: "Priority support and AI gastronomic assistant",
+                pricing_feature_premium1: "Massive AI recipe creation",
+                pricing_feature_premium_ai_menus: "Instant complete AI menu creator",
+                pricing_feature_premium3: "Access to future updates",
+                pricing3_title: "CostePro Annual",
+                pricing3_desc: "A full year of access to the essential solution.",
+                pricing_save13: "Save 13%!",
+                pricing4_title: "CostePro Premium Annual",
+                pricing4_desc: "The ultimate package with a year of access to all tools.",
+                pricing_save20: "Save 20%!",
+                faq_title: "Frequently Asked Questions",
+                faq_subtitle: "Have questions? We answer the most common questions about CostePro here.",
+                faq1_q: "What is CostePro and how does it work?",
+                faq1_a: "CostePro is advanced software that runs on Microsoft Excel, but with the simplicity and visual experience of a modern application. No installation required. It is an independent system not promoted by Microsoft, but it has been created using Microsoft Excel services to offer a robust, powerful, and accessible platform.",
+                faq2_q: "Do I need advanced Excel skills to use it?",
+                faq2_a: "Not at all! We've designed CostePro to be very user-friendly, even if you're not an Excel expert. The navigation is clear, and most complex calculations are done automatically. Plus, we offer support to help you with any questions.",
+                faq3_q: "What's the difference between monthly and annual subscriptions?",
+                faq3_a: "Both subscriptions give you full access to the software and all updates while your subscription is active. The annual subscription offers a significant discount compared to paying monthly, giving you the best price for a full year of service.",
+                faq4_q: "What operating system can I use CostePro on?",
+                faq4_a: "CostePro is fully compatible with all versions of Excel for Windows, from 2011 to the latest version of Microsoft 365. The software is not currently compatible with Mac.",
+                contact_title: "Contact Us",
+                contact_subtitle: "Have a question or suggestion? Fill out the form, and we'll get back to you as soon as possible.",
+                contact_name: "Name",
+                contact_email: "Email Address",
+                contact_message: "Message",
+                contact_send: "Send Message",
+                footer_copyright: "© 2025 CostePro. All rights reserved.",
+                footer_links: "Links",
+                footer_follow: "Follow Us",
+                footer_secure_payment: "100% secure payments managed by Stripe.",
+                footer_privacy: "Privacy Policy",
+                footer_terms: "Terms of Service",
+                legal_privacy_title: "Privacy Policy",
+                legal_privacy_update: "Last updated:",
+                legal_privacy_intro_title: "1. Introduction",
+                legal_privacy_intro_p1: "Welcome to CostePro. Your privacy is of utmost importance to us. This Privacy Policy aims to inform you clearly and transparently about what personal data we collect, how we process it, for what purposes, and about your rights as a data subject, in compliance with the General Data Protection Regulation (GDPR) and applicable Swiss law.",
+                legal_privacy_responsible_title: "2. Data Controller",
+                legal_privacy_responsible_p1: "The data controller for your personal data is CostePro (hereinafter, \"the Company\"), with a registered office in Bern, Switzerland. For any privacy-related inquiries, you can use the contact form on our website.",
+                legal_privacy_info_title: "3. Information We Collect",
+                legal_privacy_info_p1: "We collect different types of information in connection with the services we offer:",
+                legal_privacy_info_list1: "<strong>Identification and Contact Data:</strong> Name, last names, and email address that you provide when requesting a free trial, making a purchase, or contacting us through our forms.",
+                legal_privacy_info_list2: "<strong>Transaction Data:</strong> Information related to your purchases, such as the plan purchased and the date of the transaction. Payments are processed by our third-party provider, Stripe. <strong>We do not store or have access to your full credit or debit card details.</strong>",
+                legal_privacy_info_list3: "<strong>Usage and Technical Data:</strong> For the trial version, we may collect an anonymous device identifier (fingerprint) to prevent abuse of the trial system. This data is not linked to your personal identity.",
+                legal_privacy_purpose_title: "4. Purpose and Legal Basis for Processing",
+                legal_privacy_purpose_p1: "We process your data for the following purposes:",
+                legal_privacy_purpose_list1: "<strong>Management of the contractual relationship:</strong> To process your purchases, deliver the software, and manage your subscription. The legal basis is the performance of a contract.",
+                legal_privacy_purpose_list2: "<strong>Service communications:</strong> To send you important information about your account, software updates, and support notifications. The legal basis is the performance of the contract.",
+                legal_privacy_purpose_list3: "<strong>Customer support:</strong> To respond to your inquiries and support requests. The legal basis is our legitimate interest in providing a quality service.",
+                legal_privacy_purpose_list4: "<strong>Fraud prevention:</strong> To protect the integrity of our free trial system. The legal basis is our legitimate interest in preventing abuse.",
+                legal_privacy_transfer_title: "5. Data Transfer to Third Parties",
+                legal_privacy_transfer_p1: "We do not sell or transfer your personal data to third parties, with the exception of our service providers who assist us in our operations, such as Stripe for payment processing. These providers act as data processors and are contractually obligated to protect your data and use it only for the purposes entrusted to them.",
+                legal_privacy_retention_title: "6. Data Retention",
+                legal_privacy_retention_p1: "We will retain your personal data for as long as the contractual relationship is maintained and, subsequently, for the legally required periods for addressing potential liabilities (for example, for tax and commercial obligations).",
+                legal_privacy_rights_title: "7. Your Rights",
+                legal_privacy_rights_p1: "You have the right to:",
+                legal_privacy_rights_list1: "<strong>Access</strong> your personal data.",
+                legal_privacy_rights_list2: "Request the <strong>rectification</strong> of inaccurate data.",
+                legal_privacy_rights_list3: "Request the <strong>erasure</strong> of your data when, among other reasons, it is no longer necessary for the purposes for which it was collected.",
+                legal_privacy_rights_list4: "Request the <strong>limitation</strong> of the processing of your data.",
+                legal_privacy_rights_list5: "<strong>Object</strong> to the processing of your data.",
+                legal_privacy_rights_list6: "Request the <strong>portability</strong> of your data.",
+                legal_privacy_rights_p2: "You can exercise these rights by sending a request through our contact form, clearly indicating the right you wish to exercise. You also have the right to file a complaint with the Spanish Data Protection Agency (www.aepd.es).",
+                legal_privacy_modifications_title: "8. Policy Modifications",
+                legal_privacy_modifications_p1: "We reserve the right to modify this policy at any time to adapt it to new legislation or case law. We will inform you of significant changes through our website or by email.",
+                legal_terms_title: "Terms of Service",
+                legal_terms_update: "Last updated:",
+                legal_terms_object_title: "1. Object and Acceptance",
+                legal_terms_object_p1: "These Terms of Service (hereinafter, \"Terms\") regulate the use of the CostePro software (hereinafter, the \"Service\"), provided by CostePro (hereinafter, \"the Company\").",
+                legal_terms_object_p2: "By purchasing, downloading, or using the Service, you (hereinafter, the \"User\") accept and agree to comply with all of these Terms. If you do not agree with them, you should not use the Service. The use of the Service implies the full and unreserved acceptance of each and every one of the provisions included in this document.",
+                legal_terms_description_title: "2. Description of the Service and Technological Links",
+                legal_terms_description_p1: "CostePro is an advanced spreadsheet software tool, designed to operate with Microsoft Excel on Windows operating systems. The Service also uses Google Gemini's artificial intelligence to enhance its features. However, **the Company expressly declares that CostePro is an independent intellectual property and product development, without any commercial relationship, association, or official endorsement by Microsoft or Google.** The use of their technologies is merely instrumental to the operation of the Service and does not imply any type of affiliation.",
+                legal_terms_description_p2: "The Service allows hospitality professionals to create costings, manage costs, design menus, and keep kitchen records, among other functionalities.",
+                legal_terms_ip_title: "3. Intellectual Property and Use of the Service",
+                legal_terms_ip_p1: "All intellectual and industrial property rights over the Service, including its design, structure, code, texts, graphics, and logos, are the exclusive property of the Company or its licensors. The User agrees not to perform the following actions:",
+                legal_terms_ip_list1: "Resell, sublicense, lease, distribute, or otherwise transfer the Service to third parties.",
+                legal_terms_ip_list2: "Reverse engineer, decompile, disassemble, or attempt to discover the source code or underlying ideas of the Service.",
+                legal_terms_ip_list3: "Modify, adapt, or create derivative works based on the Service.",
+                legal_terms_ip_list4: "Remove any intellectual property or trademark notice from the Service.",
+                legal_terms_ip_p2: "Any attempt to violate, intrude on, or make unauthorized modifications to the CostePro system, as well as the improper or fraudulent use of the Service, will be considered a crime and will be prosecuted to the full extent of the law. The Company reserves the right to take legal action, including the assistance of specialized legal services, to protect its intellectual property and the integrity of its system.",
+                legal_terms_payments_title: "4. Payments, Subscriptions, and Cancellation",
+                legal_terms_payments_p1: "Access to the Service requires the payment of a fee, either through a periodic subscription (monthly or annual) or a single payment, depending on the selected plan.",
+                legal_terms_payments_list1: "<strong>Subscriptions:</strong> Subscriptions will automatically renew for successive periods of the same duration as the one initially contracted. The User can cancel the automatic renewal at any time before the start of the next billing period through the Stripe payment platform. The cancellation will be effective at the end of the current billing period, maintaining access to the Service until that date.",
+                legal_terms_payments_list2: "<strong>Payments:</strong> All payments are processed through our third-party provider, Stripe. The Company does not store credit card data.",
+                legal_terms_payments_list3: "<strong>Refunds:</strong> Given the digital nature of the product, no refunds will be issued for partial subscription periods or for lack of use of the Service.",
+                legal_terms_exclusions_title: "5. Disclaimer of Warranties and Limitation of Liability",
+                legal_terms_exclusions_p1: "The Service is provided \"as is\" and \"as available,\" without warranties of any kind, whether express or implied. The Company does not guarantee that the Service will be uninterrupted, secure, error-free, or that it will meet the User's specific expectations.",
+                legal_terms_exclusions_p2: "The User assumes all responsibility and risk arising from the use of the Service. To the maximum extent permitted by law, the Company shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages (including, without limitation, loss of profits, data, goodwill, or business interruption) resulting from the use or inability to use the Service.",
+                legal_terms_exclusions_p3: "The total liability of the Company, in any case, will not exceed the total amount paid by the User to the Company for the use of the Service during the twelve (12) months immediately preceding the event that gave rise to the claim.",
+                legal_terms_modifications_title: "6. Modifications of the Terms",
+                legal_terms_modifications_p1: "The Company reserves the right to modify these Terms at any time. We will notify the User of any material changes through a notice on our website or by email. The User's continued use of the Service after the effective date of such modifications will constitute acceptance of the new Terms.",
+                legal_terms_jurisdiction_title: "7. Applicable Law and Jurisdiction",
+                legal_terms_jurisdiction_p1: "These Terms will be governed by and interpreted in accordance with the laws of Switzerland. For the resolution of any dispute that may arise from access to or use of the Service, the parties expressly submit to the Courts and Tribunals of Bern, waiving any other jurisdiction that may correspond to them.",
+                legal_terms_contact_title: "8. Contact",
+                legal_terms_contact_p1: "If you have any questions about these Terms, you can use the contact form available on this website.",
+            },
+            de: {
+                nav_features: "Funktionen",
+                nav_testimonials: "Referenzen",
+                nav_pricing: "Preise",
+                nav_faq: "FAQ",
+                nav_contact: "Kontakt",
+                nav_cta: "Pläne Ansehen",
+                hero_title: "COSTEPRO",
+                hero_subtitle: "Die Software für Köche und Manager, die Kostenmanagement in Ihren größten Wettbewerbsvorteil verwandelt. Maximieren Sie noch heute Ihre Rentabilität.",
+                hero_cta: "Kostenlose Testversion Starten",
+                features_title: "Ihr Kulinarisches Kommandozentrum",
+                features_subtitle: "CostePro zentralisiert die wichtigsten Abläufe in Ihrer Küche, damit Sie Zeit sparen, Kosten senken und Ihre Gewinnmargen steigern.",
+                feature1_title: "Präzise Kalkulation",
+                feature1_desc: "Erstellen Sie detaillierte Kalkulationen in Sekunden. Kennen Sie die genauen Kosten jedes Gerichts und legen Sie Preise fest, die Ihre Rentabilität garantieren.",
+                feature2_title: "Menü-Engineering",
+                feature2_desc: "Gestalten Sie profitable Menüs. Analysieren Sie die Beliebtheit und Marge jedes Gerichts, um datengestützte Entscheidungen zu treffen.",
+                feature3_title: "Digitales Kochbuch",
+                feature3_desc: "Zentralisieren Sie Ihre Rezepte. Sorgen Sie für Konsistenz in Ihrer Küche und erleichtern Sie die Schulung Ihres Teams mit einem professionellen Standard.",
+                feature4_title: "KI-Erstellung und -Analyse",
+                feature4_desc: "Erstellen Sie Rezepte und komplette Menüs sofort mit künstlicher Intelligenz. Lassen Sie sich von der KI dabei helfen, effizienter und rentabler zu arbeiten.",
+                feature5_title: "KI-Gastronomie-Assistent",
+                feature5_desc: "Unser KI-Assistent beantwortet Ihre Fragen, gibt Ihnen Menü-Ideen, hilft Ihnen bei der Optimierung und vieles mehr.",
+                feature6_title: "Ständige Innovation",
+                feature6_desc: "Ihr Abonnement gibt Ihnen Zugriff auf alle Verbesserungen und neuen Funktionen, die wir zur Optimierung Ihres Managements veröffentlichen.",
+                testimonials_title: "Unsere Kunden",
+                testimonials_subtitle: "Köche und Restaurantbesitzer transformieren bereits ihr Geschäft mit CostePro.",
+                testimonial1_quote: "CostePro hat alles verändert. Jetzt weiß ich genau, wie viel ich mit jedem Gericht verdiene. Unverzichtbar!",
+                testimonial1_author: "Javier Pérez",
+                testimonial1_role: "Küchenchef, Restaurant Fusión",
+                testimonial2_quote: "Das Menü-Tool ist unglaublich leistungsstark. Ich konnte meine Speisekarte optimieren und meine Gewinnmarge um 15% steigern.",
+                testimonial2_author: "María López",
+                testimonial2_role: "Inhaberin, Bistro La Esquina",
+                testimonial3_quote: "Einfach zu bedienen, intuitiv und der WhatsApp-Support ist super schnell. Ich empfehle es jedem Profi im Gastgewerbe.",
+                testimonial3_author: "Carlos Mendoza",
+                testimonial3_role: "Küchenleiter, Steakhaus El Roble",
+                trial_title: "Bereit, Ihre Rentabilität zu maximieren?",
+                trial_subtitle: "Entdecken Sie die Leistungsfähigkeit von CostePro mit einer 3-tägigen kostenlosen Testversion. Keine Verpflichtung, keine Kreditkarte erforderlich.",
+                trial_cta: "Jetzt Kostenlose Testversion Anfordern",
+                pricing_title: "Wählen Sie Ihren Perfekten Plan",
+                pricing_subtitle: "Wir bieten volle Flexibilität. Wählen Sie ein monatliches oder jährliches Abonnement und sparen Sie.",
+                pricing_toggle_monthly: "Monatliches Abonnement",
+                pricing_toggle_annual: "Jährliches Abonnement",
+                pricing1_title: "CostePro",
+                pricing1_desc: "Die wesentliche Lösung für die vollständige Kontrolle Ihrer Kosten.",
+                pricing_per_month: "/Monat",
+                pricing_per_year: "/Jahr",
+                pricing_feature1: "Automatische Kalkulationen",
+                pricing_feature2: "Menü-Ersteller",
+                pricing_feature3: "Rezeptbuch",
+                pricing_feature_ai_basic: "KI-Rezept-Erstellung",
+                pricing_feature4: "Küchenaufzeichnungen",
+                pricing_feature_premium_assistant: "Priorisierter Support und KI-Gastronomie-Assistent",
+                pricing_subscribe: "Abonnieren",
+                pricing2_title: "CostePro Premium",
+                pricing2_desc: "Alles von CostePro plus Werkzeuge, um Ihr Geschäft auf die nächste Stufe zu heben.",
+                pricing_feature_all_standard: "Alles aus dem CostePro-Plan",
+                pricing_feature_premium_assistant: "Priorisierter Support und KI-Gastronomie-Assistent",
+                pricing_feature_premium1: "Massen-KI-Rezept-Erstellung",
+                pricing_feature_premium_ai_menus: "Sofortiger kompletter KI-Menü-Ersteller",
+                pricing_feature_premium3: "Zugang zu zukünftigen Updates",
+                pricing3_title: "CostePro Jährlich",
+                pricing3_desc: "Ein ganzes Jahr Zugang zur wesentlichen Lösung.",
+                pricing_save13: "13% sparen!",
+                pricing4_title: "CostePro Premium Jährlich",
+                pricing4_desc: "Das ultimative Paket mit einem Jahr Zugang zu allen Werkzeugen.",
+                pricing_save20: "20% sparen!",
+                faq_title: "Häufig Gestellte Fragen",
+                faq_subtitle: "Haben Sie Fragen? Hier beantworten wir die häufigsten Fragen zu CostePro.",
+                faq1_q: "Was ist CostePro und wie funktioniert es?",
+                faq1_a: "CostePro ist eine fortschrittliche Software, die in Microsoft Excel ausgeführt wird, aber die Einfachheit und visuelle Erfahrung einer modernen Anwendung bietet. Keine Installation erforderlich. Es ist ein unabhängiges System, das nicht von Microsoft beworben wird, wurde aber unter Verwendung von Microsoft Excel-Diensten erstellt, um eine robuste, leistungsstarke und zugängliche Plattform zu bieten.",
+                faq2_q: "Benötige ich fortgeschrittene Excel-Kenntnisse, um es zu verwenden?",
+                faq2_a: "Überhaupt nicht! Wir haben CostePro so gestaltet, dass es sehr benutzerfreundlich ist, auch wenn Sie kein Excel-Experte sind. Die Navigation ist klar und die meisten komplexen Berechnungen erfolgen automatisch. Außerdem bieten wir Support, um Ihnen bei Fragen zu helfen.",
+                faq3_q: "¿Qué diferencia hay entre la suscripción mensual y la anual?",
+                faq3_a: "Beide Abonnements geben Ihnen vollen Zugriff auf die Software und alle Updates, solange Ihr Abonnement aktiv ist. Das jährliche Abonnement bietet einen erheblichen Rabatt im Vergleich zur monatlichen Zahlung und gibt Ihnen den besten Preis für ein ganzes Jahr Service.",
+                faq4_q: "¿En qué sistema operativo puedo usar CostePro?",
+                faq4_a: "CostePro ist vollständig kompatibel mit allen Versionen von Excel für Windows, von 2011 bis zur neuesten Version von Microsoft 365. Die Software ist derzeit nicht mit Mac kompatibel.",
+                contact_title: "Kontaktieren Sie Uns",
+                contact_subtitle: "Haben Sie eine Frage oder einen Vorschlag? Füllen Sie das Formular aus, und wir werden uns so schnell wie möglich bei Ihnen melden.",
+                contact_name: "Name",
+                contact_email: "E-Mail-Adresse",
+                contact_message: "Nachricht",
+                contact_send: "Nachricht Senden",
+                footer_copyright: "© 2025 CostePro. Alle Rechte vorbehalten.",
+                footer_links: "Links",
+                footer_follow: "Folgen Sie Uns",
+                footer_secure_payment: "100% sichere Zahlungen, verwaltet von Stripe.",
+                footer_privacy: "Datenschutzrichtlinie",
+                footer_terms: "Nutzungsbedingungen",
+                legal_privacy_title: "Datenschutzrichtlinie",
+                legal_privacy_update: "Letzte Aktualisierung:",
+                legal_privacy_intro_title: "1. Einleitung",
+                legal_privacy_intro_p1: "Willkommen bei CostePro. Ihre Privatsphäre ist uns sehr wichtig. Diese Datenschutzrichtlinie soll Sie klar und transparent darüber informieren, welche personenbezogenen Daten wir sammeln, wie wir sie verarbeiten, zu welchen Zwecken und welche Rechte Sie als betroffene Person haben, in Übereinstimmung mit der Datenschutz-Grundverordnung (DSGVO) und dem anwendbaren Schweizer Recht.",
+                legal_privacy_responsible_title: "2. Verantwortliche Stelle",
+                legal_privacy_responsible_p1: "Verantwortlich für die Verarbeitung Ihrer personenbezogenen Daten ist CostePro (nachfolgend \"das Unternehmen\"), mit Sitz in Bern, Schweiz. Bei Fragen zum Datenschutz können Sie unser Kontaktformular auf unserer Website nutzen.",
+                legal_privacy_info_title: "3. Informationen, die wir sammeln",
+                legal_privacy_info_p1: "Wir sammeln verschiedene Arten von Informationen im Zusammenhang mit den von uns angebotenen Dienstleistungen:",
+                legal_privacy_info_list1: "<strong>Identifizierungs- und Kontaktdaten:</strong> Name, Nachname und E-Mail-Adresse, die Sie uns bei der Anforderung einer kostenlosen Testversion, einem Kauf oder der Kontaktaufnahme über unsere Formulare zur Verfügung stellen.",
+                legal_privacy_info_list2: "<strong>Transaktionsdaten:</strong> Informationen im Zusammenhang mit Ihren Einkäufen, wie der gekaufte Plan und das Datum der Transaktion. Zahlungen werden von unserem externen Anbieter Stripe verarbeitet. <strong>Wir speichern oder haben keinen Zugriff auf Ihre vollständigen Kredit- oder Debitkartendaten.</strong>",
+                legal_privacy_info_list3: "<strong>Nutzungs- und technische Daten:</strong> Für die Testversion erfassen wir möglicherweise eine anonyme Gerätekennung (Fingerprint), um den Missbrauch des Testsystems zu verhindern. Diese Daten sind nicht mit Ihrer persönlichen Identität verknüpft.",
+                legal_privacy_purpose_title: "4. Zweck und Rechtsgrundlage der Verarbeitung",
+                legal_privacy_purpose_p1: "Wir verarbeiten Ihre Daten zu folgenden Zwecken:",
+                legal_privacy_purpose_list1: "<strong>Verwaltung des Vertragsverhältnisses:</strong> Zur Verarbeitung Ihrer Einkäufe, zur Bereitstellung der Software und zur Verwaltung Ihres Abonnements. Rechtsgrundlage ist die Erfüllung eines Vertrages.",
+                legal_privacy_purpose_list2: "<strong>Servicekommunikation:</strong> Um Ihnen wichtige Informationen zu Ihrem Konto, Software-Updates und Support-Benachrichtigungen zu senden. Rechtsgrundlage ist die Erfüllung des Vertrages.",
+                legal_privacy_purpose_list3: "<strong>Kundenservice:</strong> Zur Beantwortung Ihrer Anfragen und Support-Anforderungen. Rechtsgrundlage ist unser berechtigtes Interesse, einen qualitativ hochwertigen Service anzubieten.",
+                legal_privacy_purpose_list4: "<strong>Betrugsprävention:</strong> Zum Schutz der Integrität unseres kostenlosen Testsystems. Rechtsgrundlage ist unser berechtigtes Interesse, Missbrauch zu verhindern.",
+                legal_privacy_transfer_title: "5. Weitergabe von Daten an Dritte",
+                legal_privacy_transfer_p1: "Wir verkaufen oder geben Ihre personenbezogenen Daten nicht an Dritte weiter, mit Ausnahme unserer Dienstleister, die uns bei unseren Vorgängen unterstützen, wie z.B. Stripe für die Zahlungsabwicklung. Diese Anbieter handeln als Auftragsverarbeiter und sind vertraglich verpflichtet, Ihre Daten zu schützen und sie ausschließlich für die ihnen anvertrauten Zwecke zu verwenden.",
+                legal_privacy_retention_title: "6. Aufbewahrung von Daten",
+                legal_privacy_retention_p1: "Wir bewahren Ihre personenbezogenen Daten so lange auf, wie das Vertragsverhältnis besteht, und danach für die gesetzlich vorgeschriebenen Fristen zur Beilegung möglicher Haftungsansprüche (z. B. aufgrund steuer- und handelsrechtlicher Verpflichtungen).",
+                legal_privacy_rights_title: "7. Ihre Rechte",
+                legal_privacy_rights_p1: "Sie haben das Recht auf:",
+                legal_privacy_rights_list1: "<strong>Zugriff</strong> auf Ihre personenbezogenen Daten.",
+                legal_privacy_rights_list2: "Aufforderung zur <strong>Berichtigung</strong> unrichtiger Daten.",
+                legal_privacy_rights_list3: "Aufforderung zur <strong>Löschung</strong> Ihrer Daten, wenn sie unter anderem nicht mehr für die Zwecke erforderlich sind, für die sie erhoben wurden.",
+                legal_privacy_rights_list4: "Aufforderung zur <strong>Einschränkung</strong> der Verarbeitung Ihrer Daten.",
+                legal_privacy_rights_list5: "<strong>Widerspruch</strong> gegen die Verarbeitung Ihrer Daten.",
+                legal_privacy_rights_list6: "Aufforderung zur <strong>Datenübertragbarkeit</strong> Ihrer Daten.",
+                legal_privacy_rights_p2: "Sie können diese Rechte ausüben, indem Sie eine Anfrage über unser Kontaktformular senden und klar angeben, welches Recht Sie ausüben möchten. Sie haben auch das Recht, eine Beschwerde bei der spanischen Datenschutzbehörde (www.aepd.es) einzureichen.",
+                legal_privacy_modifications_title: "8. Änderungen der Richtlinie",
+                legal_privacy_modifications_p1: "Wir behalten uns das Recht vor, diese Richtlinie jederzeit zu ändern, um sie an neue Gesetze oder Rechtsprechung anzupassen. Wir werden Sie über wesentliche Änderungen über unsere Website oder per E-Mail informieren.",
+                legal_terms_title: "Nutzungsbedingungen",
+                legal_terms_update: "Letzte Aktualisierung:",
+                legal_terms_object_title: "1. Gegenstand und Annahme",
+                legal_terms_object_p1: "Diese Nutzungsbedingungen (im Folgenden \"Bedingungen\") regeln die Nutzung der Software CostePro (im Folgenden \"der Dienst\"), die von CostePro (im Folgenden \"das Unternehmen\") bereitgestellt wird.",
+                legal_terms_object_p2: "Durch den Erwerb, den Download oder die Nutzung des Dienstes akzeptieren Sie (im Folgenden \"der Benutzer\") alle diese Bedingungen und verpflichten sich, diese einzuhalten. Wenn Sie diesen nicht zustimmen, sollten Sie den Dienst nicht nutzen. Die Nutzung des Dienstes impliziert die vollständige und vorbehaltlose Annahme aller Bestimmungen dieses Dokuments.",
+                legal_terms_description_title: "2. Beschreibung des Dienstes und technologische Verbindung",
+                legal_terms_description_p1: "CostePro ist ein fortschrittliches Tabellenkalkulations-Software-Tool, das für die Ausführung mit Microsoft Excel auf Windows-Betriebssystemen entwickelt wurde. Der Dienst verwendet auch die künstliche Intelligenz von Google Gemini, um seine Funktionen zu verbessern. Das Unternehmen erklärt jedoch ausdrücklich, dass **CostePro ein unabhängiges geistiges Eigentum und Produktentwicklung ist, ohne kommerzielle Beziehung, Partnerschaft oder offizielle Unterstützung von Microsoft oder Google.** Die Nutzung ihrer Technologien ist lediglich für den Betrieb des Dienstes von instrumenteller Bedeutung und impliziert keinerlei Zugehörigkeit.",
+                legal_terms_description_p2: "Der Dienst ermöglicht Fachleuten aus dem Gastgewerbe die Durchführung von Kalkulationen, die Verwaltung von Kosten, die Gestaltung von Menüs und die Führung von Küchenaufzeichnungen, unter anderem.",
+                legal_terms_ip_title: "3. Geistiges Eigentum und Nutzung des Dienstes",
+                legal_terms_ip_p1: "Alle geistigen und gewerblichen Eigentumsrechte an dem Dienst, einschließlich seines Designs, seiner Struktur, seines Codes, seiner Texte, Grafiken und Logos, sind das ausschließliche Eigentum des Unternehmens oder seiner Lizenzgeber. Der Benutzer verpflichtet sich, die folgenden Handlungen zu unterlassen:",
+                legal_terms_ip_list1: "Den Dienst an Dritte weiterzuverkaufen, unterzulizenzieren, zu vermieten, zu vertreiben oder auf andere Weise zu übertragen.",
+                legal_terms_ip_list2: "Reverse Engineering, Dekompilierung, Disassemblierung oder der Versuch, den Quellcode oder die zugrunde liegenden Ideen des Dienstes zu entdecken.",
+                legal_terms_ip_list3: "Den Dienst zu modifizieren, anzupassen oder abgeleitete Werke davon zu erstellen.",
+                legal_terms_ip_list4: "Jegliche Hinweise auf geistiges Eigentum oder Marken aus dem Dienst zu entfernen.",
+                legal_terms_ip_p2: "Jeder Versuch, das CostePro-System zu verletzen, einzudringen oder unbefugt zu modifizieren, sowie die unsachgemäße oder betrügerische Nutzung des Dienstes, wird als Straftat angesehen und mit aller Härte des Gesetzes verfolgt. Das Unternehmen behält sich das Recht vor, rechtliche Schritte einzuleiten, einschließlich der Inanspruchnahme spezialisierter juristischer Dienstleistungen, um sein geistiges Eigentum und die Integrität seines Systems zu schützen.",
+                legal_terms_payments_title: "4. Zahlungen, Abonnements und Kündigung",
+                legal_terms_payments_p1: "Der Zugriff auf den Dienst erfordert die Zahlung einer Gebühr, entweder durch ein periodisches Abonnement (monatlich oder jährlich) oder eine einmalige Zahlung, je nach dem gewählten Plan.",
+                legal_terms_payments_list1: "<strong>Abonnements:</strong> Abonnements verlängern sich automatisch um aufeinanderfolgende Zeiträume gleicher Dauer wie der ursprünglich vereinbarte. Der Benutzer kann die automatische Verlängerung jederzeit vor Beginn des nächsten Abrechnungszeitraums über die Zahlungsplattform Stripe kündigen. Die Kündigung wird am Ende des laufenden Abrechnungszeitraums wirksam, wobei der Zugriff auf den Dienst bis zu diesem Datum erhalten bleibt.",
+                legal_terms_payments_list2: "<strong>Zahlungen:</strong> Alle Zahlungen werden über unseren externen Anbieter Stripe verarbeitet. Das Unternehmen speichert keine Kreditkartendaten.",
+                legal_terms_payments_list3: "<strong>Rückerstattungen:</strong> Aufgrund der digitalen Natur des Produkts werden keine Rückerstattungen für teilweise Abonnementzeiträume oder für die Nichtnutzung des Dienstes vorgenommen.",
+                legal_terms_exclusions_title: "5. Haftungsausschluss und Haftungsbeschränkung",
+                legal_terms_exclusions_p1: "Der Dienst wird \"wie besehen\" und \"wie verfügbar\" bereitgestellt, ohne Garantien jeglicher Art, weder ausdrücklich noch stillschweigend. Das Unternehmen garantiert nicht, dass der Dienst ununterbrochen, sicher, fehlerfrei oder den spezifischen Erwartungen des Benutzers entspricht.",
+                legal_terms_exclusions_p2: "Der Benutzer übernimmt die gesamte Verantwortung und das Risiko, das sich aus der Nutzung des Dienstes ergibt. Soweit gesetzlich zulässig, haftet das Unternehmen nicht für direkte, indirekte, zufällige, spezielle, Folge- oder Strafschäden (einschließlich, aber nicht beschränkt auf Gewinnausfall, Datenverlust, Geschäftsunterbrechung), die aus der Nutzung oder der Unmöglichkeit der Nutzung des Dienstes resultieren.",
+                legal_terms_exclusions_p3: "Die Gesamthaftung des Unternehmens übersteigt in keinem Fall den Gesamtbetrag, den der Benutzer für die Nutzung des Dienstes in den zwölf (12) Monaten unmittelbar vor dem Ereignis gezahlt hat, das zur Reklamation geführt hat.",
+                legal_terms_modifications_title: "6. Änderungen der Bedingungen",
+                legal_terms_modifications_p1: "Das Unternehmen behält sich das Recht vor, diese Bedingungen jederzeit zu ändern. Wir werden den Benutzer über wesentliche Änderungen durch eine Mitteilung auf unserer Website oder per E-Mail informieren. Die fortgesetzte Nutzung des Dienstes nach dem Inkrafttreten solcher Änderungen stellt die Annahme der neuen Bedingungen dar.",
+                legal_terms_jurisdiction_title: "7. Anwendbares Recht und Gerichtsstand",
+                legal_terms_jurisdiction_p1: "Diese Bedingungen unterliegen den Gesetzen der Schweiz und werden entsprechend ausgelegt. Für die Beilegung von Streitigkeiten, die sich aus dem Zugriff auf oder der Nutzung des Dienstes ergeben, unterwerfen sich die Parteien ausdrücklich den Gerichten von Bern und verzichten auf jeden anderen Gerichtsstand, der ihnen zustehen könnte.",
+                legal_terms_contact_title: "8. Kontakt",
+                legal_terms_contact_p1: "Bei Fragen zu diesen Bedingungen können Sie das auf dieser Website verfügbare Kontaktformular verwenden.",
+            },
+            it: {
+                nav_features: "Caratteristiche",
+                nav_testimonials: "Testimonianze",
+                nav_pricing: "Prezzi",
+                nav_faq: "FAQ",
+                nav_contact: "Contatto",
+                nav_cta: "Vedi Piani",
+                hero_title: "COSTEPRO",
+                hero_subtitle: "Il software per chef e manager che trasforma la gestione dei costi nel tuo più grande vantaggio competitivo. Massimizza la tua redditività oggi.",
+                hero_cta: "Inizia la Prova Gratuita",
+                features_title: "Il Tuo Centro di Comando Culinario",
+                features_subtitle: "CostePro centralizza le operazioni chiave della tua cucina per farti risparmiare tempo, ridurre i costi e aumentare i margini di profitto.",
+                feature1_title: "Schede Costo Precise",
+                feature1_desc: "Crea schede costo dettagliate in pochi secondi. Conosci il costo esatto di ogni piatto e imposta prezzi che garantiscano la tua redditività.",
+                feature2_title: "Ingegneria del Menu",
+                feature2_desc: "Progetta menu redditizi. Analizza la popolarità e il margine di ogni piatto per prendere decisioni basate su dati reali.",
+                feature3_title: "Ricettario Digitale",
+                feature3_desc: "Centralizza le tue ricette. Mantieni la coerenza nella tua cucina e facilita la formazione del tuo team con uno standard professionale.",
+                feature4_title: "Creazione con IA e Analisi",
+                feature4_desc: "Crea ricette e menu completi istantaneamente con l'intelligenza artificiale. Lascia che l'IA ti aiuti a essere più efficiente e redditizio.",
+                feature5_title: "Assistente Gastronomico IA",
+                feature5_desc: "Il nostro assistente IA risponde alle tue domande, ti dà idee per menu, ti aiuta a ottimizzare e molto altro.",
+                feature6_title: "Innovazione Costante",
+                feature6_desc: "Il tuo abbonamento ti dà accesso a tutti i miglioramenti e le nuove funzionalità che lanciamo per potenziare la tua gestione.",
+                testimonials_title: "I Nostri Clienti",
+                testimonials_subtitle: "Chef e ristoratori stanno già trasformando la loro attività con CostePro.",
+                testimonial1_quote: "CostePro ha cambiato le regole del gioco. Ora so esattamente quanto guadagno su ogni piatto. Indispensabile!",
+                testimonial1_author: "Javier Pérez",
+                testimonial1_role: "Executive Chef, Ristorante Fusión",
+                testimonial2_quote: "Lo strumento per i menu è incredibilmente potente. Ho potuto ottimizzare il mio menu e ho aumentato il mio margine di profitto del 15%.",
+                testimonial2_author: "Maria Lopez",
+                testimonial2_role: "Proprietaria, Bistrò La Esquina",
+                testimonial3_quote: "Facile da usare, intuitivo e il supporto WhatsApp è super veloce. Lo consiglio a qualsiasi professionista del settore.",
+                testimonial3_author: "Carlo Mendoza",
+                testimonial3_role: "Capo Cuoco, Asador El Roble",
+                trial_title: "Pronto a Massimizzare la Tua Redditività?",
+                trial_subtitle: "Scopri la potenza di CostePro con una prova gratuita di 3 giorni. Nessun impegno, nessuna carta di credito richiesta.",
+                trial_cta: "Richiedi Ora la Prova Gratuita",
+                pricing_title: "Scegli il Tuo Piano Perfetto",
+                pricing_subtitle: "Offriamo totale flessibilità. Scegli un abbonamento mensile o annuale e risparmia.",
+                pricing_toggle_monthly: "Abbonamento Mensile",
+                pricing_toggle_annual: "Abbonamento Annuale",
+                pricing1_title: "CostePro",
+                pricing1_desc: "La soluzione essenziale per un controllo totale dei tuoi costi.",
+                pricing_per_month: "/mese",
+                pricing_per_year: "/anno",
+                pricing_feature1: "Schede costo automatiche",
+                pricing_feature2: "Creatore di menu",
+                pricing_feature3: "Libro di ricette",
+                pricing_feature_ai_basic: "Creazione di ricette con IA",
+                pricing_feature4: "Registri di cucina",
+                pricing_feature_premium_assistant: "Supporto prioritario e assistente gastronomico IA",
+                pricing_subscribe: "Abbonati",
+                pricing2_title: "CostePro Premium",
+                pricing2_desc: "Tutto di CostePro, più strumenti per portare la tua attività al livello successivo.",
+                pricing_feature_all_standard: "Tutto del piano CostePro",
+                pricing_feature_premium_assistant: "Supporto prioritario e assistente gastronomico IA",
+                pricing_feature_premium1: "Creazione di ricette masive con IA",
+                pricing_feature_premium_ai_menus: "Creatore di menu completi IA",
+                pricing_feature_premium3: "Accesso agli aggiornamenti futuri",
+                pricing3_title: "CostePro Annuale",
+                pricing3_desc: "Un año intero di accesso alla soluzione essenziale.",
+                pricing_save13: "Risparmia il 13%!",
+                pricing4_title: "CostePro Premium Anuale",
+                pricing4_desc: "Il pacchetto definitivo con un anno di accesso a tutti gli strumenti.",
+                pricing_save20: "Risparmia il 20%!",
+                faq_title: "Domande Frequenti",
+                faq_subtitle: "Hai delle domande? Qui rispondiamo alle domande più comuni su CostePro.",
+                faq1_q: "Cos'è CostePro e come funziona?",
+                faq1_a: "CostePro è un software avanzato che funziona su Microsoft Excel, ma con la semplicità e l'esperienza visiva di un'applicazione moderna. Non richiede installazione. È un sistema indipendente non promosso da Microsoft, ma è stato creato utilizzando i servizi di Microsoft Excel per offrire una piattaforma robusta, potente e accessibile.",
+                faq2_q: "Ho bisogno di competenze avanzate di Excel per usarlo?",
+                faq2_a: "Assolutamente no! Abbiamo progettato CostePro per essere molto facile da usare, anche se non sei un esperto di Excel. La navigazione è chiara y la mayoría de los cálculos complejos viene eseguita automaticamente. Además, offriamo supporto per aiutarti con qualsiasi domanda.",
+                faq3_q: "Qual è la differenza tra gli abbonamenti mensili e annuali?",
+                faq3_a: "Entrambi gli abbonamenti ti danno pieno accesso al software e a tutti gli aggiornamenti finché il tuo abbonamento è attivo. L'abbonamento annuale offre uno sconto significativo rispetto al pagamento mensile, offrendoti il mejor precio per un anno intero di servizio.",
+                faq4_q: "Su quale sistema operativo posso usare CostePro?",
+                faq4_a: "CostePro è completamente compatibile con tutte le versioni di Excel para Windows, dal 2011 alla versione più recente di Microsoft 365. Attualmente il software non è compatibile con Mac.",
+                contact_title: "Contattaci",
+                contact_subtitle: "Hai una domanda o un suggerimento? Compila il modulo e ti risponderemo il prima possibile.",
+                contact_name: "Nome",
+                contact_email: "Indirizzo Email",
+                contact_message: "Messaggio",
+                contact_send: "Invia Messaggio",
+                footer_copyright: "© 2025 CostePro. Tutti i diritti riservati.",
+                footer_links: "Link",
+                footer_follow: "Seguici",
+                footer_secure_payment: "Pagamenti sicuri al 100% gestiti da Stripe.",
+                footer_privacy: "Informativa sulla Privacy",
+                footer_terms: "Termini di Servizio",
+                legal_privacy_title: "Informativa sulla Privacy",
+                legal_privacy_update: "Ultimo aggiornamento:",
+                legal_privacy_intro_title: "1. Introduzione",
+                legal_privacy_intro_p1: "Benvenuto in CostePro. La tua privacy è di massima importanza per noi. La presente Informativa sulla privacy ha lo scopo di informarti in modo chiaro e trasparente sui dati personali che raccogliamo, su come li trattiamo, per quali scopi e sui tuoi diritti in qualità di interessato, in conformità con il Regolamento generale sulla protezione dei dati (GDPR) e la legislazione svizzera applicabile.",
+                legal_privacy_responsible_title: "2. Titolare del trattamento",
+                legal_privacy_responsible_p1: "Il titolare del trattamento dei tuoi dati personali è CostePro (di seguito, \"l'Azienda\"), con sede legale a Berna, Svizzera. Per qualsiasi domanda relativa alla privacy, puoi utilizzare il modulo di contatto sul nostro sito web.",
+                legal_privacy_info_title: "3. Informazioni che raccogliamo",
+                legal_privacy_info_p1: "Raccogliamo diversi tipi di informazioni in relazione ai servizi che offriamo:",
+                legal_privacy_info_list1: "<strong>Dati di identificazione e contatto:</strong> nome, cognome e indirizzo e-mail che ci fornisci quando richiedi una prova gratuita, effettui un acquisto o ci contatti tramite i nostri moduli.",
+                legal_privacy_info_list2: "<strong>Dati di transazione:</strong> informazioni relative ai tuoi acquisti, come il piano acquistato e la data della transazione. I pagamenti sono elaborati dal nostro fornitore esterno, Stripe. <strong>Non memorizziamo né abbiamo accesso ai dettagli completi della tua carta di credito o debito.</strong>",
+                legal_privacy_info_list3: "<strong>Dati di utilizzo e tecnici:</strong> per la versione di prova, possiamo raccogliere un identificatore anonimo del tuo dispositivo (fingerprint) per prevenire l'abuso del sistema di prova. Questi dati non sono collegati alla tua identità personale.",
+                legal_privacy_purpose_title: "4. Scopo e base giuridica del trattamento",
+                legal_privacy_purpose_p1: "Trattiamo i tuoi dati per i seguenti scopi:",
+                legal_privacy_purpose_list1: "<strong>Gestione del rapporto contrattuale:</strong> per elaborare i tuoi acquisti, fornirti il software e gestire il tuo abbonamento. La base giuridica è l'esecuzione di un contratto.",
+                legal_privacy_purpose_list2: "<strong>Comunicazioni di servizio:</strong> per inviarti informazioni importanti sul tuo account, aggiornamenti software e notifiche di supporto. La base giuridica è l'esecuzione di un contratto.",
+                legal_privacy_purpose_list3: "<strong>Assistenza clienti:</strong> per rispondere alle tue domande e alle tue richieste di supporto. La base giuridica è il nostro legittimo interesse a fornire un servizio di qualità.",
+                legal_privacy_purpose_list4: "<strong>Prevenzione delle frodi:</strong> per proteggere l'integrità del nostro sistema di prova gratuita. La base giuridica è il nostro legittimo interesse a prevenire gli abusi.",
+                legal_privacy_transfer_title: "5. Trasferimento di dati a terzi",
+                legal_privacy_transfer_p1: "Non vendiamo né cediamo i tuoi dati personali a terzi, ad eccezione dei nostri fornitori di servizi che ci assistono nelle nostre operazioni, come Stripe per l'elaborazione dei pagamenti. Questi fornitori agiscono come responsabili del trattamento e sono contrattualmente obbligati a proteggere i tuoi dati e a utilizzarli esclusivamente per gli scopi a loro affidati.",
+                legal_privacy_retention_title: "6. Conservazione dei dati",
+                legal_privacy_retention_p1: "Conserveremo i tuoi dati personali per tutto il tempo in cui il rapporto contrattuale viene mantenuto e, successivamente, per i periodi legalmente richiesti per affrontare potenziali responsabilità (ad esempio, per obblighi fiscali e commerciali).",
+                legal_privacy_rights_title: "7. I tuoi diritti",
+                legal_privacy_rights_p1: "Hai il diritto di:",
+                legal_privacy_rights_list1: "<strong>Accedere</strong> ai tuoi dati personali.",
+                legal_privacy_rights_list2: "Richiedere la <strong>rettifica</strong> dei dati inesatti.",
+                legal_privacy_rights_list3: "Richiedere la <strong>cancellazione</strong> dei tuoi dati quando, tra le altre ragioni, non sono più necessari per gli scopi per cui sono stati raccolti.",
+                legal_privacy_rights_list4: "Richiedere la <strong>limitazione</strong> del trattamento dei tuoi dati.",
+                legal_privacy_rights_list5: "<strong>Opporti</strong> al trattamento dei tuoi dati.",
+                legal_privacy_rights_list6: "Richiedere la <strong>portabilità</strong> dei tuoi dati.",
+                legal_privacy_rights_p2: "Puoi esercitare questi diritti inviando una richiesta tramite il nostro modulo di contatto, indicando chiaramente il diritto che desideri esercitare. Hai anche il diritto di presentare un reclamo all'Agenzia spagnola per la protezione dei dati (www.aepd.es).",
+                legal_privacy_modifications_title: "8. Modifiche all'Informativa",
+                legal_privacy_modifications_p1: "Ci riserviamo il diritto di modificare la presente informativa in qualsiasi momento per adattarla a nuove leggi o giurisprudenza. Ti informeremo di modifiche significative tramite il nostro sito web o via e-mail.",
+                legal_terms_title: "Termini e condizioni del servizio",
+                legal_terms_update: "Ultimo aggiornamento:",
+                legal_terms_object_title: "1. Oggetto e accettazione",
+                legal_terms_object_p1: "I presenti Termini e condizioni del servizio (di seguito, \"Termini\") regolano l'uso del software CostePro (di seguito, il \"Servizio\"), fornito da CostePro (di seguito, \"l'Azienda\").",
+                legal_terms_object_p2: "Acquistando, scaricando o utilizzando il Servizio, l'utente (di seguito, l'\"Utente\") accetta e si impegna a rispettare tutti i presenti Termini. Se non si è d'accordo con essi, non si deve utilizzare il Servizio. L'utilizzo del Servizio implica l'accettazione completa e senza riserve di tutte le disposizioni incluse nel presente documento.",
+                legal_terms_description_title: "2. Descrizione del servizio e collegamenti tecnologici",
+                legal_terms_description_p1: "CostePro è uno strumento software avanzato per fogli di calcolo, progettato per funzionare con Microsoft Excel su sistemi operativi Windows. Il Servizio utilizza anche l'intelligenza artificiale di Google Gemini per migliorare le sue funzionalità. Tuttavia, **l'Azienda dichiara espressamente che CostePro è una proprietà intellettuale e un prodotto di sviluppo indipendente, senza alcun rapporto commerciale, associazione o approvazione ufficiale da parte di Microsoft o Google.** L'uso delle loro tecnologie è puramente strumentale per il funzionamento del Servizio e non implica alcun tipo di affiliazione.",
+                legal_terms_description_p2: "Il Servizio consente ai professionisti del settore alberghiero di creare schede costo, gestire i costi, progettare menu e tenere registri della cucina, tra le altre funzionalità.",
+                legal_terms_ip_title: "3. Proprietà intellettuale e utilizzo del servizio",
+                legal_terms_ip_p1: "Tutti i diritti di proprietà intellettuale e industriale sul Servizio, inclusi il suo design, la struttura, il codice, i testi, la grafica e i loghi, sono di proprietà esclusiva dell'Azienda o dei suoi licenziatari. L'Utente si impegna a non eseguire le seguenti azioni:",
+                legal_terms_ip_list1: "Rivendere, sublicenziare, noleggiare, distribuire o trasferire in altro modo il Servizio a terzi.",
+                legal_terms_ip_list2: "Eseguire il reverse engineering, decompilare, disassemblare o tentare di scoprire il codice sorgente o le idee alla base del Servizio.",
+                legal_terms_ip_list3: "Modificare, adattare o creare opere derivate basate sul Servizio.",
+                legal_terms_ip_list4: "Rimuovere qualsiasi avviso di proprietà intellettuale o marchio di fabbrica dal Servizio.",
+                legal_terms_ip_p2: "Qualsiasi tentativo di violazione, intrusione o modifica non autorizzata del sistema CostePro, nonché l'uso improprio o fraudolento del Servizio, sarà considerato un reato e sarà perseguito con la massima forza della legge. L'Azienda si riserva il diritto di intraprendere azioni legali, incluso l'intervento di servizi legali specializzati, per proteggere la sua proprietà intellettuale e l'integrità del suo sistema.",
+                legal_terms_payments_title: "4. Pagamenti, abbonamenti e cancellazione",
+                legal_terms_payments_p1: "L'accesso al Servizio richiede il pagamento di una tariffa, tramite un abbonamento periodico (mensile o annuale) o un pagamento una tantum, a seconda del piano selezionato.",
+                legal_terms_payments_list1: "<strong>Abbonamenti:</strong> gli abbonamenti si rinnoveranno automaticamente per periodi successivi di pari durata rispetto a quello inizialmente contratto. L'Utente può annullare il rinnovo automatico in qualsiasi momento prima dell'inizio del periodo di fatturazione successivo tramite la piattaforma di pagamento Stripe. L'annullamento sarà effettivo alla fine del periodo di fatturazione in corso, mantenendo l'accesso al Servizio fino a tale data.",
+                legal_terms_payments_list2: "<strong>Pagamenti:</strong> tutti i pagamenti sono elaborati tramite il nostro fornitore esterno, Stripe. L'Azienda non memorizza i dati delle carte di credito.",
+                legal_terms_payments_list3: "<strong>Rimborsi:</strong> data la natura digitale del prodotto, non verranno emessi rimborsi per periodi di abbonamento parziali o per la mancata utilizzo del Servizio.",
+                legal_terms_exclusions_title: "5. Esclusione di garanzie e limitazione di responsabilità",
+                legal_terms_exclusions_p1: "Il Servizio viene fornito \"così com'è\" e \"secondo disponibilità\", senza garanzie di alcun tipo, esplicite o implicite. L'Azienda non garantisce che il Servizio sia ininterrotto, sicuro, privo di errori o che soddisfi le aspettative specifiche dell'Utente.",
+                legal_terms_exclusions_p2: "L'Utente si assume ogni responsabilità e rischio derivante dall'uso del Servizio. Nella misura massima consentita dalla legge, l'Azienda non sarà responsabile per eventuali danni diretti, indiretti, accidentali, speciali, consequenziali o punitivi (inclusi, a titolo esemplificativo, la perdita di profitti, dati, avviamento o interruzione dell'attività) derivanti dall'uso o dall'impossibilità di utilizzare il Servizio.",
+                legal_terms_exclusions_p3: "La responsabilità totale dell'Azienda, in ogni caso, non supererà l'importo totale pagato dall'Utente all'Azienda per l'uso del Servizio nei dodici (12) mesi immediatamente precedenti l'evento che ha dato origine al reclamo.",
+                legal_terms_modifications_title: "6. Modifiche ai Termini",
+                legal_terms_modifications_p1: "L'Azienda si riserva il diritto di modificare i presenti Termini in qualsiasi momento. Notificheremo all'Utente eventuali modifiche sostanziali tramite un avviso sul nostro sito web o via e-mail. L'uso continuato del Servizio dopo la data di entrata in vigore di tali modifiche costituirà l'accettazione dei nuovi Termini.",
+                legal_terms_jurisdiction_title: "7. Legge applicabile e giurisdizione",
+                legal_terms_jurisdiction_p1: "I presenti Termini saranno regolati e interpretati in conformità con le leggi svizzere. Per la risoluzione di qualsiasi controversia che possa derivare dall'accesso o dall'uso del Servizio, le parti si sottomettono espressamente ai Tribunali di Berna, rinunciando a qualsiasi altra giurisdizione che potrebbe loro corrispondere.",
+                legal_terms_contact_title: "8. Contatto",
+                legal_terms_contact_p1: "In caso di domande sui presenti Termini, è possibile utilizzare il modulo di contatto disponibile su questo sito web.",
+            }
+        };
+
         // --- Header Scroll Logic ---
         const header = document.getElementById('header');
         let lastScrollTop = 0;
@@ -1772,12 +2437,13 @@
         if(trialForm) trialForm.addEventListener("submit", function(e) {
             e.preventDefault();
             const userEmail = document.getElementById("trial-email").value;
-            const deviceFingerprint = generateDeviceFingerprint();
+            // The device fingerprint function was removed, so this is no longer needed.
+            // const deviceFingerprint = generateDeviceFingerprint();
             
             const payload = {
                 formType: 'trial',
                 email: userEmail,
-                fingerprint: deviceFingerprint
+                fingerprint: 'N/A' // Sending a placeholder since the fingerprint function was removed
             };
             handleFormSubmit(payload, this, document.getElementById("modal-message"));
         });
@@ -1821,6 +2487,88 @@
                 });
                 ticking = true;
             }
+        });
+        
+        // --- Language Switcher Logic ---
+        const languageOptions = document.querySelectorAll('.language-option');
+        const currentLangSpan = document.getElementById('current-lang');
+        const translatableElements = document.querySelectorAll('[data-translate]');
+
+        const setLanguage = (lang) => {
+            if (!translations[lang]) return;
+
+            // Update all elements with data-translate attribute
+            translatableElements.forEach(el => {
+                const key = el.dataset.translate;
+                if (translations[lang][key]) {
+                    // Check for existing strong tags and replace content, otherwise just set textContent
+                    const strongTags = el.querySelectorAll('strong');
+                    if (strongTags.length > 0) {
+                        // Rebuild content with translated strings
+                        const translatedContent = translations[lang][key];
+                        let tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = translatedContent;
+                        el.innerHTML = ''; // Clear original content
+                        while(tempDiv.firstChild) {
+                            el.appendChild(tempDiv.firstChild);
+                        }
+                    } else {
+                        el.textContent = translations[lang][key];
+                    }
+                }
+            });
+
+            // Update the display button
+            const langName = document.querySelector(`.language-option[data-lang="${lang}"]`).textContent;
+            currentLangSpan.textContent = langName;
+
+            // Update the HTML lang attribute
+            document.documentElement.lang = lang;
+
+            // Save preference to local storage
+            localStorage.setItem('costepro-language', lang);
+        };
+
+        languageOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const lang = option.getAttribute('data-lang');
+                setLanguage(lang);
+                // Close dropdown if it's part of a more complex component
+                option.closest('.language-dropdown').style.display = 'none';
+                setTimeout(() => option.closest('.language-dropdown').style.display = '', 200);
+            });
+        });
+        
+        // On page load, check for saved language
+        const savedLang = localStorage.getItem('costepro-language') || 'es';
+        setLanguage(savedLang);
+
+        // --- Legal section show/hide logic ---
+        const legalContainer = document.getElementById('legal-sections-container');
+        const legalLinks = document.querySelectorAll('.footer-legal-links a');
+        
+        legalLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    legalContainer.style.display = 'block';
+                    document.getElementById('privacy').style.display = 'none';
+                    document.getElementById('terms').style.display = 'none';
+                    targetElement.style.display = 'block';
+
+                    const headerOffset = document.getElementById('header').offsetHeight;
+                    const elementPosition = legalContainer.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth"
+                    });
+                }
+            });
         });
 
     });
