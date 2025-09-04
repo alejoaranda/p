@@ -1,10 +1,19 @@
 // /functions/send-email.js
 // Versión FINAL - Coincide con tus columnas actuales
 
-const nodemailer = require('nodemailer');
-const { GoogleSpreadsheet } = require('google-spreadsheet');
-const { JWT } = require('google-auth-library');
-const crypto = require('crypto');
+// Importaciones con verificación
+let nodemailer, GoogleSpreadsheet, JWT, crypto;
+
+try {
+  nodemailer = require('nodemailer');
+  const googleSpreadsheet = require('google-spreadsheet');
+  GoogleSpreadsheet = googleSpreadsheet.GoogleSpreadsheet;
+  const googleAuth = require('google-auth-library');
+  JWT = googleAuth.JWT;
+  crypto = require('crypto');
+} catch (error) {
+  console.error('Error al cargar dependencias:', error);
+}
 
 // --- Función para escribir en Google Sheets ---
 async function appendToSheet(email, token, fingerprint) {
