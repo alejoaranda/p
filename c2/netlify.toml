@@ -1,7 +1,13 @@
 [build]
-  command = "cd netlify/functions && npm install"
+  command = "npm install && cp -r node_modules netlify/functions/"
   functions = "netlify/functions"
   publish = "."
 
 [functions]
   node_bundler = "esbuild"
+  external_node_modules = ["nodemailer", "google-spreadsheet", "google-auth-library"]
+  
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
