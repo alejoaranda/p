@@ -1,0 +1,13 @@
+{
+  "name": "costepro-site",
+  "version": "1.0.0",
+  "description": "CostePro website with Netlify Functions",
+  "scripts": {
+    "install-functions": "cd netlify/functions && npm install"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.8",
+    "google-spreadsheet": "^4.1.2",
+    "google-auth-library": "^9.4.1"
+  }
+}
