@@ -1,5 +1,5 @@
 // /functions/send-email.js
-// Versión adaptada a tus columnas actuales con espacios
+// Versión FINAL - Coincide con tus columnas actuales
 
 const nodemailer = require('nodemailer');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
@@ -9,7 +9,6 @@ const crypto = require('crypto');
 // --- Función para escribir en Google Sheets ---
 async function appendToSheet(email, token, fingerprint) {
   try {
-    // Validar que las variables de entorno existan
     if (!process.env.GOOGLE_CLIENT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY || !process.env.GOOGLE_SHEET_ID) {
       console.error('Error: Faltan variables de entorno de Google');
       throw new Error('Configuración de Google incompleta');
@@ -34,25 +33,19 @@ async function appendToSheet(email, token, fingerprint) {
 
     const timestampISO = new Date().toISOString();
     
-    // Calcular fecha de expiración (12 horas después)
-    const expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getHours() + 12);
-    const expirationISO = expirationDate.toISOString();
-    
-    // IMPORTANTE: Agregar el token en una columna nueva o en "Fecha de expiración"
-    // Como no tienes columna TokenUnico, lo guardamos temporalmente en Fecha de expiración
+    // IMPORTANTE: Usar los nombres EXACTOS de las columnas (sin espacios)
     await sheet.addRow({ 
       'Email': email, 
-      'Fecha de Solicitud': timestampISO,
+      'FechadeSolicitud': timestampISO,  // Sin espacios
       'Fingerprint': fingerprint,
-      'Fecha de expiración': token  // Guardamos el token aquí temporalmente
+      'TokenUnico': token  // Ahora sí tienes esta columna
     });
     
-    console.log(`Email ${email}, fingerprint ${fingerprint} y token han sido añadidos a Google Sheets.`);
+    console.log(`✅ Email ${email} y token añadidos exitosamente a Google Sheets.`);
     return true;
 
   } catch (error) {
-    console.error('Error al escribir en Google Sheets:', error);
+    console.error('❌ Error al escribir en Google Sheets:', error.message);
     throw error;
   }
 }
@@ -80,6 +73,7 @@ exports.handler = async (event) => {
   }
 
   try {
+    console.log('📨 Procesando solicitud...');
     const data = JSON.parse(event.body);
     
     if (!data.email) {
@@ -100,6 +94,8 @@ exports.handler = async (event) => {
       };
     }
 
+    console.log(`📧 Procesando solicitud para: ${data.email}`);
+
     // Configuración del transportador de Nodemailer
     const transporter = nodemailer.createTransporter({
       host: 'smtp.hostinger.com',
@@ -117,13 +113,16 @@ exports.handler = async (event) => {
     // --- Lógica para PRUEBA GRATUITA ---
     if (data.formType === 'trial') {
       const token = crypto.randomBytes(32).toString('hex');
-      const fingerprint = data.fingerprint || 'N/A';
+      const fingerprint = data.fingerprint || 'no-fingerprint';
       
-      // Intentar guardar en Google Sheets
+      console.log(`🔑 Token generado: ${token.substring(0, 10)}...`);
+      
+      // Guardar en Google Sheets
       try {
         await appendToSheet(data.email, token, fingerprint);
       } catch (sheetError) {
-        console.error('Error al guardar en Sheets, continuando con el envío de email...', sheetError);
+        console.error('❌ Error al guardar en Sheets:', sheetError.message);
+        // Continuar con el envío del email aunque falle Sheets
       }
 
       const downloadLink = `https://costepro.top/.netlify/functions/descargar-prueba?token=${token}`;
@@ -172,8 +171,9 @@ exports.handler = async (event) => {
         `
       };
 
+      console.log('📤 Enviando email al cliente...');
       await transporter.sendMail(mailToCustomer);
-      console.log(`Email enviado exitosamente a ${data.email}`);
+      console.log(`✅ Email enviado exitosamente a ${data.email}`);
 
       // Notificación al propietario
       try {
@@ -189,8 +189,9 @@ exports.handler = async (event) => {
           `
         };
         await transporter.sendMail(notificationToOwner);
+        console.log('✅ Notificación enviada al propietario');
       } catch (notifError) {
-        console.error('Error al enviar notificación:', notifError);
+        console.error('⚠️ Error al enviar notificación:', notifError.message);
       }
 
     // --- Lógica para FORMULARIO DE CONTACTO ---
@@ -212,6 +213,7 @@ exports.handler = async (event) => {
         `
       };
       await transporter.sendMail(mailFromContactForm);
+      console.log('✅ Mensaje de contacto enviado');
     }
 
     transporter.close();
@@ -221,18 +223,18 @@ exports.handler = async (event) => {
       headers,
       body: JSON.stringify({ 
         success: true,
-        message: '¡Listo! Revisa tu bandeja de entrada.' 
+        message: '¡Listo! Revisa tu bandeja de entrada. El enlace caduca en 12 horas.' 
       }),
     };
 
   } catch (error) {
-    console.error('ERROR EN LA FUNCIÓN:', error);
+    console.error('❌ ERROR EN LA FUNCIÓN:', error);
     return { 
       statusCode: 500, 
       headers,
       body: JSON.stringify({ 
         error: 'Error al procesar la solicitud.',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        details: error.message
       })
     };
   }
