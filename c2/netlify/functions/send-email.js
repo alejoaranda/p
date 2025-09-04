@@ -1,5 +1,5 @@
 // /functions/send-email.js
-// Versión corregida con nombres de columnas consistentes
+// Versión adaptada a tus columnas actuales con espacios
 
 const nodemailer = require('nodemailer');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
@@ -34,12 +34,18 @@ async function appendToSheet(email, token, fingerprint) {
 
     const timestampISO = new Date().toISOString();
     
-    // IMPORTANTE: Usar nombres de columnas consistentes (sin espacios para evitar problemas)
+    // Calcular fecha de expiración (12 horas después)
+    const expirationDate = new Date();
+    expirationDate.setHours(expirationDate.getHours() + 12);
+    const expirationISO = expirationDate.toISOString();
+    
+    // IMPORTANTE: Agregar el token en una columna nueva o en "Fecha de expiración"
+    // Como no tienes columna TokenUnico, lo guardamos temporalmente en Fecha de expiración
     await sheet.addRow({ 
-      Email: email, 
-      FechaDeSolicitud: timestampISO,  // Sin espacios
-      Fingerprint: fingerprint,
-      TokenUnico: token
+      'Email': email, 
+      'Fecha de Solicitud': timestampISO,
+      'Fingerprint': fingerprint,
+      'Fecha de expiración': token  // Guardamos el token aquí temporalmente
     });
     
     console.log(`Email ${email}, fingerprint ${fingerprint} y token han sido añadidos a Google Sheets.`);
@@ -47,7 +53,7 @@ async function appendToSheet(email, token, fingerprint) {
 
   } catch (error) {
     console.error('Error al escribir en Google Sheets:', error);
-    throw error; // Propagar el error para manejarlo en el handler principal
+    throw error;
   }
 }
 
@@ -104,21 +110,20 @@ exports.handler = async (event) => {
         pass: process.env.HOSTINGER_PASSWORD
       },
       tls: {
-        rejectUnauthorized: false // Por si hay problemas con certificados SSL
+        rejectUnauthorized: false
       }
     });
 
     // --- Lógica para PRUEBA GRATUITA ---
     if (data.formType === 'trial') {
-      const token = crypto.randomBytes(32).toString('hex'); // Token más largo para mayor seguridad
-      const fingerprint = data.fingerprint || 'no-fingerprint';
+      const token = crypto.randomBytes(32).toString('hex');
+      const fingerprint = data.fingerprint || 'N/A';
       
       // Intentar guardar en Google Sheets
       try {
         await appendToSheet(data.email, token, fingerprint);
       } catch (sheetError) {
         console.error('Error al guardar en Sheets, continuando con el envío de email...', sheetError);
-        // Continuar con el envío del email aunque falle Sheets
       }
 
       const downloadLink = `https://costepro.top/.netlify/functions/descargar-prueba?token=${token}`;
@@ -175,17 +180,17 @@ exports.handler = async (event) => {
         const notificationToOwner = {
           from: `"Notificación Web" <${process.env.HOSTINGER_EMAIL}>`,
           to: process.env.HOSTINGER_EMAIL,
-          subject: '🚀 Nuevo usuario ha solicitado la prueba de 3 días',
+          subject: '🚀 Nuevo usuario ha solicitado la prueba',
           html: `
             <p>El usuario <strong>${data.email}</strong> ha recibido su enlace de descarga temporal.</p>
-            <p><strong>Fingerprint del dispositivo:</strong> ${fingerprint}</p>
+            <p><strong>Fingerprint:</strong> ${fingerprint}</p>
             <p><strong>Token:</strong> ${token.substring(0, 10)}...</p>
             <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
           `
         };
         await transporter.sendMail(notificationToOwner);
       } catch (notifError) {
-        console.error('Error al enviar notificación al propietario:', notifError);
+        console.error('Error al enviar notificación:', notifError);
       }
 
     // --- Lógica para FORMULARIO DE CONTACTO ---
@@ -193,7 +198,7 @@ exports.handler = async (event) => {
       const mailFromContactForm = {
         from: `"Web CostePro" <${process.env.HOSTINGER_EMAIL}>`,
         to: process.env.HOSTINGER_EMAIL,
-        subject: `📬 Nuevo mensaje de contacto de: ${data.name}`,
+        subject: `📬 Nuevo mensaje de: ${data.name}`,
         replyTo: data.email,
         html: `
           <div style="font-family: Arial, sans-serif; line-height: 1.6;">
@@ -216,12 +221,12 @@ exports.handler = async (event) => {
       headers,
       body: JSON.stringify({ 
         success: true,
-        message: '¡Listo! Revisa tu bandeja de entrada. El enlace caduca en 12 horas.' 
+        message: '¡Listo! Revisa tu bandeja de entrada.' 
       }),
     };
 
   } catch (error) {
-    console.error('--- ERROR EN LA FUNCIÓN ---', error);
+    console.error('ERROR EN LA FUNCIÓN:', error);
     return { 
       statusCode: 500, 
       headers,
