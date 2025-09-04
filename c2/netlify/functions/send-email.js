@@ -1,5 +1,5 @@
 // /functions/send-email.js
-// Versión completa con lógica de registro en Google Sheets y enlace de descarga directa.
+// Versión completa con lógica de enlace temporal de 12 horas y registro en Google Sheets.
 
 const nodemailer = require('nodemailer');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
@@ -31,6 +31,9 @@ async function appendToSheet(email, token, fingerprint) {
     const timestampISO = new Date().toISOString();
     
     // Añade la nueva fila con los datos en las columnas especificadas:
+    // Columna A: Email
+    // Columna B: Fecha de solicitud
+    // Columna C: Fingerprint del dispositivo
     await sheet.addRow({ 
       Email: email, 
       'Fecha de Solicitud': timestampISO,
@@ -74,20 +77,27 @@ exports.handler = async (event) => {
 
     // --- Lógica para la PRUEBA GRATUITA ---
     if (data.formType === 'trial') {
+      // 1. Generar un token único y seguro.
       const token = crypto.randomBytes(16).toString('hex');
+      
+      // 2. Obtener el fingerprint del dispositivo (enviado desde el frontend)
       const fingerprint = data.fingerprint || 'no-fingerprint';
       
+      // 3. Guardar la información en Google Sheets.
       await appendToSheet(data.email, token, fingerprint);
 
-      const directDownloadLink = 'https://drive.google.com/uc?export=download&id=1IYrrtC13Djd3D3O161ucxBOUdb75O64t';
+      // 4. Construir el enlace de descarga especial que apunta a nuestra otra función.
+      // ¡IMPORTANTE! Reemplaza "TU_DOMINIO.com" por tu dominio real.
+      const downloadLink = `https://costepro.top/.netlify/functions/descargar-prueba?token=${token}`;
 
+      // 5. Enviar el email al cliente con la plantilla elegante y el enlace temporal.
       const mailToCustomer = {
         from: `"CostePro" <${process.env.HOSTINGER_EMAIL}>`,
         to: data.email,
-        subject: '✅ Your Download Link for CostePro',
+        subject: '✅ Tu enlace de descarga para CostePro (expira en 12 horas )',
         html: `
           <!DOCTYPE html>
-          <html lang="en">
+          <html lang="es">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -107,16 +117,17 @@ exports.handler = async (event) => {
             <div class="container">
               <div class="header"><h1>CostePro</h1></div>
               <div class="content">
-                <h2>Your free trial is ready!</h2>
-                <p>Hi,</p>
-                <p>Thank you for your interest in <strong>CostePro</strong>! Click the button below to download your trial version.</p>
+                <h2>¡Tu prueba gratuita está lista!</h2>
+                <p>Hola,</p>
+                <p>¡Muchas gracias por tu interés en <strong>CostePro</strong>! Haz clic en el botón de abajo para descargar tu versión de prueba.</p>
+                <p style="font-weight: bold; color: #e76f51;">Importante: Este enlace de descarga caducará automáticamente en 12 horas.</p>
                 <div class="button-container">
-                  <a href="${directDownloadLink}" class="button">Download My Free Trial</a>
+                  <a href="${downloadLink}" class="button">Descargar mi Prueba Gratis</a>
                 </div>
-                <p>If you have any questions, just reply to this email. We'll be happy to help!</p>
-                <p>Best regards,<br><strong>The CostePro Team</strong></p>
+                <p>Si tienes cualquier duda, simplemente responde a este correo. ¡Estaremos encantados de ayudarte!</p>
+                <p>Un saludo,<br><strong>El equipo de CostePro</strong></p>
               </div>
-              <div class="footer"><p>&copy; 2025 CostePro. All rights reserved.</p></div>
+              <div class="footer"><p>&copy; 2025 CostePro. Todos los derechos reservados.</p></div>
             </div>
           </body>
           </html>
@@ -124,14 +135,15 @@ exports.handler = async (event) => {
       };
       await transporter.sendMail(mailToCustomer);
 
+      // 6. Notificación para ti (opcional pero recomendado).
       const notificationToOwner = {
         from: `"Notificación Web" <${process.env.HOSTINGER_EMAIL}>`,
         to: process.env.HOSTINGER_EMAIL,
-        subject: '🚀 New user has requested the 3-day trial',
+        subject: '🚀 Nuevo usuario ha solicitado la prueba de 3 días',
         html: `
-          <p>The user <strong>${data.email}</strong> has received their download link.</p>
-          <p><strong>Device Fingerprint:</strong> ${fingerprint}</p>
-          <p><strong>Date:</strong> ${new Date().toLocaleString('en-US')}</p>
+          <p>El usuario <strong>${data.email}</strong> ha recibido su enlace de descarga temporal.</p>
+          <p><strong>Fingerprint del dispositivo:</strong> ${fingerprint}</p>
+          <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
         `
       };
       await transporter.sendMail(notificationToOwner);
@@ -161,7 +173,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'Done! Please check your inbox.' }),
+      body: JSON.stringify({ message: '¡Listo! Revisa tu bandeja de entrada. El enlace caduca en 12 horas.' }),
     };
 
   } catch (error) {
