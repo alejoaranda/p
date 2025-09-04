@@ -1,63 +1,18 @@
-// /functions/send-email.js
-// Versión corregida con nombres de columnas consistentes
+// /functions/descargar-prueba.js
+// Versión adaptada para usar "Fecha de expiración" como columna de token
 
-const nodemailer = require('nodemailer');
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
-const crypto = require('crypto');
 
-// --- Función para escribir en Google Sheets ---
-async function appendToSheet(email, token, fingerprint) {
-  try {
-    // Validar que las variables de entorno existan
-    if (!process.env.GOOGLE_CLIENT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY || !process.env.GOOGLE_SHEET_ID) {
-      console.error('Error: Faltan variables de entorno de Google');
-      throw new Error('Configuración de Google incompleta');
-    }
+const GOOGLE_DRIVE_DIRECT_DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id=1pwhZu0_7JvXkxvlVK9Rk1Kmj2WcNfMjk";
+const EXPIRATION_HOURS = 12;
 
-    const privateKey = process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n');
-    
-    const serviceAccountAuth = new JWT({
-      email: process.env.GOOGLE_CLIENT_EMAIL,
-      key: privateKey,
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
-
-    const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAuth);
-    await doc.loadInfo();
-    
-    const sheet = doc.sheetsByTitle['Prueba'];
-    if (!sheet) {
-      console.error('No se encontró la hoja "Prueba" en el documento de Google Sheets');
-      throw new Error('Hoja "Prueba" no encontrada');
-    }
-
-    const timestampISO = new Date().toISOString();
-    
-    // IMPORTANTE: Usar nombres de columnas consistentes (sin espacios para evitar problemas)
-    await sheet.addRow({ 
-      Email: email, 
-      FechaDeSolicitud: timestampISO,  // Sin espacios
-      Fingerprint: fingerprint,
-      TokenUnico: token
-    });
-    
-    console.log(`Email ${email}, fingerprint ${fingerprint} y token han sido añadidos a Google Sheets.`);
-    return true;
-
-  } catch (error) {
-    console.error('Error al escribir en Google Sheets:', error);
-    throw error; // Propagar el error para manejarlo en el handler principal
-  }
-}
-
-// --- Handler principal ---
 exports.handler = async (event) => {
-  // Habilitar CORS
+  // Headers para CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+    'Access-Control-Allow-Methods': 'GET, OPTIONS'
   };
 
   // Manejar preflight OPTIONS
@@ -65,168 +20,145 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers, body: '' };
   }
 
-  if (event.httpMethod !== 'POST') {
+  // Validar que existe el parámetro token
+  const token = event.queryStringParameters?.token;
+
+  if (!token) {
     return { 
-      statusCode: 405, 
+      statusCode: 400, 
       headers,
-      body: JSON.stringify({ error: 'Method Not Allowed' })
+      body: JSON.stringify({ 
+        error: "Error: El enlace no es válido o está incompleto." 
+      })
     };
   }
 
   try {
-    const data = JSON.parse(event.body);
+    // Validar y procesar la clave privada
+    const rawKey = process.env.GOOGLE_PRIVATE_KEY;
+    if (!rawKey) {
+      console.error('Error: La variable GOOGLE_PRIVATE_KEY no está configurada.');
+      throw new Error('La clave privada de Google no está configurada.');
+    }
+
+    let privateKey = rawKey.replace(/\\n/g, '\n');
     
-    if (!data.email) {
-      return { 
-        statusCode: 400, 
-        headers,
-        body: JSON.stringify({ error: 'El correo electrónico es requerido.' })
-      };
+    if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+      console.error('Formato de clave privada incorrecto');
+      throw new Error('Formato de clave privada de Google incorrecto.');
     }
 
-    // Validar formato de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Formato de email inválido.' })
-      };
+    if (!process.env.GOOGLE_CLIENT_EMAIL || !process.env.GOOGLE_SHEET_ID) {
+      console.error('Error: Faltan variables de entorno de Google');
+      throw new Error('Configuración de Google incompleta');
     }
 
-    // Configuración del transportador de Nodemailer
-    const transporter = nodemailer.createTransporter({
-      host: 'smtp.hostinger.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.HOSTINGER_EMAIL,
-        pass: process.env.HOSTINGER_PASSWORD
-      },
-      tls: {
-        rejectUnauthorized: false // Por si hay problemas con certificados SSL
-      }
+    // Configurar autenticación
+    const serviceAccountAuth = new JWT({
+      email: process.env.GOOGLE_CLIENT_EMAIL,
+      key: privateKey,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
 
-    // --- Lógica para PRUEBA GRATUITA ---
-    if (data.formType === 'trial') {
-      const token = crypto.randomBytes(32).toString('hex'); // Token más largo para mayor seguridad
-      const fingerprint = data.fingerprint || 'no-fingerprint';
-      
-      // Intentar guardar en Google Sheets
-      try {
-        await appendToSheet(data.email, token, fingerprint);
-      } catch (sheetError) {
-        console.error('Error al guardar en Sheets, continuando con el envío de email...', sheetError);
-        // Continuar con el envío del email aunque falle Sheets
-      }
+    console.log('Conectando a Google Sheets...');
+    const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAuth);
+    await doc.loadInfo();
+    
+    const sheet = doc.sheetsByTitle['Prueba']; 
+    if (!sheet) {
+      console.error('No se encontró la hoja "Prueba"');
+      throw new Error('No se encontró la hoja "Prueba" en el documento');
+    }
+    
+    console.log('Obteniendo filas de la hoja...');
+    const rows = await sheet.getRows();
+    console.log(`Se encontraron ${rows.length} filas en total`);
 
-      const downloadLink = `https://costepro.top/.netlify/functions/descargar-prueba?token=${token}`;
+    // Buscar la fila que coincide con el token
+    // IMPORTANTE: Ahora buscamos en la columna "Fecha de expiración"
+    const targetRow = rows.find(row => {
+      const rowToken = row.get('Fecha de expiración');
+      console.log(`Comparando token de fila: ${rowToken?.substring(0, 10)}... con ${token.substring(0, 10)}...`);
+      return rowToken === token;
+    });
 
-      // Email al cliente
-      const mailToCustomer = {
-        from: `"CostePro" <${process.env.HOSTINGER_EMAIL}>`,
-        to: data.email,
-        subject: '✅ Tu enlace de descarga para CostePro (expira en 12 horas)',
-        html: `
-          <!DOCTYPE html>
-          <html lang="es">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-              body { font-family: 'Inter', Arial, sans-serif; margin: 0; padding: 0; background-color: #f9fafb; }
-              .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-              .header { background-color: #264653; color: #ffffff; padding: 20px; text-align: center; border-radius: 12px 12px 0 0; }
-              .header h1 { margin: 0; font-size: 28px; }
-              .content { padding: 30px 25px; color: #1f2937; line-height: 1.7; }
-              .content p { margin: 0 0 15px; }
-              .button-container { text-align: center; margin: 30px 0; }
-              .button { background: linear-gradient(135deg, #2a9d8f, #264653); color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px; display: inline-block; }
-              .footer { text-align: center; padding: 20px; font-size: 12px; color: #9ca3af; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header"><h1>CostePro</h1></div>
-              <div class="content">
-                <h2>¡Tu prueba gratuita está lista!</h2>
-                <p>Hola,</p>
-                <p>¡Muchas gracias por tu interés en <strong>CostePro</strong>! Haz clic en el botón de abajo para descargar tu versión de prueba.</p>
-                <p style="font-weight: bold; color: #e76f51;">⏰ Importante: Este enlace de descarga caduca en 12 horas.</p>
-                <div class="button-container">
-                  <a href="${downloadLink}" class="button">Descargar mi Prueba Gratis</a>
-                </div>
-                <p>Si tienes cualquier duda, simplemente responde a este correo. ¡Estaremos encantados de ayudarte!</p>
-                <p>Un saludo,<br><strong>El equipo de CostePro</strong></p>
-              </div>
-              <div class="footer"><p>&copy; 2025 CostePro. Todos los derechos reservados.</p></div>
-            </div>
-          </body>
-          </html>
-        `
+    if (!targetRow) {
+      console.log(`Token no encontrado: ${token.substring(0, 20)}...`);
+      return { 
+        statusCode: 404, 
+        headers,
+        body: JSON.stringify({ 
+          error: "Error: Enlace de descarga no válido o ya utilizado." 
+        })
       };
-
-      await transporter.sendMail(mailToCustomer);
-      console.log(`Email enviado exitosamente a ${data.email}`);
-
-      // Notificación al propietario
-      try {
-        const notificationToOwner = {
-          from: `"Notificación Web" <${process.env.HOSTINGER_EMAIL}>`,
-          to: process.env.HOSTINGER_EMAIL,
-          subject: '🚀 Nuevo usuario ha solicitado la prueba de 3 días',
-          html: `
-            <p>El usuario <strong>${data.email}</strong> ha recibido su enlace de descarga temporal.</p>
-            <p><strong>Fingerprint del dispositivo:</strong> ${fingerprint}</p>
-            <p><strong>Token:</strong> ${token.substring(0, 10)}...</p>
-            <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
-          `
-        };
-        await transporter.sendMail(notificationToOwner);
-      } catch (notifError) {
-        console.error('Error al enviar notificación al propietario:', notifError);
-      }
-
-    // --- Lógica para FORMULARIO DE CONTACTO ---
-    } else {
-      const mailFromContactForm = {
-        from: `"Web CostePro" <${process.env.HOSTINGER_EMAIL}>`,
-        to: process.env.HOSTINGER_EMAIL,
-        subject: `📬 Nuevo mensaje de contacto de: ${data.name}`,
-        replyTo: data.email,
-        html: `
-          <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-            <h2>Nuevo Mensaje de Contacto</h2>
-            <p><strong>Nombre:</strong> ${data.name}</p>
-            <p><strong>Email:</strong> ${data.email}</p>
-            <hr>
-            <p><strong>Mensaje:</strong></p>
-            <p>${data.message}</p>
-          </div>
-        `
-      };
-      await transporter.sendMail(mailFromContactForm);
     }
 
-    transporter.close();
+    console.log('Token válido encontrado, verificando expiración...');
+
+    // Usar "Fecha de Solicitud" con espacios
+    const dateString = targetRow.get('Fecha de Solicitud');
     
+    if (!dateString) {
+      console.error('No se encontró fecha de solicitud para el token');
+      throw new Error('Fecha de solicitud no encontrada');
+    }
+
+    const requestDate = new Date(dateString);
+    
+    // Verificar que la fecha sea válida
+    if (isNaN(requestDate.getTime())) {
+      console.error(`Fecha inválida: ${dateString}`);
+      throw new Error('Fecha de solicitud inválida');
+    }
+
+    const expirationDate = new Date(requestDate.getTime() + EXPIRATION_HOURS * 60 * 60 * 1000);
+    const now = new Date();
+
+    console.log('Fechas:');
+    console.log('- Solicitud:', requestDate.toISOString());
+    console.log('- Expiración calculada:', expirationDate.toISOString());
+    console.log('- Actual:', now.toISOString());
+
+    if (now > expirationDate) {
+      const hoursElapsed = Math.floor((now - requestDate) / (1000 * 60 * 60));
+      return { 
+        statusCode: 403, 
+        headers,
+        body: JSON.stringify({ 
+          error: `Lo sentimos, este enlace ha caducado. Era válido durante ${EXPIRATION_HOURS} horas y han pasado ${hoursElapsed} horas desde su creación.` 
+        })
+      };
+    }
+
+    console.log('¡Token válido y no expirado! Redirigiendo a la descarga...');
+
+    // ¡Éxito! Redirigir al usuario a la descarga
     return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({ 
-        success: true,
-        message: '¡Listo! Revisa tu bandeja de entrada. El enlace caduca en 12 horas.' 
-      }),
+      statusCode: 302,
+      headers: {
+        ...headers,
+        'Location': GOOGLE_DRIVE_DIRECT_DOWNLOAD_URL,
+        'Cache-Control': 'no-cache, no-store, must-revalidate'
+      }
     };
 
   } catch (error) {
-    console.error('--- ERROR EN LA FUNCIÓN ---', error);
+    console.error("Error detallado en la función de descarga:", error);
+    console.error("Stack trace:", error.stack);
+    
+    let errorMessage = "Ha ocurrido un error en el servidor al validar el enlace.";
+    
+    if (error.message.includes('Google')) {
+      errorMessage = "Error de configuración del servidor. Por favor, contacta al administrador.";
+    } else if (error.message.includes('hoja')) {
+      errorMessage = "Error al acceder a la base de datos. Por favor, intenta más tarde.";
+    }
+    
     return { 
       statusCode: 500, 
       headers,
       body: JSON.stringify({ 
-        error: 'Error al procesar la solicitud.',
+        error: errorMessage,
         details: process.env.NODE_ENV === 'development' ? error.message : undefined
       })
     };
