@@ -2333,38 +2333,46 @@
         monthlyPlans.forEach(card => {
             card.classList.remove('is-hiding');
         });
-
-
-        // --- Trial Modal Logic ---
-        const trialModal = document.getElementById("trial-modal");
-        const heroTrialBtn = document.getElementById("hero-trial-btn");
-        const requestTrialBtn = document.getElementById("request-trial-btn");
-        const closeModalBtn = document.getElementById("close-modal-btn");
-        
-        const openModal = () => trialModal.classList.add("is-visible");
-        const closeModal = () => {
-            trialModal.classList.remove("is-visible");
-            setTimeout(() => {
-                const modalMessage = document.getElementById("modal-message");
-                modalMessage.textContent = "";
-                modalMessage.style.color = 'var(--primary-light)'; // Reset color
-                document.getElementById("trial-form").reset();
-                const submitButton = document.querySelector("#trial-form button");
-                if (submitButton) submitButton.disabled = false;
-            }, 300);
-        };
-
-        if(heroTrialBtn) heroTrialBtn.addEventListener("click", openModal);
-        if(requestTrialBtn) requestTrialBtn.addEventListener("click", openModal);
-        if(closeModalBtn) closeModalBtn.addEventListener("click", closeModal);
-        
-        if(trialModal) trialModal.addEventListener("click", (event) => {
-            if (event.target === trialModal) closeModal();
-        });
-        
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && trialModal && trialModal.classList.contains('is-visible')) closeModal();
-        });
+   
+    <!-- Trial Modal -->
+    <div id="trial-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-modal-btn">&times;</span>
+            <h2 data-translate="modal_trial_title">Solicita tu Prueba Gratuita</h2>
+            
+            <!-- Formulario inicial -->
+            <div id="modal-form-container">
+                <p data-translate="modal_trial_subtitle">Ingresa tu email para obtener acceso inmediato a CostePro</p>
+                <form id="trial-form" class="modal-form">
+                    <input type="email" id="trial-email" placeholder="Tu correo electrónico" required>
+                    <button type="submit" class="modal-button" id="modal-submit-btn">
+                        <span id="modal_btn_text" data-translate="modal_trial_cta">Obtener Descarga Gratuita</span>
+                    </button>
+                </form>
+                <p class="modal-message" id="modal-message"></p>
+            </div>
+            
+            <!-- Contenedor de éxito con descarga (oculto inicialmente) -->
+            <div id="modal-success-container" style="display: none;">
+                <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, var(--primary-light), var(--primary)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <span style="color: white; font-size: 40px;">✓</span>
+                </div>
+                <h2 style="color: var(--primary);">¡Perfecto!</h2>
+                <p id="user-email-display" style="margin: 15px 0;"></p>
+                
+                <a id="download-link" 
+                   href="https://www.dropbox.com/scl/fi/ikjpnocha7qesd07mmq46/CostePro.zip?rlkey=7r7s2i86s6v1y4q8x6a4rvq8h&dl=1" 
+                   class="modal-button"
+                   style="display: inline-block; margin: 20px 0; text-decoration: none;">
+                    ⬇ Descargar CostePro Ahora
+                </a>
+                
+                <p style="color: var(--gray-600); font-size: 14px; margin-top: 20px;">
+                    También hemos enviado el enlace a tu email para futuras referencias.
+                </p>
+            </div>
+        </div>
+    </div>
         
         // --- FAQ Accordion Logic ---
         const faqQuestions = document.querySelectorAll('.faq-question');
@@ -2432,34 +2440,162 @@
             }
         };
 
+// REEMPLAZA LA SECCIÓN DE "Trial Form Event Listener" (aproximadamente líneas 2455-2475)
+// Busca este código y reemplázalo:
+
         // --- Trial Form Event Listener ---
         const trialForm = document.getElementById("trial-form");
-        if(trialForm) trialForm.addEventListener("submit", function(e) {
+        if(trialForm) trialForm.addEventListener("submit", async function(e) {
             e.preventDefault();
-            const userEmail = document.getElementById("trial-email").value;
-            // The device fingerprint function was removed, so this is no longer needed.
-            // const deviceFingerprint = generateDeviceFingerprint();
             
-            const payload = {
-                formType: 'trial',
-                email: userEmail,
-                fingerprint: 'N/A' // Sending a placeholder since the fingerprint function was removed
-            };
-            handleFormSubmit(payload, this, document.getElementById("modal-message"));
+            const userEmail = document.getElementById("trial-email").value;
+            const submitBtn = document.getElementById("modal-submit-btn");
+            const btnText = document.getElementById("modal_btn_text");
+            const messageEl = document.getElementById("modal-message");
+            const formContainer = document.getElementById("modal-form-container");
+            const successContainer = document.getElementById("modal-success-container");
+            
+            // Validación de email
+            if (!userEmail || !userEmail.includes('@')) {
+                messageEl.textContent = "Por favor, ingresa un email válido";
+                messageEl.style.color = 'var(--danger)';
+                return;
+            }
+            
+            // Mostrar estado de carga
+            submitBtn.disabled = true;
+            btnText.innerHTML = 'Procesando... <span style="display: inline-block; width: 16px; height: 16px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 0.8s ease-in-out infinite; margin-left: 8px; vertical-align: middle;"></span>';
+            messageEl.textContent = "";
+            
+            try {
+                // Enviar datos a la nueva función simplificada
+                const response = await fetch('/.netlify/functions/register-download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: userEmail,
+                        timestamp: new Date().toISOString(),
+                        source: 'web-trial'
+                    })
+                });
+                
+                // Independientemente del resultado, mostramos la descarga
+                // para no perder conversiones
+                showDownloadSuccess(userEmail);
+                
+            } catch (error) {
+                console.log('Error en el registro, pero mostrando descarga:', error);
+                // Aún así mostramos la descarga
+                showDownloadSuccess(userEmail);
+            }
         });
         
-        // --- Contact Form Event Listener ---
-        const contactForm = document.getElementById('contact-form');
-        if(contactForm) contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const payload = {
-                formType: 'contact',
+        // Nueva función para mostrar el éxito con la descarga
+        function showDownloadSuccess(email) {
+            const formContainer = document.getElementById("modal-form-container");
+            const successContainer = document.getElementById("modal-success-container");
+            const userEmailDisplay = document.getElementById("user-email-display");
+            const downloadLink = document.getElementById("download-link");
+            
+            // Ocultar formulario
+            formContainer.style.display = 'none';
+            
+            // Mostrar contenedor de éxito
+            successContainer.style.display = 'block';
+            userEmailDisplay.textContent = `📧 Enlace enviado a: ${email}`;
+            
+            // Auto-iniciar descarga después de 1 segundo
+            setTimeout(() => {
+                downloadLink.click();
+            }, 1000);
+            
+            // Cerrar modal después de 5 segundos
+            setTimeout(() => {
+                closeModal();
+            }, 5000);
+        }
+        
+        // Actualizar la función closeModal para resetear ambos contenedores
+        const closeModal = () => {
+            trialModal.classList.remove("is-visible");
+            setTimeout(() => {
+                // Resetear formulario
+                document.getElementById("trial-form").reset();
+                
+                // Resetear contenedores
+                const formContainer = document.getElementById("modal-form-container");
+                const successContainer = document.getElementById("modal-success-container");
+                formContainer.style.display = 'block';
+                successContainer.style.display = 'none';
+                
+                // Resetear botón
+                const submitBtn = document.getElementById("modal-submit-btn");
+                const btnText = document.getElementById("modal_btn_text");
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    btnText.textContent = btnText.getAttribute('data-translate') === 'modal_trial_cta' ? 
+                        'Obtener Descarga Gratuita' : 'Enviar Enlace';
+                }
+                
+                // Limpiar mensajes
+                const modalMessage = document.getElementById("modal-message");
+                if (modalMessage) {
+                    modalMessage.textContent = "";
+                    modalMessage.style.color = 'var(--primary-light)';
+                }
+            }, 300);
+        };
+        
+// --- Contact Form Event Listener ---
+const contactForm = document.getElementById('contact-form');
+if(contactForm) contactForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const submitButton = this.querySelector('button[type="submit"]');
+    const messageElement = document.getElementById('form-status');
+    
+    // Mostrar estado de carga
+    if(submitButton) submitButton.disabled = true;
+    messageElement.textContent = "Enviando...";
+    messageElement.style.color = 'var(--gray-600)';
+    
+    try {
+        const response = await fetch('/.netlify/functions/contact-form', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
                 name: document.getElementById('contact-name').value,
                 email: document.getElementById('contact-email').value,
-                message: document.getElementById('contact-message').value
-            };
-            handleFormSubmit(payload, this, document.getElementById('form-status'));
+                message: document.getElementById('contact-message').value,
+                formType: 'contact'
+            })
         });
+        
+        if (response.ok) {
+            messageElement.textContent = "✅ Mensaje enviado correctamente. Te responderemos pronto.";
+            messageElement.style.color = 'var(--primary-light)';
+            this.reset();
+        } else {
+            throw new Error('Error en el envío');
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        messageElement.textContent = "❌ Error al enviar. Por favor, intenta de nuevo.";
+        messageElement.style.color = 'var(--danger)';
+    } finally {
+        if(submitButton) submitButton.disabled = false;
+        
+        // Limpiar mensaje después de 5 segundos
+        setTimeout(() => {
+            messageElement.textContent = '';
+        }, 5000);
+    }
+});
 
 
         // --- Animate on Scroll Logic (Intersection Observer) ---
