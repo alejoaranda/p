@@ -25,7 +25,7 @@ exports.handler = async (event) => {
     }
 
     // Configurar el transportador de Nodemailer con tus credenciales
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: 'smtp.hostinger.com',
       port: 465,
       secure: true, // true para el puerto 465
@@ -76,7 +76,13 @@ exports.handler = async (event) => {
     };
 
   } catch (error) {
-    console.error('Error en la función contact-form:', error);
+    // Registro de errores mejorado para depuración
+    console.error('--- INICIO DEL ERROR DETALLADO ---');
+    console.error('Error en la función contact-form:');
+    console.error('Mensaje de Error:', error.message);
+    console.error('Código de Error:', error.code);
+    console.error('Stack de Error:', error.stack);
+    console.error('--- FIN DEL ERROR DETALLADO ---');
 
     // Respuesta de error para el frontend
     return {
@@ -89,3 +95,5 @@ exports.handler = async (event) => {
     };
   }
 };
+
+
