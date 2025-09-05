@@ -1,111 +1,70 @@
 // /functions/send-email.js
-// Versión FINAL - Coincide con tus columnas actuales
+// Versión completa con lógica de enlace temporal de 12 horas y registro en Google Sheets.
 
-// Importaciones con verificación
-let nodemailer, GoogleSpreadsheet, JWT, crypto;
-
-try {
-  nodemailer = require('nodemailer');
-  const googleSpreadsheet = require('google-spreadsheet');
-  GoogleSpreadsheet = googleSpreadsheet.GoogleSpreadsheet;
-  const googleAuth = require('google-auth-library');
-  JWT = googleAuth.JWT;
-  crypto = require('crypto');
-} catch (error) {
-  console.error('Error al cargar dependencias:', error);
-}
+const nodemailer = require('nodemailer');
+const { GoogleSpreadsheet } = require('google-spreadsheet');
+const { JWT } = require('google-auth-library');
+const crypto = require('crypto');
 
 // --- Función para escribir en Google Sheets ---
+// Esta función se conecta a tu hoja de cálculo y añade una nueva fila con los datos del solicitante.
 async function appendToSheet(email, token, fingerprint) {
   try {
-    if (!process.env.GOOGLE_CLIENT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY || !process.env.GOOGLE_SHEET_ID) {
-      console.error('Error: Faltan variables de entorno de Google');
-      throw new Error('Configuración de Google incompleta');
-    }
-
-    const privateKey = process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n');
-    
+    // Autenticación con Google usando las variables de entorno que configurarás en tu servidor.
     const serviceAccountAuth = new JWT({
       email: process.env.GOOGLE_CLIENT_EMAIL,
-      key: privateKey,
+      key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'), // Formato correcto para la clave privada.
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
 
     const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID, serviceAccountAuth);
-    await doc.loadInfo();
+    await doc.loadInfo(); // Carga la información del documento.
     
+    // Buscar la hoja llamada "Prueba"
     const sheet = doc.sheetsByTitle['Prueba'];
     if (!sheet) {
       console.error('No se encontró la hoja "Prueba" en el documento de Google Sheets');
-      throw new Error('Hoja "Prueba" no encontrada');
+      return;
     }
 
+    // Guarda la fecha en formato ISO, que es el estándar universal para fechas y horas.
     const timestampISO = new Date().toISOString();
     
-    // IMPORTANTE: Usar los nombres EXACTOS de las columnas (sin espacios)
+    // Añade la nueva fila con los datos en las columnas especificadas:
+    // Columna A: Email
+    // Columna B: Fecha de solicitud
+    // Columna C: Fingerprint del dispositivo
     await sheet.addRow({ 
-      'Email': email, 
-      'FechadeSolicitud': timestampISO,  // Sin espacios
+      Email: email, 
+      'Fecha de Solicitud': timestampISO,
       'Fingerprint': fingerprint,
-      'TokenUnico': token  // Ahora sí tienes esta columna
+      TokenUnico: token, 
+      FechaDeSolicitud: timestampISO 
     });
     
-    console.log(`✅ Email ${email} y token añadidos exitosamente a Google Sheets.`);
-    return true;
+    console.log(`Email ${email}, fingerprint ${fingerprint} y token han sido añadidos a Google Sheets.`);
 
   } catch (error) {
-    console.error('❌ Error al escribir en Google Sheets:', error.message);
-    throw error;
+    // Si falla, solo lo mostramos en la consola del servidor para no detener el envío del email al cliente.
+    console.error('Error al escribir en Google Sheets:', error);
   }
 }
 
-// --- Handler principal ---
+// --- Handler principal de la función ---
+// Esta es la función principal que se ejecuta cuando el formulario es enviado.
 exports.handler = async (event) => {
-  // Habilitar CORS
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS'
-  };
-
-  // Manejar preflight OPTIONS
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers, body: '' };
-  }
-
-  if (event.httpMethod !== 'POST') {
-    return { 
-      statusCode: 405, 
-      headers,
-      body: JSON.stringify({ error: 'Method Not Allowed' })
-    };
+  // Solo permitir peticiones de tipo POST.
+  if (event.httpMethod !== 'POST' ) {
+    return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   try {
-    console.log('📨 Procesando solicitud...');
     const data = JSON.parse(event.body);
-    
     if (!data.email) {
-      return { 
-        statusCode: 400, 
-        headers,
-        body: JSON.stringify({ error: 'El correo electrónico es requerido.' })
-      };
+      return { statusCode: 400, body: 'El correo electrónico es requerido.' };
     }
 
-    // Validar formato de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Formato de email inválido.' })
-      };
-    }
-
-    console.log(`📧 Procesando solicitud para: ${data.email}`);
-
-    // Configuración del transportador de Nodemailer
+    // Configuración del transportador de Nodemailer para Hostinger.
     const transporter = nodemailer.createTransporter({
       host: 'smtp.hostinger.com',
       port: 465,
@@ -113,34 +72,29 @@ exports.handler = async (event) => {
       auth: {
         user: process.env.HOSTINGER_EMAIL,
         pass: process.env.HOSTINGER_PASSWORD
-      },
-      tls: {
-        rejectUnauthorized: false
       }
     });
 
-    // --- Lógica para PRUEBA GRATUITA ---
+    // --- Lógica para la PRUEBA GRATUITA ---
     if (data.formType === 'trial') {
-      const token = crypto.randomBytes(32).toString('hex');
+      // 1. Generar un token único y seguro.
+      const token = crypto.randomBytes(16).toString('hex');
+      
+      // 2. Obtener el fingerprint del dispositivo (enviado desde el frontend)
       const fingerprint = data.fingerprint || 'no-fingerprint';
       
-      console.log(`🔑 Token generado: ${token.substring(0, 10)}...`);
-      
-      // Guardar en Google Sheets
-      try {
-        await appendToSheet(data.email, token, fingerprint);
-      } catch (sheetError) {
-        console.error('❌ Error al guardar en Sheets:', sheetError.message);
-        // Continuar con el envío del email aunque falle Sheets
-      }
+      // 3. Guardar la información en Google Sheets.
+      await appendToSheet(data.email, token, fingerprint);
 
+      // 4. Construir el enlace de descarga especial que apunta a nuestra otra función.
+      // ¡IMPORTANTE! Reemplaza "TU_DOMINIO.com" por tu dominio real.
       const downloadLink = `https://costepro.top/.netlify/functions/descargar-prueba?token=${token}`;
 
-      // Email al cliente
+      // 5. Enviar el email al cliente con la plantilla elegante y el enlace temporal.
       const mailToCustomer = {
         from: `"CostePro" <${process.env.HOSTINGER_EMAIL}>`,
         to: data.email,
-        subject: '✅ Tu enlace de descarga para CostePro (expira en 12 horas)',
+        subject: '✅ Tu enlace de descarga para CostePro (expira en 12 horas )',
         html: `
           <!DOCTYPE html>
           <html lang="es">
@@ -166,7 +120,7 @@ exports.handler = async (event) => {
                 <h2>¡Tu prueba gratuita está lista!</h2>
                 <p>Hola,</p>
                 <p>¡Muchas gracias por tu interés en <strong>CostePro</strong>! Haz clic en el botón de abajo para descargar tu versión de prueba.</p>
-                <p style="font-weight: bold; color: #e76f51;">⏰ Importante: Este enlace de descarga caduca en 12 horas.</p>
+                <p style="font-weight: bold; color: #e76f51;">Importante: Este enlace de descarga caducará automáticamente en 12 horas.</p>
                 <div class="button-container">
                   <a href="${downloadLink}" class="button">Descargar mi Prueba Gratis</a>
                 </div>
@@ -179,36 +133,27 @@ exports.handler = async (event) => {
           </html>
         `
       };
-
-      console.log('📤 Enviando email al cliente...');
       await transporter.sendMail(mailToCustomer);
-      console.log(`✅ Email enviado exitosamente a ${data.email}`);
 
-      // Notificación al propietario
-      try {
-        const notificationToOwner = {
-          from: `"Notificación Web" <${process.env.HOSTINGER_EMAIL}>`,
-          to: process.env.HOSTINGER_EMAIL,
-          subject: '🚀 Nuevo usuario ha solicitado la prueba',
-          html: `
-            <p>El usuario <strong>${data.email}</strong> ha recibido su enlace de descarga temporal.</p>
-            <p><strong>Fingerprint:</strong> ${fingerprint}</p>
-            <p><strong>Token:</strong> ${token.substring(0, 10)}...</p>
-            <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
-          `
-        };
-        await transporter.sendMail(notificationToOwner);
-        console.log('✅ Notificación enviada al propietario');
-      } catch (notifError) {
-        console.error('⚠️ Error al enviar notificación:', notifError.message);
-      }
+      // 6. Notificación para ti (opcional pero recomendado).
+      const notificationToOwner = {
+        from: `"Notificación Web" <${process.env.HOSTINGER_EMAIL}>`,
+        to: process.env.HOSTINGER_EMAIL,
+        subject: '🚀 Nuevo usuario ha solicitado la prueba de 3 días',
+        html: `
+          <p>El usuario <strong>${data.email}</strong> ha recibido su enlace de descarga temporal.</p>
+          <p><strong>Fingerprint del dispositivo:</strong> ${fingerprint}</p>
+          <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
+        `
+      };
+      await transporter.sendMail(notificationToOwner);
 
-    // --- Lógica para FORMULARIO DE CONTACTO ---
+    // --- Lógica para el FORMULARIO DE CONTACTO (sin cambios) ---
     } else {
       const mailFromContactForm = {
         from: `"Web CostePro" <${process.env.HOSTINGER_EMAIL}>`,
         to: process.env.HOSTINGER_EMAIL,
-        subject: `📬 Nuevo mensaje de: ${data.name}`,
+        subject: `📬 Nuevo mensaje de contacto de: ${data.name}`,
         replyTo: data.email,
         html: `
           <div style="font-family: Arial, sans-serif; line-height: 1.6;">
@@ -222,29 +167,18 @@ exports.handler = async (event) => {
         `
       };
       await transporter.sendMail(mailFromContactForm);
-      console.log('✅ Mensaje de contacto enviado');
     }
 
     transporter.close();
-    
     return {
       statusCode: 200,
-      headers,
-      body: JSON.stringify({ 
-        success: true,
-        message: '¡Listo! Revisa tu bandeja de entrada. El enlace caduca en 12 horas.' 
-      }),
+      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '¡Listo! Revisa tu bandeja de entrada. El enlace caduca en 12 horas.' }),
     };
 
   } catch (error) {
-    console.error('❌ ERROR EN LA FUNCIÓN:', error);
-    return { 
-      statusCode: 500, 
-      headers,
-      body: JSON.stringify({ 
-        error: 'Error al procesar la solicitud.',
-        details: error.message
-      })
-    };
+    console.error('--- ERROR EN LA FUNCIÓN ---', error);
+    return { statusCode: 500, body: 'Error al procesar la solicitud.' };
   }
 };
+
