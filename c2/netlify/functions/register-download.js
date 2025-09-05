@@ -42,18 +42,21 @@ exports.handler = async (event) => {
       // Buscar la hoja - puedes cambiar el nombre aquí
       const sheet = doc.sheetsByTitle['Descargas'] || doc.sheetsByTitle['Prueba'];
       
-      if (sheet) {
-        // Agregar nueva fila con los datos
-        await sheet.addRow({
-          'Email': email,
-          'Fecha': new Date().toLocaleString('es-ES'),
-          'Timestamp': timestamp,
-          'Fuente': source || 'web',
-          'IP': event.headers['x-forwarded-for'] || 'N/A'
-        });
-        
-        console.log(`✅ Registrado en Sheets: ${email}`);
+      if (!sheet) {
+        console.error('⚠️ No se encontró la hoja "Prueba" en Google Sheets');
+        throw new Error('Hoja "Prueba" no encontrada');
       }
+      
+      // Agregar nueva fila con los datos
+      await sheet.addRow({
+        'Email': email,
+        'Fecha': new Date().toLocaleString('es-ES'),
+        'Timestamp': timestamp,
+        'Fuente': source || 'web',
+        'IP': event.headers['x-forwarded-for'] || 'N/A'
+      });
+      
+      console.log(`✅ Registrado en Sheets: ${email}`);
     } catch (sheetsError) {
       // Si falla Sheets, no detenemos el proceso
       console.error('Error con Google Sheets:', sheetsError);
