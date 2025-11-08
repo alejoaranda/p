@@ -1,6 +1,7 @@
 [build]
-  command = "npm run build"
-  publish = "dist"
+  base = "c2"
+  command = "cd c2 && npm install && npm run build"
+  publish = "c2/dist"
 
 [[redirects]]
   from = "/*"
@@ -9,4 +10,15 @@
 
 [build.environment]
   NODE_VERSION = "18"
+
+# Configuración para generar previews de branches
+[context.branch-deploy]
+  base = "c2"
+  command = "cd c2 && npm install && npm run build"
+  publish = "c2/dist"
+
+[context.deploy-preview]
+  base = "c2"
+  command = "cd c2 && npm install && npm run build"
+  publish = "c2/dist"
 
