@@ -1,13 +1,22 @@
 {
-  "name": "costepro-functions",
-  "version": "1.0.0",
-  "description": "Dependencies for Netlify functions",
-  "dependencies": {
-    "nodemailer": "^6.9.8",
-    "google-spreadsheet": "^4.1.2",
-    "google-auth-library": "^9.4.1"
-  },
+  "name": "costepro-version-web",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "build": "echo 'Build script for functions'"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@google/genai": "^1.28.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
   }
 }

@@ -1,0 +1,7 @@
+{
+  "name": "COSTEPRO VERSION WEB",
+  "description": "A web-based version of the advanced Excel system for recipe costing, menu planning, and ingredient management, enhanced with a powerful AI assistant for recipe generation and gastronomic queries.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
