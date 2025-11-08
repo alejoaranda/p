@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Recipe, RecordableItem, RecordItemType, AppccRecord, Employee } from './types';
+import { View, Recipe, RecordableItem, RecordItemType, AppccRecord, Employee, Settings } from './types';
 import useAppData from './hooks/useAppData';
 import { NavIcon, DatabaseIcon, IngredientsIcon, MenuPlannerIcon, SchedulesIcon, SettingsIcon, CosteProLogo, RecordsIcon, FinancialReportsIcon, CheckIcon } from './components/icons';
 import { MenuView } from './components/views/MenuView';
@@ -12,7 +12,7 @@ import { RecipeDetailModal } from './components/RecipeDetailModal';
 import { AIAssistant } from './components/AIAssistant';
 import { RecordsView } from './components/views/RecordsView';
 import { FinancialsView } from './components/views/FinancialsView';
-import { LandingPage } from './components/LandingPage';
+import LandingPage from './components/LandingPage';
 
 // --- QR Code Record Form Page ---
 interface RecordFormPageProps {
@@ -239,6 +239,8 @@ const MainApp: React.FC = () => {
                   categories={categories}
                   onAddCategory={addCategory}
                   onRemoveCategory={removeCategory}
+                  addOrUpdateRecipe={addOrUpdateRecipe}
+                  settings={settings}
                 />;
       case View.Ingredients:
         return <IngredientsView 
